@@ -1,4 +1,3 @@
-import { FormEvent, useState } from "react";
 import { useFormContext } from 'react-hook-form';
 
 import { ToolInput, ToolInputRule } from "@/app/types";
@@ -8,12 +7,14 @@ export default function SpecificationForm(
         inputs,
         inputRules,
         formData,
-        common
+        common,
+        toolSeriesInput
     }: {
         inputs: ToolInput[],
         inputRules: ToolInputRule[],
         formData: any,
-        common: boolean
+        common: boolean,
+        toolSeriesInput?: React.ReactNode
     }
 ) {
     const { register } = useFormContext();
@@ -21,6 +22,10 @@ export default function SpecificationForm(
         let groupElements: React.ReactNode[] = [];
         for (let i = 0; i < inputs.length; i++) {
             const input = inputs[i];
+            if (input.property_name === 'ToolSeries') {
+                groupElements.push(toolSeriesInput);
+                continue
+            }
 
             let rules: ToolInputRule[] = inputRules.filter((e: ToolInputRule) => e.tool_input_id === input.tool_input_id);
             let disabled = false;
@@ -154,7 +159,7 @@ export default function SpecificationForm(
     for (let i = minGroup; i <= maxGroup; i++) {
         const inputsInGroup = inputs.filter(e => e.group === i);
         formElements.push(
-            <div className="flex flex-col mr-5 last:mr-0 w-50" key={i}>
+            <div key={i} className="flex flex-col mr-5 last:mr-0 w-50">
                 {generateGroup(inputsInGroup)}
             </div>
         );

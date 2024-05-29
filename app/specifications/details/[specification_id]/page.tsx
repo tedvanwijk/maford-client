@@ -13,7 +13,7 @@ export default async function SpecificationDetails(
     ).then(res => res.json());
     let specData = await JSON.parse(spec.data);
     let inputs = await fetch(
-        `${process.env.API_URL}/tool/${specData.ToolType}/inputs?name=true`,
+        `${process.env.API_URL}/tool/${specData.ToolType}/inputs`,
         {
             method: 'GET',
             cache: 'no-cache'
@@ -89,7 +89,7 @@ export default async function SpecificationDetails(
     }
 
     return (
-        <div className="px-5 py-8 text-neutral">
+        <>
             <dialog id="modal" className="modal">
                 <div className="modal-box p-0">
 
@@ -105,6 +105,6 @@ export default async function SpecificationDetails(
             {error}
             <a className="btn btn-primary mr-4" href={`/specifications/new?r=${params.specification_id}`}>Copy</a>
             <a className="btn" href={`/report?r=${params.specification_id}`}>Send Report</a>
-        </div>
+        </>
     )
 }

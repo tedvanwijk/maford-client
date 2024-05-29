@@ -45,7 +45,7 @@ export default function Report() {
     }
 
     return (
-        <div className="px-5 py-8 text-neutral w-full">
+        <>
             <h1 className="text-lg font-bold">Bug Report</h1>
 
             <form className="flex flex-col" onSubmit={async e => {
@@ -88,7 +88,7 @@ export default function Report() {
                 </label>
                 <input
                     type="text"
-                    className="input input-bordered w-full bg-secondary"
+                    className="input input-bordered w-full bg-secondary bg-opacity-50"
                     placeholder="Please provide a brief summary of the issue"
                     value={summary}
                     onChange={e => setSummary(e.target.value)}
@@ -100,7 +100,7 @@ export default function Report() {
                     </div>
                 </label>
                 <textarea
-                    className="input input-bordered w-full bg-secondary p-4 h-[500px]"
+                    className="input input-bordered w-full bg-secondary bg-opacity-50 p-4 h-[500px]"
                     placeholder="Please provide a description of the issue and the steps to recreate it"
                     value={description}
                     onChange={e => setDescription(e.target.value)}
@@ -108,6 +108,6 @@ export default function Report() {
 
                 <button type="submit" className="btn btn-primary mt-4 w-fit">Submit</button>
             </form>
-        </div>
+        </>
     )
 }

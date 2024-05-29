@@ -6,10 +6,13 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { apiUrl } from "@/lib/api";
 import SpecificationStep from "@/components/specificationStep";
 import SpecificationForm from "@/components/specificationForm";
-import { ToolInput, InputCategory, ToolInputRule, ToolType, CommonToolInput } from "@/app/types";
+import { ToolInput, InputCategory, ToolInputRule, ToolType, CommonToolInput, SeriesInput, Series } from "@/app/types";
+import SeriesForm from "@/components/seriesForm";
+import ToolSeriesInput from "@/components/toolSeriesInput";
 
 export default function New() {
-    const [tools, setTools] = useState([]);
+    // TODO: remove all tool series input stuff. Only the tool series needs to be selected, but no custom inputs need to be generated
+    const [tools, setTools]: [ToolType[], Function] = useState([]);
     const [currentStep, setCurrentStep] = useState(0);
     const [toolType, setToolType] = useState(-1);
     const [inputCategories, setInputCategories] = useState([]);
@@ -19,6 +22,11 @@ export default function New() {
     const [formData, setFormData]: [{ [k: string]: any }, Function] = useState({});
     const [saveWindowOpen, setSaveWindowOpen] = useState(false);
     const [specName, setSpecName] = useState('');
+    const [seriesFormData, setSeriesFormData]: [{ [k: string]: any }, Function] = useState({});
+    const [seriesInputs, setSeriesInputs] = useState<SeriesInput[] | null>(null);
+    const [selectedSeries, setSelectedSeries] = useState(-1);
+    const [seriesInputsShown, setSeriesInputsShown] = useState<SeriesInput[] | null>(null);
+    const [series, setSeries]: [Series[], Function] = useState([]);
     const formMethods = useForm();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -33,6 +41,15 @@ export default function New() {
         )
             .then(res => res.json())
             .then(res => setTools(res));
+        fetch(
+            `${apiUrl}/series`,
+            {
+                method: 'GET',
+                cache: 'no-cache'
+            }
+        )
+            .then(res => res.json())
+            .then(res => setSeries(res));
         if (referenceSpecification !== null) {
             fetch(
                 `${apiUrl}/specification/${referenceSpecification}`,
@@ -46,7 +63,7 @@ export default function New() {
                     // TODO: incorporate tool type selection in db data
                     // await changeToolType({tool_id: 0, name: 'End Mill'});
                     // let copiedFormData = JSON.parse(res.data);
-                    copyTool(0, JSON.parse(res.data))
+                    copyTool(JSON.parse(res.data))
                 });
         }
     }, []);
@@ -58,21 +75,6 @@ export default function New() {
         }
     }
 
-    // TODO: add some form of warning if required fields have not been filled out
-    // function collectFormData(newFormData: FormData, stepNumber: number) {
-    //     let formComplete = true;
-    //     for (const pair of newFormData.entries()) {
-    //         const toolInput = inputs.filter(e => e.tool_input_id === parseInt(pair[0]))[0];
-    //         if (toolInput.required && pair[1] === '') {
-    //             formComplete = false;
-    //         }
-    //         if (formData.get(pair[0]) !== null) formData.append(pair[0], pair[1]);
-    //         else formData.set(pair[0], pair[1]);
-    //     }
-    //     if (formComplete) changeCurrentStep(stepNumber, false);
-    //     else changeCurrentStep(stepNumber - 1, true);
-    // }
-
     function handleFormSubmit(data: object) {
         // const formData = new FormData(e.currentTarget);
         // setFormData(formData);
@@ -82,8 +84,33 @@ export default function New() {
         setFormData(formMethods.getValues())
     }
 
+    function changeSeries(seriesId: number) {
+        fetch(
+            `${apiUrl}/series/${seriesId}/inputs`,
+            {
+                method: 'GET',
+                cache: 'no-cache'
+            }
+        )
+            .then(res => res.json())
+            .then(res => {
+                setSeriesInputs(res);
+                const seriesInputsShown = res.filter((e: SeriesInput) => e.type === 'toggle');
+                let formData: { [k: string]: any } = {};
+                seriesInputsShown.forEach((e: SeriesInput) => {
+                    switch (e.type) {
+                        case 'toggle':
+                            formData[e.property_name] = false
+                    }
+                });
+                setSeriesFormData(formData);
+                setSeriesInputsShown(seriesInputsShown);
+            });
+        setSelectedSeries(seriesId);
+    }
+
     // TODO: for some reason, some inputs are added to the formData object by default and others only after the input has changed
-    async function saveSpecification() {
+    async function saveSpecification(stayOnPage=false) {
         for (const [key, value] of Object.entries(formData)) {
             if (isNaN(+key)) continue;
             const inputProperty = inputs.filter((e: ToolInput) => e.tool_input_id === parseInt(key))[0].property_name;
@@ -91,12 +118,32 @@ export default function New() {
             delete formData[key];
         }
 
-        // TODO: implement flute series (and other currently manually added parameters below)
-        formData.ToolSeries = 'XV5CB';
+        // formData.ToolSeries = series.find((e: Series) => e.series_id === selectedSeries)?.name;
+        formData.ToolSeries = selectedSeries;
+        // TODO: custom LOC and bodylength implementation
         formData.LOF = formData.LOC;
         formData.BodyLength = formData.LOC;
-        formData.ToolType = 'End Mill';
+        // formData.ToolType = tools.find((e: ToolType) => e.tool_id === toolType)?.name;
+        formData.ToolType = toolType;
         formData.specName = specName;
+        formData.user_id = parseInt(localStorage.getItem('user_id') || '-1');
+
+        // set tolerance sheet form data as 1 input
+        let seriesInputArray: any[] = [];
+        seriesInputs?.forEach((e: SeriesInput) => {
+            switch (e.type) {
+                case 'var':
+                    seriesInputArray.push(formData[e.property_name]);
+                    break;
+                case 'cst':
+                    seriesInputArray.push(e.value);
+                    break;
+                default:
+                    seriesInputArray.push(seriesFormData[e.property_name])
+            }
+        });
+        formData.ToolSeriesInputs = seriesInputArray;
+
         await fetch(
             `${apiUrl}/specifications/new`,
             {
@@ -110,13 +157,16 @@ export default function New() {
             }
         )
             .then(res => res.json())
-            .then(res => router.push(`/specifications/details/${res.specification_id}`))
+            .then(res => {
+                if (!stayOnPage) router.push(`/specifications/details/${res.specification_id}`);
+                else setSaveWindowOpen(false);
+            })
     }
 
-    async function copyTool(toolId: number, data: { [k: string]: any }) {
+    async function copyTool(data: { [k: string]: any }) {
         changeCurrentStep(0, true);
         fetch(
-            `${apiUrl}/tool/${toolId}/inputs`,
+            `${apiUrl}/tool/${data.ToolType}/inputs`,
             {
                 method: 'GET',
                 cache: 'no-cache'
@@ -145,7 +195,8 @@ export default function New() {
                 // console.log(data)
                 setFormData(data)
             });
-        setToolType(toolId);
+        setToolType(data.ToolType);
+        changeSeries(data.ToolSeries);
     }
 
     async function changeToolType(e: ToolType) {
@@ -172,27 +223,53 @@ export default function New() {
         setToolType(e.tool_id);
     }
 
-    return (
-        <div className="px-5 py-8 text-neutral w-full">
-            <dialog className={`modal ${saveWindowOpen ? 'modal-open' : ''}`} id="modal">
-                <div className="modal-box p-0">
-                    <div className="w-full h-full p-6">
-                        <h1 className="text-lg mb-4">Name your specification</h1>
-                        <input
-                            type="text"
-                            className="input input-bordered w-full"
-                            value={specName}
-                            onChange={e => setSpecName(e.target.value)}
-                        />
-                    </div>
+    const seriesInput = <ToolSeriesInput
+        key={-1}
+        formData={seriesFormData}
+        setFormData={setSeriesFormData}
+        selectedSeries={selectedSeries}
+        seriesInputsShown={seriesInputsShown}
+        changeSeries={changeSeries}
+        series={series}
+    />
 
-                    <button className="rounded-none btn w-full btn-primary" onClick={saveSpecification}>Create</button>
+    return (
+        <>
+
+            <dialog className={`modal ${saveWindowOpen ? 'modal-open' : ''}`} id="modal">
+
+                <div className="modal-box p-0">
+                    <form onSubmit={e => {
+                        e.preventDefault();
+                        saveSpecification();
+                    }}>
+                        <div className="w-full h-full p-6">
+                            <h1 className="text-lg mb-4">Name your specification</h1>
+                            <input
+                                type="text"
+                                className="input input-bordered w-full"
+                                value={specName}
+                                onChange={e => setSpecName(e.target.value)}
+                            />
+                        </div>
+                        <div className="flex flex-row w-full h-full justify-between flex-grow">
+                            <button className="rounded-none btn w-[50%] btn-primary" type="submit">Create</button>
+                            <button className="rounded-none btn w-[50%] btn-accent" onClick={() => saveSpecification(true)} type="button">Create and stay on this page</button>
+                        </div>
+
+
+                    </form>
+
+
                 </div>
+
 
                 <form method="dialog" className="modal-backdrop">
                     <button onClick={() => setSaveWindowOpen(false)}></button>
                 </form>
             </dialog>
+
+
             {/* <div className={`bg-black opacity-70 ${saveWindowOpen ? 'absolute' : 'hidden'} top-0 left-0 z-50 w-screen h-screen flex justify-center items-center`}>
             <div className="card bg-base-200 absolute z-50">
                 test
@@ -240,6 +317,7 @@ export default function New() {
                                             inputRules={inputRules.filter((inputRule: ToolInputRule) => categoryInputs.some((input: ToolInput) => input.tool_input_id === inputRule.tool_input_id))}
                                             formData={formData}
                                             common={false}
+                                            toolSeriesInput={seriesInput}
                                         />
                                     </SpecificationStep>
                                 )
@@ -249,7 +327,27 @@ export default function New() {
                             toolType === -1 ?
                                 '' :
                                 <>
-                                    {/* TODO: common tool inputs have their own table, so their own starting indices, which creates errors when changing inputs as they are tracked by id */}
+                                    {/* <SpecificationStep
+                                        stepNumber={inputCategories.length + 1}
+                                        header="Specify Tool Series Data"
+                                        enabled={true}
+                                        forceOpen={false}
+                                        defaultChecked={false}
+                                    >
+                                        <SeriesForm
+                                            formData={seriesFormData}
+                                            setFormData={setSeriesFormData}
+                                            seriesInputs={seriesInputs}
+                                            setSeriesInputs={setSeriesInputs}
+                                            selectedSeries={selectedSeries}
+                                            setSelectedSeries={setSelectedSeries}
+                                            seriesInputsShown={seriesInputsShown}
+                                            setSeriesInputsShown={setSeriesInputsShown}
+                                            changeSeries={changeSeries}
+                                            series={series}
+                                            setSeries={setSeries}
+                                        />
+                                    </SpecificationStep> */}
                                     <SpecificationStep
                                         stepNumber={inputCategories.length + 1}
                                         header="Enter Sheet Data"
@@ -283,6 +381,6 @@ export default function New() {
                     </form>
                 </FormProvider>
             </div>
-        </div>
+        </>
     )
 }

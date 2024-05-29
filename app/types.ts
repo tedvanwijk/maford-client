@@ -52,3 +52,34 @@ export interface Specification {
         name: string
     }
 }
+
+export interface User {
+    user_id: number,
+    admin: boolean,
+    active: boolean,
+    name: string
+}
+
+export interface Series {
+    series_id: number,
+    name: string,
+    tool_id: number,
+    flute_count: number,
+    helix_angle: number,
+    tool_series_file_name: string,
+    tool_series_inputs: string[],
+    tool_series_output_range: string,
+    tool_series_input_range: string,
+    tools?: ToolType
+}
+
+export interface SeriesInput {
+    series_input_id: number,
+    series_id: number,
+    name: string,
+    property_name: string,
+    type: string,
+    value: string|null,
+    options: string[],
+    index: number
+}
