@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, FormEvent } from "react";
+import { useEffect, useState, FormEvent, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, FormProvider } from 'react-hook-form';
 import { apiUrl } from "@/lib/api";
@@ -237,7 +237,7 @@ export default function New() {
     />
 
     return (
-        <>
+        <Suspense>
 
             <dialog className={`modal ${saveWindowOpen ? 'modal-open' : ''}`} id="modal">
 
@@ -384,6 +384,6 @@ export default function New() {
                     </form>
                 </FormProvider>
             </div>
-        </>
+        </Suspense>
     )
 }
