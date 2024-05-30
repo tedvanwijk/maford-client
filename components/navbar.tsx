@@ -24,7 +24,7 @@ export default async function Navbar({ children }: { children: React.ReactNode }
                 icon: <List />
             },
             {
-                name: 'Bug Report',
+                name: 'Report Issue',
                 href: '/report',
                 icon: <AlertTriangle />
             },

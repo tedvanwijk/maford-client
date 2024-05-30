@@ -104,7 +104,7 @@ export default async function SpecificationDetails(
             {summary}
             {error}
             <a className="btn btn-primary mr-4" href={`/specifications/new?r=${params.specification_id}`}>Copy</a>
-            <a className="btn" href={`/report?r=${params.specification_id}`}>Send Report</a>
+            <a className="btn" href={`/report?r=${params.specification_id}`}>Report Issue</a>
         </>
     )
 }

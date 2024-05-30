@@ -133,7 +133,10 @@ export default function New() {
         seriesInputs?.forEach((e: SeriesInput) => {
             switch (e.type) {
                 case 'var':
-                    seriesInputArray.push(formData[e.property_name]);
+                    let value = formData[e.property_name];
+                    if (value !== undefined)
+                        if (value.toString().startsWith('.') || value.toString().startsWith(',')) value = `0${value}`
+                    seriesInputArray.push(value);
                     break;
                 case 'cst':
                     seriesInputArray.push(e.value);
