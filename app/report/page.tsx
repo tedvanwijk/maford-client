@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { apiUrl } from "@/lib/api";
 
@@ -45,7 +45,7 @@ export default function Report() {
     }
 
     return (
-        <>
+        <Suspense>
             <h1 className="text-lg font-bold">Bug Report</h1>
 
             <form className="flex flex-col" onSubmit={async e => {
@@ -108,6 +108,6 @@ export default function Report() {
 
                 <button type="submit" className="btn btn-primary mt-4 w-fit">Submit</button>
             </form>
-        </>
+        </Suspense>
     )
 }
