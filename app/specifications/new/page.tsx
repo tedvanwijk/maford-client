@@ -10,7 +10,7 @@ import { ToolInput, InputCategory, ToolInputRule, ToolType, CommonToolInput, Ser
 import SeriesForm from "@/components/seriesForm";
 import ToolSeriesInput from "@/components/toolSeriesInput";
 
-export default function New() {
+function New() {
     // TODO: remove all tool series input stuff. Only the tool series needs to be selected, but no custom inputs need to be generated
     const [tools, setTools]: [ToolType[], Function] = useState([]);
     const [currentStep, setCurrentStep] = useState(0);
@@ -110,7 +110,7 @@ export default function New() {
     }
 
     // TODO: for some reason, some inputs are added to the formData object by default and others only after the input has changed
-    async function saveSpecification(stayOnPage=false) {
+    async function saveSpecification(stayOnPage = false) {
         for (const [key, value] of Object.entries(formData)) {
             if (isNaN(+key)) continue;
             const inputProperty = inputs.filter((e: ToolInput) => e.tool_input_id === parseInt(key))[0].property_name;
@@ -237,7 +237,7 @@ export default function New() {
     />
 
     return (
-        <Suspense>
+        <>
 
             <dialog className={`modal ${saveWindowOpen ? 'modal-open' : ''}`} id="modal">
 
@@ -384,6 +384,14 @@ export default function New() {
                     </form>
                 </FormProvider>
             </div>
+        </>
+    )
+}
+
+export default function Page() {
+    return (
+        <Suspense>
+            <New />
         </Suspense>
     )
 }
