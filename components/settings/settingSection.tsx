@@ -12,7 +12,7 @@ export default function SettingSection(
         header: string
     }
 ) {
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     return (
         <div className="collapse bg-base-200 mb-3">
             <input type="checkbox" checked={open} onChange={(e) => setOpen(e.target.checked)} />

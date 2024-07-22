@@ -93,11 +93,11 @@ export default function SpecificationForm(
             switch (input.type) {
                 case 'decimal':
                     inputElement = <input
-                        {...register(registerId)}
+                        {...register(registerId, {disabled})}
                         type="number"
                         placeholder="Enter value"
                         step="any"
-                        disabled={disabled}
+                        // disabled={disabled}
                         className="input input-bordered w-full"
                         lang="en-US"
                     />
@@ -105,9 +105,9 @@ export default function SpecificationForm(
                     break;
                 case 'toggle':
                     inputElement = <input
-                        {...register(registerId)}
+                        {...register(registerId, {disabled})}
                         type="checkbox"
-                        disabled={disabled}
+                        // disabled={disabled}
                         className="toggle toggle-primary my-auto"
                     />
                     additionalClasses += ' h-[88px]';
@@ -118,7 +118,7 @@ export default function SpecificationForm(
                             <div
                                 className="flex flex-row justify-start align-center pb-2" key={e}>
                                 <input
-                                    {...register(registerId)}
+                                    {...register(registerId, {disabled})}
                                     type='radio'
                                     value={e}
                                     className="radio checked:bg-primary h-full"
@@ -132,10 +132,10 @@ export default function SpecificationForm(
                     break;
                 case 'text':
                     inputElement = <input
-                        {...register(registerId)}
+                        {...register(registerId, {disabled})}
                         type="text"
                         placeholder="Enter value"
-                        disabled={disabled}
+                        // disabled={disabled}
                         className="input input-bordered w-full"
                     />
                     additionalClasses += ' h-[88px]';

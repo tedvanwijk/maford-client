@@ -108,6 +108,7 @@ export default async function Specifications(
 
     return (
         <div className="flex flex-col justify-between">
+            <h1 className="text-xl font-bold mb-4">Specifications</h1>
             {/* <div className="flex flex-row justify-between">
                 <p className="font-bold text-xl">Specifications by user ...</p>
                 <Link href="." className="btn">View all specifications</Link>

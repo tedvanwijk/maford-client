@@ -83,3 +83,9 @@ export interface SeriesInput {
     options: string[],
     index: number
 }
+
+export interface CustomParam {
+    param_id: number,
+    title: string,
+    value: string
+}

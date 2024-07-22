@@ -27,7 +27,7 @@ function New() {
     const [selectedSeries, setSelectedSeries] = useState(-1);
     const [seriesInputsShown, setSeriesInputsShown] = useState<SeriesInput[] | null>(null);
     const [series, setSeries]: [Series[], Function] = useState([]);
-    const formMethods = useForm();
+    const formMethods = useForm({ mode: 'onChange' });
     const router = useRouter();
     const searchParams = useSearchParams();
     const referenceSpecification = searchParams.get('r')
@@ -111,42 +111,50 @@ function New() {
 
     // TODO: for some reason, some inputs are added to the formData object by default and others only after the input has changed
     async function saveSpecification(stayOnPage = false) {
-        for (const [key, value] of Object.entries(formData)) {
+        let formDataCopy = { ...formMethods.getValues() }
+        for (const [key, value] of Object.entries(formDataCopy)) {
             if (isNaN(+key)) continue;
             const inputProperty = inputs.filter((e: ToolInput) => e.tool_input_id === parseInt(key))[0].property_name;
-            formData[inputProperty] = value;
-            delete formData[key];
+            // form-handler gives a value of undefined when an input is disabled. We set it to 0 so the controller does not give an error and the tolerance sheets work properly
+            formDataCopy[inputProperty] = value === undefined ? 0 : value;
+            delete formDataCopy[key];
         }
 
         // formData.ToolSeries = series.find((e: Series) => e.series_id === selectedSeries)?.name;
-        formData.ToolSeries = selectedSeries;
+        formDataCopy.ToolSeries = selectedSeries;
         // TODO: custom LOC and bodylength implementation
-        formData.LOF = formData.LOC;
-        formData.BodyLength = formData.LOC;
+        formDataCopy.LOF = formDataCopy.LOC;
+        formDataCopy.BodyLength = formDataCopy.LOC;
         // formData.ToolType = tools.find((e: ToolType) => e.tool_id === toolType)?.name;
-        formData.ToolType = toolType;
-        formData.specName = specName;
-        formData.user_id = parseInt(localStorage.getItem('user_id') || '-1');
+        formDataCopy.ToolType = toolType;
+        formDataCopy.specName = specName;
+        formDataCopy.user_id = parseInt(localStorage.getItem('user_id') || '-1');
 
         // set tolerance sheet form data as 1 input
         let seriesInputArray: any[] = [];
         seriesInputs?.forEach((e: SeriesInput) => {
+            let value;
             switch (e.type) {
                 case 'var':
-                    let value = formData[e.property_name];
-                    if (value !== undefined)
+                    value = formDataCopy[e.property_name];
+                    if (value !== undefined) {
                         if (value.toString().startsWith('.') || value.toString().startsWith(',')) value = `0${value}`
+                    }
                     seriesInputArray.push(value);
                     break;
                 case 'cst':
                     seriesInputArray.push(e.value);
                     break;
+                case 'toggle':
+                    value = formDataCopy[e.property_name];
+                    // if the toggle is set to true, we push the string in the value column, otherwise just an empty string
+                    if (value !== undefined) value ? seriesInputArray.push(e.value) : seriesInputArray.push('');
+                    break;
                 default:
-                    seriesInputArray.push(seriesFormData[e.property_name])
+                    seriesInputArray.push(formDataCopy[e.property_name])
             }
         });
-        formData.ToolSeriesInputs = seriesInputArray;
-
+        formDataCopy.ToolSeriesInputs = seriesInputArray;
         await fetch(
             `${apiUrl}/specifications/new`,
             {
@@ -156,13 +164,14 @@ function New() {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(formDataCopy)
             }
         )
             .then(res => res.json())
             .then(res => {
                 if (!stayOnPage) router.push(`/specifications/details/${res.specification_id}`);
                 else setSaveWindowOpen(false);
+                formMethods.trigger();
             })
     }
 
@@ -196,8 +205,9 @@ function New() {
                     }
                 }
                 // console.log(data)
-                setFormData(data)
-            });
+                setFormData(data);
+            })
+            .then(() => formMethods.trigger());
         setToolType(data.ToolType);
         changeSeries(data.ToolSeries);
     }
@@ -287,7 +297,7 @@ function New() {
                         onSubmit={formMethods.handleSubmit(handleFormSubmit)}
                         onChange={handleFormChange}
                     >
-                        <SpecificationStep defaultChecked={false} stepNumber={0} header="Choose Tool Type" enabled={currentStep >= 0} forceOpen={true}>
+                        <SpecificationStep defaultChecked={false} stepNumber={0} header="Choose Tool Type" enabled={currentStep >= 0} forceOpen={true} arrowEnabled={false}>
                             <div className="w-full flex flex-row justify-between">
                                 {tools.map((e: ToolType, i) => {
                                     return (
@@ -307,13 +317,14 @@ function New() {
                                 const categoryInputs = inputs.filter((input: ToolInput) => input.tool_id === e.tool_id && input.tool_input_category_id === e.tool_input_category_id);
                                 return (
                                     <SpecificationStep
-                                        defaultChecked={i === 0}
+                                        defaultChecked={i === 0 ? true : false}
                                         stepNumber={i + 1}
                                         header={e.display_title}
                                         // enabled={currentStep >= (i + 1)}
                                         enabled={true}
                                         key={i + 1}
                                         forceOpen={false}
+                                        arrowEnabled={true}
                                     >
                                         <SpecificationForm
                                             inputs={categoryInputs}
@@ -358,6 +369,7 @@ function New() {
                                         enabled={true}
                                         forceOpen={false}
                                         defaultChecked={false}
+                                        arrowEnabled={true}
                                     >
                                         <SpecificationForm
                                             common={true}
@@ -373,6 +385,7 @@ function New() {
                                         enabled={true}
                                         forceOpen={true}
                                         defaultChecked={false}
+                                        arrowEnabled={false}
                                     >
                                         <div className="p-0 flex flex-col items-center">
                                             <button onClick={() => setSaveWindowOpen(true)} type="submit" className="rounded-none btn w-full btn-primary">Create</button>

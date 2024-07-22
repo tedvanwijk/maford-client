@@ -1,4 +1,5 @@
 import { ToolInput } from "@/app/types";
+import { join } from 'path';
 
 export default async function SpecificationDetails(
     { params }:
@@ -60,7 +61,7 @@ export default async function SpecificationDetails(
         for (let i = 0; i < categories.length; i++) {
             const inputsForCategory = inputs.toolInputs.filter(
                 (e: ToolInput) =>
-                    e.tool_input_category_id === categories[i].tool_input_category_id && specData[e.property_name] !== undefined && specData[e.property_name] !== ''
+                    e.tool_input_category_id === categories[i].tool_input_category_id && specData[e.property_name] !== null && specData[e.property_name] !== ''
             );
 
             summary.push(
@@ -97,10 +98,14 @@ export default async function SpecificationDetails(
             </dialog>
 
             <div className="flex flex-row justify-start items-center">
-                <h1 className="font-bold text-xl mr-2">{"Specification " + spec.specification_id}</h1>
+                <h1 className="font-bold text-xl mr-2">{"Specification " + spec.specification_id} {spec.name ? `: ${spec.name}` : ''}  </h1>
                 <div className={`badge ${badgeClasses}`}>{spec.status}</div>
             </div>
-            <h2 className="mb-4">{spec.name}</h2>
+            {
+                spec.status === ('finished' || 'failed') ? 
+                <h2 className="mb-4 mt-1 cursor-help" title="This location cannot be opened directly due to security restrictions in this browser. Instead, navigate to this location manually">{join(specData.outputPath || '', spec.specification_id?.toString() || '')}</h2>
+                : ''
+            }
             {summary}
             {error}
             <a className="btn btn-primary mr-4" href={`/specifications/new?r=${params.specification_id}`}>Copy</a>
