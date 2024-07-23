@@ -89,3 +89,10 @@ export interface CustomParam {
     title: string,
     value: string
 }
+
+export interface Version {
+    version_id: number,
+    version_number: string,
+    changelog: string,
+    active: boolean
+}
