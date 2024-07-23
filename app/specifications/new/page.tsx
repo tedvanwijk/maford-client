@@ -292,6 +292,7 @@ function New() {
 
             {/* <h1 className="font-bold text-xl">New Specification</h1> */}
             <div className="flex flex-col justify-start items-start w-full">
+                <h1 className="font-bold text-xl mb-4">New Specification</h1>
                 <FormProvider {...formMethods}>
                     <form className="w-full"
                         onSubmit={formMethods.handleSubmit(handleFormSubmit)}
