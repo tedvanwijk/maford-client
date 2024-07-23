@@ -27,7 +27,7 @@ export default function EditToolForm(
                             </div>
                         </label>
                         <input
-                            {...register('name', {required: true})}
+                            {...register('name', {required: true, disabled: !enabled})}
                             type="text"
                             placeholder="Enter value"
                             className="input input-bordered w-full"
@@ -40,7 +40,7 @@ export default function EditToolForm(
                             </div>
                         </label>
                         <input
-                            {...register('flute_count', {required: true})}
+                            {...register('flute_count', {required: true, disabled: !enabled})}
                             type="number"
                             placeholder="Enter value"
                             className="input input-bordered w-full"
@@ -57,7 +57,7 @@ export default function EditToolForm(
                             </div>
                         </label>
                         <input
-                            {...register('helix_angle', {required: true})}
+                            {...register('helix_angle', {required: true, disabled: !enabled})}
                             type="number"
                             placeholder="Enter value"
                             className="input input-bordered w-full"
@@ -70,7 +70,7 @@ export default function EditToolForm(
                             </div>
                         </label>
                         <input
-                            {...register('tool_series_file_name', {required: true})}
+                            {...register('tool_series_file_name', {required: true, disabled: !enabled})}
                             type="text"
                             placeholder="Enter value"
                             className="input input-bordered w-full"
@@ -87,7 +87,7 @@ export default function EditToolForm(
                             </div>
                         </label>
                         <input
-                            {...register('tool_series_input_range', {required: true})}
+                            {...register('tool_series_input_range', {required: true, disabled: !enabled})}
                             type="text"
                             placeholder="Enter value"
                             className="input input-bordered w-full"
@@ -100,7 +100,7 @@ export default function EditToolForm(
                             </div>
                         </label>
                         <input
-                            {...register('tool_series_output_range', {required: true})}
+                            {...register('tool_series_output_range', {required: true, disabled: !enabled})}
                             type="text"
                             placeholder="Enter value"
                             className="input input-bordered w-full"

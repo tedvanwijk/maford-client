@@ -80,8 +80,8 @@ export default function EditSeriesInputsTable(
                     </tbody>
                 </table>
                 <div className="flex flex-row justify-start w-full items-center my-4">
-                    <button className="btn btn-primary mr-4" onClick={() => addSeriesInput()}><Plus />Add row</button>
-                    <button className="btn bg-base-100 mr-4" onClick={() => removeSeriesInput()}><X />Remove row</button>
+                    <button type="button" className="btn btn-primary mr-4" onClick={() => addSeriesInput()}><Plus />Add row</button>
+                    <button type="button" className="btn bg-base-100 mr-4" onClick={() => removeSeriesInput()}><X />Remove row</button>
                 </div>
             </div>
         </>

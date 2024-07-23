@@ -4,7 +4,7 @@ import { useState } from "react";
 import { apiUrl } from "@/lib/api";
 import { Check } from "react-feather";
 
-export default function Users() {    
+export default function Users() {
     const [name, setName] = useState('');
     const [button, setButton] = useState(<>Add</>);
 
@@ -18,23 +18,26 @@ export default function Users() {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({name})
+                body: JSON.stringify({ name })
             }
         )
-        .then(res => {
-            if (res.status === 201) {
-                setButton(<>Added<Check /></>);
-                setTimeout(() => setButton(<>Add</>), 3000);
-                setName('');
-            } else {
-                setButton(<>Adding failed</>);
-                setTimeout(() => setButton(<>Add</>), 3000);
-            }
-        })
+            .then(res => {
+                if (res.status === 201) {
+                    setButton(<>Added<Check /></>);
+                    setTimeout(() => setButton(<>Add</>), 3000);
+                    setName('');
+                } else {
+                    setButton(<>Adding failed</>);
+                    setTimeout(() => setButton(<>Add</>), 3000);
+                }
+            })
     }
 
     return (
-        <div className="flex flex-row justify-start items-end">
+        <form onSubmit={e => {
+            e.preventDefault();
+            submit();
+        }} className="flex flex-row justify-start items-end">
             <div className="flex flex-col mb-1">
                 <label className="form-control transition-opacity">
                     <div className="label">
@@ -49,7 +52,8 @@ export default function Users() {
                     onChange={(e) => setName(e.target.value)}
                 />
             </div>
-            <button onClick={() => submit()} className="btn btn-primary ml-4 mb-1">{button}</button>
-        </div>
+            <button className="btn btn-primary ml-4 mb-1">{button}</button>
+        </form>
+
     )
 }

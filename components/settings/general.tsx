@@ -53,20 +53,23 @@ export default function General() {
                 body: JSON.stringify(formData)
             }
         )
-        .then(res => {
-            if (res.status === 200) {
-                setSaveButton(<>Saved<Check /></>);
-                setTimeout(() => setSaveButton(<>Save</>), 3000);
-            } else {
-                setSaveButton(<>Saving failed</>);
-                setTimeout(() => setSaveButton(<>Save</>), 3000);
-            }
-        })
+            .then(res => {
+                if (res.status === 200) {
+                    setSaveButton(<>Saved<Check /></>);
+                    setTimeout(() => setSaveButton(<>Save</>), 3000);
+                } else {
+                    setSaveButton(<>Saving failed</>);
+                    setTimeout(() => setSaveButton(<>Save</>), 3000);
+                }
+            })
     }
 
     return (
         <div>
-            <form onSubmit={e => e.preventDefault()}>
+            <form onSubmit={e => {
+                e.preventDefault();
+                submitChanges();
+            }}>
                 <div className='flex flex-row justify-start items-start'>
 
                     <div className="flex flex-col mb-4 mr-4 w-full">
@@ -131,7 +134,7 @@ export default function General() {
 
                 </div>
 
-                <button onClick={() => submitChanges()} className="btn btn-primary mr-4">{saveButton}</button>
+                <button className="btn btn-primary mr-4">{saveButton}</button>
             </form>
         </div>
     )

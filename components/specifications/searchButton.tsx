@@ -18,7 +18,7 @@ export default function SearchButton({
     }
 
     return (
-        <form action="submit" className="flex flex-row justify-end items-center" onSubmit={handleSubmit}>
+        <form className="flex flex-row justify-end items-center" onSubmit={handleSubmit}>
             <input onChange={e => setSearchTerm(e.target.value)} value={searchTerm} type="text" placeholder="Search specification name" className="input input-bordered w-full bg-secondary bg-opacity-50" />
             <Link href={`/specifications/${0}?u=${u}&r=${r}&s=${searchTerm}`} className="btn btn-primary ml-4">Search</Link>
         </form>

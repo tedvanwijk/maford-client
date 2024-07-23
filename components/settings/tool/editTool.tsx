@@ -2,10 +2,11 @@
 
 import { Series, SeriesInput, ToolType } from "@/app/types";
 import { apiUrl } from "@/lib/api";
-import { useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { ChevronDown, Check } from "react-feather";
 import { useForm, FormProvider } from "react-hook-form";
 import EditToolForm from "./editToolForm";
+import { MouseEvent } from "react";
 
 export default function EditTool() {
     const [series, setSeries]: [Series[], Function] = useState([]);
@@ -192,7 +193,10 @@ export default function EditTool() {
 
     return (
         <div className="">
-            <form onSubmit={e => e.preventDefault()} className="flex flex-col">
+            <form onSubmit={(e: any) => {
+                e.preventDefault();
+                submitChanges();
+            }} className="flex flex-col">
                 <div className="flex flex-row justify-start items-start mb-2">
 
                     <details className={`dropdown mr-4`} ref={toolTypeDropdown}>
@@ -203,7 +207,7 @@ export default function EditTool() {
                             {
                                 toolTypes.map((e: ToolType) =>
                                     <li key={e.tool_id}>
-                                        <button onClick={(ee) => changeToolType(e, ee)}>{e.name}</button>
+                                        <button type="button" onClick={(ee) => changeToolType(e, ee)}>{e.name}</button>
                                     </li>
                                 )
                             }
@@ -218,7 +222,7 @@ export default function EditTool() {
                             {
                                 series.map((e: Series) =>
                                     <li key={e.series_id}>
-                                        <button onClick={(ee) => changeSeries(e, ee)}>{e.name}</button>
+                                        <button type="button" onClick={(ee) => changeSeries(e, ee)}>{e.name}</button>
                                     </li>
                                 )
                             }
@@ -240,7 +244,7 @@ export default function EditTool() {
                 <hr className="mt-2 border-neutral" />
 
                 <div className="flex flex-row mt-4">
-                    <button onClick={() => submitChanges()} disabled={selectedSeries === null} className={`${selectedSeries === null ? 'opacity-30 pointer-events-none' : ''} btn btn-primary mr-4`}>{applyButton}</button>
+                    <button type="submit" disabled={selectedSeries === null} className={`${selectedSeries === null ? 'opacity-30 pointer-events-none' : ''} btn btn-primary mr-4`}>{applyButton}</button>
                 </div>
 
             </form>
