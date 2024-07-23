@@ -10,6 +10,7 @@ export default function UserDropdown({ users }: { users: User[] }) {
         window.localStorage.setItem('user_id', userId.toString());
         setUserId(userId.toString());
         event.target.blur();
+        window.location.reload();
     }
 
     useEffect(() => {

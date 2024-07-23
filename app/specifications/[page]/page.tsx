@@ -1,20 +1,25 @@
 import Link from "next/link";
 
 import { Specification } from "@/app/types";
+import SearchButton from '@/components/specifications/searchButton';
 
 export default async function Specifications(
-    { params }:
-        { params: { page: string } }
+    {
+        params, searchParams
+    }:
+        {
+            params: { page: string },
+            searchParams: { u: string, r: string, s: string }
+        }
 ) {
     const { specs, pages } = await fetch(
-        `${process.env.API_URL}/specifications?page=${params.page}`,
+        `${process.env.API_URL}/specifications?p=${params.page}&u=${searchParams.u}&s=${searchParams.s}`,
         {
             method: "GET",
             cache: "no-cache"
         }
     ).then(res => res.json());
     const pageArray = Array.from(Array(pages).keys());
-
     function generatePagination() {
         const pageLimit = 5;
         const currentPage = parseInt(params.page);
@@ -25,7 +30,7 @@ export default async function Specifications(
                 return (
                     <Link
                         className={`min-w-[3rem] btn mx-1 ${active ? 'bg-primary text-base-100' : ''}`}
-                        href={`/specifications/${e}`}
+                        href={`/specifications/${e}?u=${searchParams.u}&r=${searchParams.r}&s=${searchParams.s}`}
                         key={e}
                     >
                         {e + 1}
@@ -54,7 +59,7 @@ export default async function Specifications(
             pageElements.push(
                 <Link
                     className={`min-w-[3rem] btn mx-1 ${active ? 'bg-primary text-base-100' : ''}`}
-                    href={`/specifications/${i}`}
+                    href={`/specifications/${i}?u=${searchParams.u}&r=${searchParams.r}&s=${searchParams.s}`}
                     key={i}
                 >
                     {i + 1}
@@ -74,7 +79,7 @@ export default async function Specifications(
             pageElements.unshift(
                 <Link
                     className={`min-w-[3rem] btn mx-1`}
-                    href={`/specifications/${0}`}
+                    href={`/specifications/${0}?u=${searchParams.u}&r=${searchParams.r}&s=${searchParams.s}`}
                     key={0}
                 >
                     {1}
@@ -94,7 +99,7 @@ export default async function Specifications(
             pageElements.push(
                 <Link
                     className={`min-w-[3rem] btn mx-1`}
-                    href={`/specifications/${pages - 1}`}
+                    href={`/specifications/${pages - 1}?u=${searchParams.u}&r=${searchParams.r}&s=${searchParams.s}`}
                     key={pages - 1}
                 >
                     {pages}
@@ -108,12 +113,22 @@ export default async function Specifications(
 
     return (
         <div className="flex flex-col justify-between">
-            <h1 className="text-xl font-bold mb-4">Specifications</h1>
-            {/* <div className="flex flex-row justify-between">
-                <p className="font-bold text-xl">Specifications by user ...</p>
-                <Link href="." className="btn">View all specifications</Link>
-            </div> */}
-            
+            <div className="flex flex-row justify-between items-center mb-4">
+                <div className="flex flex-row justify-start items-center">
+                    <h1 className="text-xl font-bold">{(searchParams.u === 'null' || searchParams.u === '-1') ? 'All' : `Your`} specifications</h1>
+                    {
+                        (searchParams.u === 'null' || searchParams.u === '-1') ?
+                            <Link href={`/specifications/${params.page}?u=${searchParams.r}&r=${searchParams.r}&s=${searchParams.s}`} className="btn ml-4">View your specifications</Link> :
+                            <Link href={`/specifications/${params.page}?u=null&r=${searchParams.r}&s=${searchParams.s}`} className="btn ml-4">View all specifications</Link>
+                    }
+
+                </div>
+                <SearchButton p={params.page} u={searchParams.u} r={searchParams.r} s={searchParams.s} />
+            </div>
+
+
+
+
             <table className="table table-zebra">
                 <thead>
                     <tr>

@@ -1,6 +1,7 @@
 import { Home, List, PlusCircle, Settings, AlertTriangle } from "react-feather";
 import Link from "next/link";
 import UserDropdown from "./userDropdown";
+import SpecificationLink from './navbar/specificationLink';
 
 export default async function Navbar({ children }: { children: React.ReactNode }) {
     const pages: {
@@ -57,16 +58,16 @@ export default async function Navbar({ children }: { children: React.ReactNode }
                         className="w-64" />
                     <h1 className="my-5 px-4 text-center font-bold text-xl">M.A. Ford Tool Generator</h1>
                     <ul className="menu text-center w-full p-0">
-                        {pages.map((e: any) => {
-                            return (
+                        {pages.map((e: any) =>
+                            e.name === 'Specifications' ?
+                                <SpecificationLink /> :
                                 <li className="w-full font-bold stroke-2 my-1" key={e.name}>
                                     <Link href={e.href} className="flex flex-row justify-between w-full text-lg m-0">
                                         <h1>{e.name}</h1>
                                         {e.icon}
                                     </Link>
                                 </li>
-                            );
-                        })}
+                        )}
                     </ul>
                 </div>
                 <div className="w-full flex flex-row px-4">
