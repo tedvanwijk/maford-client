@@ -118,8 +118,8 @@ export default async function Specifications(
                     <h1 className="text-xl font-bold">{(searchParams.u === 'null' || searchParams.u === '-1') ? 'All' : `Your`} specifications</h1>
                     {
                         (searchParams.u === 'null' || searchParams.u === '-1') ?
-                            <Link href={`/specifications/${params.page}?u=${searchParams.r}&r=${searchParams.r}&s=${searchParams.s}`} className="btn ml-4">View your specifications</Link> :
-                            <Link href={`/specifications/${params.page}?u=null&r=${searchParams.r}&s=${searchParams.s}`} className="btn ml-4">View all specifications</Link>
+                            <Link href={`/specifications/${0}?u=${searchParams.r}&r=${searchParams.r}&s=${searchParams.s}`} className="btn ml-4">View your specifications</Link> :
+                            <Link href={`/specifications/${0}?u=null&r=${searchParams.r}&s=${searchParams.s}`} className="btn ml-4">View all specifications</Link>
                     }
 
                 </div>
