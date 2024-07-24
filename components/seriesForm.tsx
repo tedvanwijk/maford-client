@@ -101,11 +101,11 @@ export default function SeriesForm(
                             inputElement = <input
                                 type="checkbox"
                                 className="toggle toggle-primary my-auto"
-                                checked={formData[e.property_name]}
-                                value={formData[e.property_name]}
+                                checked={formData[e.name]}
+                                value={formData[e.name]}
                                 onChange={(ee) => setFormData((oldData: { [k: string]: any }) => ({
                                     ...oldData,
-                                    [e.property_name]: ee.target.checked
+                                    [e.name]: ee.target.checked
                                 }))}
                             />
                             additionalClasses += ' h-[88px]'

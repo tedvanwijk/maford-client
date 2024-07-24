@@ -100,7 +100,7 @@ function New() {
                 seriesInputsShown.forEach((e: SeriesInput) => {
                     switch (e.type) {
                         case 'toggle':
-                            formData[e.property_name] = false
+                            formData[e.name] = false
                     }
                 });
                 setSeriesFormData(formData);
@@ -136,7 +136,7 @@ function New() {
             let value;
             switch (e.type) {
                 case 'var':
-                    value = formDataCopy[e.property_name];
+                    value = formDataCopy[e.name];
                     if (value !== undefined) {
                         if (value.toString().startsWith('.') || value.toString().startsWith(',')) value = `0${value}`
                     }
@@ -146,12 +146,12 @@ function New() {
                     seriesInputArray.push(e.value);
                     break;
                 case 'toggle':
-                    value = formDataCopy[e.property_name];
+                    value = formDataCopy[e.name];
                     // if the toggle is set to true, we push the string in the value column, otherwise just an empty string
                     if (value !== undefined) value ? seriesInputArray.push(e.value) : seriesInputArray.push('');
                     break;
                 default:
-                    seriesInputArray.push(formDataCopy[e.property_name])
+                    seriesInputArray.push(formDataCopy[e.name])
             }
         });
         formDataCopy.ToolSeriesInputs = seriesInputArray;

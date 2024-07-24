@@ -124,7 +124,6 @@ export default function EditTool() {
         const newSeriesInput = {
             index: newIndex,
             name: '',
-            property_name: '',
             series_id: selectedSeries?.series_id,
             type: 'cst',
             value: ''
