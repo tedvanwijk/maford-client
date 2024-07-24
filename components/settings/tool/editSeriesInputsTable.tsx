@@ -20,7 +20,7 @@ export default function EditSeriesInputsTable(
         }
     }
 ) {
-    const { register, watch, setValue, unregister, resetField } = useFormContext();
+    const { register, watch, setValue } = useFormContext();
     if (!enabled) return <></>
     else return (
         <>
