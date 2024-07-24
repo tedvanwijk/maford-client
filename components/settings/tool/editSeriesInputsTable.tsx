@@ -1,4 +1,4 @@
-import { SeriesInput } from "@/app/types";
+import { SeriesInput, ToolInput } from "@/app/types";
 import { useFormContext } from 'react-hook-form';
 import { Plus, X } from "react-feather";
 
@@ -7,15 +7,20 @@ export default function EditSeriesInputsTable(
         seriesInputs,
         enabled,
         addSeriesInput,
-        removeSeriesInput
+        removeSeriesInput,
+        toolTypeInputs
     }: {
         seriesInputs: SeriesInput[],
         enabled: boolean,
         addSeriesInput: Function,
-        removeSeriesInput: Function
+        removeSeriesInput: Function,
+        toolTypeInputs: {
+            decimalInputs: ToolInput[],
+            toggleInputs: ToolInput[]
+        }
     }
 ) {
-    const { register, watch } = useFormContext();
+    const { register, watch, setValue, unregister, resetField } = useFormContext();
     if (!enabled) return <></>
     else return (
         <>
@@ -27,8 +32,8 @@ export default function EditSeriesInputsTable(
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Name</th>
-                            <th>Property Name</th>
+                            <th>Name/Input</th>
+                            {/* <th>Property Name</th> */}
                             <th>Type</th>
                             <th>Value</th>
                         </tr>
@@ -36,30 +41,57 @@ export default function EditSeriesInputsTable(
                     <tbody>
                         {
                             seriesInputs.map((e: SeriesInput, i: number) => {
-                                // console.log(watch(`${e.index}__type`))
                                 const type = watch(`${e.index}__type`, '');
+
+                                let nameInput: React.ReactNode;
+                                if (type === 'var') {
+                                    nameInput =
+                                        <td>
+                                            <select
+                                                className="bg-base-100 p-1 w-full h-full"
+                                                {...register(`${e.index}__name`, { required: true })}
+                                            >
+                                                {
+                                                    toolTypeInputs.decimalInputs.map(e => <option key={e.property_name} value={e.property_name}>{e.client_name}</option>)
+                                                }
+                                                <option value="" disabled hidden>Choose input</option>
+                                            </select>
+                                        </td>
+                                        // setValue(`${e.index}__name`, toolTypeInputs.decimalInputs[0].property_name)
+                                } else if (type === 'toggle') {
+                                    nameInput = 
+                                    <td>
+                                        <select
+                                            className="bg-base-100 p-1 w-full h-full"
+                                            {...register(`${e.index}__name`, { required: true })}
+                                        >
+                                            {
+                                                toolTypeInputs.toggleInputs.map(e => <option key={e.property_name} value={e.property_name}>{e.client_name}</option>)
+                                            }
+                                            <option value="" disabled hidden>Choose input</option>
+                                        </select>
+                                    </td>
+                                } else {
+                                    nameInput = 
+                                    <td className="border border-slate-400">
+                                        <input
+                                            className="bg-base-100 p-1 w-full h-full"
+                                            type="text"
+                                            {...register(`${e.index}__name`, { required: true })}
+                                        />
+                                    </td>
+                                }
+
+
                                 return (
                                     <tr key={e.index}>
                                         <td className='font-bold'>{e.index + 1}</td>
-                                        <td className="border border-slate-400">
-                                            <input
-                                                className="bg-base-100 p-1 w-full h-full"
-                                                type="text"
-                                                {...register(`${e.index}__name`, {required: true})}
-                                            />
-                                        </td>
-                                        <td className="border border-slate-400">
-                                            <input
-                                                className={`${type === 'cst' ? 'opacity-5' : ''} bg-base-100 p-1 w-full h-full`}
-                                                type="text"
-                                                {...register(`${e.index}__property_name`, {required: type !== 'cst'})}
-                                            />
-                                        </td>
+                                        {nameInput}
                                         <td className="border border-slate-400">
                                             <select
                                                 className="bg-base-100 p-1 w-full h-full"
                                                 // type="text"
-                                                {...register(`${e.index}__type`, {required: true})}
+                                                {...register(`${e.index}__type`, { required: true, onChange: () =>  setValue(`${e.index}__name`, '')})}
                                             >
                                                 <option value="cst">Constant</option>
                                                 <option value="var">Variable</option>
@@ -70,7 +102,7 @@ export default function EditSeriesInputsTable(
                                             <input
                                                 className={`${type === 'var' ? 'opacity-5' : ''} bg-base-100 p-1 w-full h-full`}
                                                 type="text"
-                                                {...register(`${e.index}__value`, {required: type !== 'var'})}
+                                                {...register(`${e.index}__value`, { required: type !== 'var' })}
                                             />
                                         </td>
                                     </tr>

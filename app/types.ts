@@ -77,7 +77,6 @@ export interface SeriesInput {
     series_input_id: number,
     series_id: number,
     name: string,
-    property_name: string,
     type: string,
     value: string|null,
     options: string[],

@@ -1,18 +1,23 @@
 'use client'
 
-import { Series, SeriesInput, ToolType } from "@/app/types";
+import { Series, SeriesInput, ToolType, ToolInput } from "@/app/types";
 import { apiUrl } from "@/lib/api";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Check } from "react-feather";
 import { useForm, FormProvider } from "react-hook-form";
 import EditToolForm from "./editToolForm";
-import { MouseEvent } from "react";
+
+interface toolTypeInput {
+    decimalInputs: ToolInput[],
+    toggleInputs: ToolInput[]
+};
 
 export default function EditTool() {
     const [series, setSeries]: [Series[], Function] = useState([]);
     const [selectedSeries, setSelectedSeries] = useState<Series | null>(null);
     const [toolTypes, setToolTypes]: [ToolType[], Function] = useState([]);
     const [selectedToolType, setSelectedToolType] = useState<ToolType | null>(null);
+    const [toolTypeInputs, setToolTypeInputs] = useState<toolTypeInput>();
     const [seriesInputs, setSeriesInputs]: [SeriesInput[], Function] = useState([]);
     const [oldSeriesInputLength, setOldSeriesInputLength] = useState(0);
     const [newMode, setNewMode] = useState(false);
@@ -50,6 +55,16 @@ export default function EditTool() {
                 setSeries(res);
                 setSelectedSeries(null);
             });
+
+        fetch(
+            `${apiUrl}/tools/${toolType.tool_id}/inputs/by_type`,
+            {
+                method: 'GET',
+                cache: 'no-cache'
+            }
+        )
+        .then(res => res.json())
+        .then(res => setToolTypeInputs(res));
         formMethods.reset();
         toolTypeDropdown.current.open = false;
     }
@@ -93,7 +108,7 @@ export default function EditTool() {
         formMethods.setValue('tool_series_output_range', series.tool_series_output_range);
 
         type seriesInputColumnType = keyof SeriesInput;
-        const seriesInputColumns: seriesInputColumnType[] = ['name', 'property_name', 'type', 'value'];
+        const seriesInputColumns: seriesInputColumnType[] = ['name', 'type', 'value'];
         for (let i = 0; i < seriesInputs.length; i++) {
             const input = seriesInputs[i];
             for (let column = 0; column < seriesInputColumns.length; column++) {
@@ -123,7 +138,7 @@ export default function EditTool() {
         const removedInput = seriesInputsCopy.pop() as SeriesInput;
         const removedIndex = removedInput.index;
         type seriesInputColumnType = keyof SeriesInput;
-        const seriesInputColumns: seriesInputColumnType[] = ['name', 'property_name', 'type', 'value'];
+        const seriesInputColumns: seriesInputColumnType[] = ['name', 'type', 'value'];
         for (let column = 0; column < seriesInputColumns.length; column++) {
             formMethods.unregister(`${removedIndex}__${seriesInputColumns[column]}`)
         }
@@ -133,6 +148,7 @@ export default function EditTool() {
     function submitChanges() {
         // TODO: error checking + loading screen
         const formData = formMethods.getValues();
+
         if (newMode) {
             fetch(
                 `${apiUrl}/series/${selectedToolType?.tool_id}/new`,
@@ -238,6 +254,7 @@ export default function EditTool() {
                         seriesInputs={seriesInputs}
                         addSeriesInput={addSeriesInput}
                         removeSeriesInput={removeSeriesInput}
+                        toolTypeInputs={toolTypeInputs as toolTypeInput}
                     />
                 </FormProvider>
 

@@ -1,4 +1,4 @@
-import { SeriesInput } from '@/app/types';
+import { SeriesInput, ToolInput } from '@/app/types';
 import { useFormContext } from 'react-hook-form';
 import EditSeriesInputsTable from './editSeriesInputsTable';
 
@@ -7,12 +7,17 @@ export default function EditToolForm(
         enabled,
         seriesInputs,
         addSeriesInput,
-        removeSeriesInput
+        removeSeriesInput,
+        toolTypeInputs
     }: {
         enabled: boolean,
         seriesInputs: SeriesInput[],
         addSeriesInput: Function,
-        removeSeriesInput: Function
+        removeSeriesInput: Function,
+        toolTypeInputs: {
+            decimalInputs: ToolInput[],
+            toggleInputs: ToolInput[]
+        }
     }
 ) {
     const { register } = useFormContext();
@@ -113,6 +118,7 @@ export default function EditToolForm(
                 enabled={enabled}
                 addSeriesInput={addSeriesInput}
                 removeSeriesInput={removeSeriesInput}
+                toolTypeInputs={toolTypeInputs}
             />
         </div>
     )
