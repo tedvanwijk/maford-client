@@ -46,10 +46,18 @@ function Report() {
 
     return (
         <>
-            <h1 className="text-lg font-bold">Bug Report</h1>
+            <h1 className="text-lg font-bold">Report Issue</h1>
+            {
+                referenceSpecification === null ?
+                    <h1>Note: For issues related to a specification, please click the "Report Issue" button on the details page for that specification.</h1> :
+                    ''
+            }
+
+
 
             <form className="flex flex-col" onSubmit={async e => {
                 e.preventDefault();
+                const user_id = window.localStorage.getItem('user_id') || '';
                 await fetch(
                     `${apiUrl}/reports/new`,
                     {
@@ -63,12 +71,11 @@ function Report() {
                             summary,
                             description,
                             specification_id: referenceSpecification,
-                            // TODO: user stuff
-                            user_id: 0
+                            user_id: user_id
                         })
                     }
                 )
-                .then(res => router.push('/'));
+                    .then(res => router.push('/'));
             }}>
                 {
                     referenceSpecification ?
@@ -113,7 +120,7 @@ function Report() {
 }
 
 export default function Page() {
-    return(
+    return (
         <Suspense>
             <Report />
         </Suspense>
