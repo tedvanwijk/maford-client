@@ -50,6 +50,9 @@ export interface Specification {
         user_id: number,
         admin: boolean,
         name: string
+    },
+    versions: {
+        active: boolean
     }
 }
 
