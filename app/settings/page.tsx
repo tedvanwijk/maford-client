@@ -13,7 +13,7 @@ export default function Settings() {
             <SettingSection header="Add/Edit Tool Series">
                 <EditTool />
             </SettingSection>
-            <SettingSection header="Add User">
+            <SettingSection header="Add/Remove User">
                 <Users />
             </SettingSection>
         </>
