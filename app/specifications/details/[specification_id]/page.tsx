@@ -22,20 +22,17 @@ export default async function SpecificationDetails(
     ).then(res => res.json());
 
     let badgeClasses = '';
-    let summary: React.ReactNode;
+    let summary = generateSummary();
     let error: React.ReactNode;
     switch (spec.status) {
         case 'finished':
             badgeClasses = 'bg-primary text-base-100';
-            summary = generateSummary();
             break;
         case 'generating':
             badgeClasses = 'bg-accent';
-            summary = generateSummary();
             break;
         case 'failed':
             badgeClasses = 'bg-red-700 text-base-100'
-            summary = generateSummary();
             error = generateErrorContent();
             break;
     }
