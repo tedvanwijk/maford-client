@@ -122,10 +122,15 @@ function New() {
 
         // formData.ToolSeries = series.find((e: Series) => e.series_id === selectedSeries)?.name;
         formDataCopy.ToolSeries = selectedSeries;
-        // TODO: custom LOC and bodylength implementation
-        formDataCopy.LOF = formDataCopy.LOC;
-        formDataCopy.BodyLength = formDataCopy.LOC;
-        // formData.ToolType = tools.find((e: ToolType) => e.tool_id === toolType)?.name;
+
+        if (toolType === 0) {
+            // End mill
+            formDataCopy.LOF = formDataCopy.LOC;
+        } else if (toolType === 1) {
+            // Drill
+            formDataCopy.LOC = formDataCopy.LOF;
+        }
+
         formDataCopy.ToolType = toolType;
         formDataCopy.specName = specName;
         formDataCopy.user_id = parseInt(localStorage.getItem('user_id') || '-1');

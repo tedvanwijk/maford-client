@@ -54,8 +54,8 @@ export default function SpecificationForm(
                             additionalClasses = dependencyValue1 ? '' : 'opacity-30';
                             break;
                         case 'disabled':
-                            check = dependencyValue1
-                            disabled = check;
+                            check = dependencyValue1;
+                            disabled = Boolean(check);
                             additionalClasses = dependencyValue1 ? 'opacity-30' : '';
                             break;
                         case 'greater_than':
@@ -74,7 +74,8 @@ export default function SpecificationForm(
                             if (rule.tool_input_dependency_id_2 === null) check = dependencyValue1 === rule.check_value;
                             else check = dependencyValue1 === dependencyValue2;
                             disabled = !check;
-                            additionalClasses = check ? '' : 'opacity-30'
+                            additionalClasses = check ? '' : 'opacity-30';
+                            break;
                     }
 
                     if (check && rule.disable) {
