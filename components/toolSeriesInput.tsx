@@ -37,7 +37,7 @@ export default function ToolSeriesInput(
                                 <button className="z-[100]" onClick={(ee) => {
                                     changeSeries(e.series_id);
                                     dropdown.current.open = false;
-                                }}>{e.tools?.name}: {e.name}</button>
+                                }}>{e.name}</button>
                             </li>
                         )
                     }

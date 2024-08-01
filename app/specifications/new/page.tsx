@@ -41,15 +41,6 @@ function New() {
         )
             .then(res => res.json())
             .then(res => setTools(res));
-        fetch(
-            `${apiUrl}/series`,
-            {
-                method: 'GET',
-                cache: 'no-cache'
-            }
-        )
-            .then(res => res.json())
-            .then(res => setSeries(res));
         if (referenceSpecification !== null) {
             fetch(
                 `${apiUrl}/specification/${referenceSpecification}`,
@@ -183,36 +174,48 @@ function New() {
     async function copyTool(data: { [k: string]: any }) {
         changeCurrentStep(0, true);
         fetch(
-            `${apiUrl}/tool/${data.ToolType}/inputs`,
+            `${apiUrl}/series/tool_id/${data.ToolType}`,
             {
                 method: 'GET',
                 cache: 'no-cache'
             }
         )
             .then(res => res.json())
-            .then(res => {
-                setInputs(res.toolInputs);
-                setInputCategories(res.toolCategories);
-                setInputRules(res.toolInputRules);
-                setCommonInputs(res.commonToolInputs);
-                for (const [key, value] of Object.entries(data)) {
-                    const inputProperties = res.toolInputs.filter((e: ToolInput) => e.property_name === key);
-                    const commonInputProperties = res.commonToolInputs.filter((e: ToolInput) => e.property_name === key);
-                    if (inputProperties.length === 0 && commonInputProperties.length === 0) {
-                        delete data[key];
-                        continue;
-                    } else if (inputProperties.length === 0) {
-                        formMethods.setValue(commonInputProperties[0].property_name, value);
-                    } else {
-                        formMethods.setValue(inputProperties[0].tool_input_id.toString(), value);
-                        data[inputProperties[0].tool_input_id.toString()] = value;
-                        delete data[key];
+            .then(res => setSeries(res))
+            .then(() => {
+                fetch(
+                    `${apiUrl}/tool/${data.ToolType}/inputs`,
+                    {
+                        method: 'GET',
+                        cache: 'no-cache'
                     }
-                }
-                // console.log(data)
-                setFormData(data);
-            })
-            .then(() => formMethods.trigger());
+                )
+                    .then(res => res.json())
+                    .then(res => {
+                        setInputs(res.toolInputs);
+                        setInputCategories(res.toolCategories);
+                        setInputRules(res.toolInputRules);
+                        setCommonInputs(res.commonToolInputs);
+                        for (const [key, value] of Object.entries(data)) {
+                            const inputProperties = res.toolInputs.filter((e: ToolInput) => e.property_name === key);
+                            const commonInputProperties = res.commonToolInputs.filter((e: ToolInput) => e.property_name === key);
+                            if (inputProperties.length === 0 && commonInputProperties.length === 0) {
+                                delete data[key];
+                                continue;
+                            } else if (inputProperties.length === 0) {
+                                formMethods.setValue(commonInputProperties[0].property_name, value);
+                            } else {
+                                formMethods.setValue(inputProperties[0].tool_input_id.toString(), value);
+                                data[inputProperties[0].tool_input_id.toString()] = value;
+                                delete data[key];
+                            }
+                        }
+                        // console.log(data)
+                        setFormData(data);
+                    })
+                    .then(() => formMethods.trigger());
+            });
+
         setToolType(data.ToolType);
         changeSeries(data.ToolSeries);
     }
@@ -238,6 +241,15 @@ function New() {
                 setInputRules(res.toolInputRules);
                 setCommonInputs(res.commonToolInputs);
             });
+        fetch(
+            `${apiUrl}/series/tool_id/${e.tool_id}`,
+            {
+                method: 'GET',
+                cache: 'no-cache'
+            }
+        )
+            .then(res => res.json())
+            .then(res => setSeries(res));
         setToolType(e.tool_id);
     }
 
