@@ -1,4 +1,5 @@
 import { ToolInput } from "@/app/types";
+import { AlertCircle } from "react-feather";
 import { join } from 'path';
 
 export default async function SpecificationDetails(
@@ -64,7 +65,7 @@ export default async function SpecificationDetails(
             summary.push(
                 <div className="flex flex-col w-[250px] mr-4" key={categories[i].tool_input_category_id}>
                     {inputsForCategory.map((e: ToolInput) => {
-                        if (specData[e.property_name] === undefined) return(<></>)
+                        if (specData[e.property_name] === undefined) return (<></>)
                         return (
                             <div className="flex flex-row justify-between" key={e.tool_input_id}>
                                 <p>{e.client_name}:</p>
@@ -97,12 +98,18 @@ export default async function SpecificationDetails(
 
             <div className="flex flex-row justify-start items-center">
                 <h1 className="font-bold text-xl mr-2">{"Specification " + spec.specification_id}{spec.name ? `: ${spec.name}` : ''}  </h1>
+
                 <div className={`badge ${badgeClasses}`}>{spec.status}</div>
             </div>
             {
-                spec.status === ('finished' || 'failed') ? 
-                <h2 className="mb-4 mt-1 cursor-help" title="This location cannot be opened directly due to security restrictions in this browser. Instead, navigate to this location manually">{join(specData.outputPath || '', spec.specification_id?.toString() || '')}</h2>
-                : ''
+                spec.versions.active ?
+                    '' :
+                    <h1 className="flex flex-row justify-start items-center my-2"> <AlertCircle className="mr-2" />This specification was created using an older version. Some of the information below might be incorrect and copying might not work as expected.</h1>
+            }
+            {
+                spec.status === ('finished' || 'failed') ?
+                    <h2 className="mb-4 mt-1 cursor-help" title="This location cannot be opened directly due to security restrictions in this browser. Instead, navigate to this location manually">{join(specData.outputPath || '', spec.specification_id?.toString() || '')}</h2>
+                    : ''
             }
             {summary}
             {error}
