@@ -64,6 +64,7 @@ export default async function SpecificationDetails(
             summary.push(
                 <div className="flex flex-col w-[250px] mr-4" key={categories[i].tool_input_category_id}>
                     {inputsForCategory.map((e: ToolInput) => {
+                        if (specData[e.property_name] === undefined) return(<></>)
                         return (
                             <div className="flex flex-row justify-between" key={e.tool_input_id}>
                                 <p>{e.client_name}:</p>
