@@ -135,6 +135,7 @@ export default async function Specifications(
                     <tr>
                         <th></th>
                         <th>User</th>
+                        <th>Tool</th>
                         <th>Name</th>
                         <th>Status</th>
                     </tr>
@@ -165,6 +166,7 @@ export default async function Specifications(
 
                                     </td>
                                     <td>{e.users.name}</td>
+                                    <td>{e.tools.name}</td>
                                     <td>{e.name}</td>
                                     <td>
                                         <div className={`badge ${badgeClasses}`}>

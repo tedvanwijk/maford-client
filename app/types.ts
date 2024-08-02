@@ -53,6 +53,9 @@ export interface Specification {
     },
     versions: {
         active: boolean
+    },
+    tools: {
+        name: string
     }
 }
 
