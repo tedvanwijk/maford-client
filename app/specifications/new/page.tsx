@@ -57,7 +57,7 @@ function New() {
                     copyTool(JSON.parse(res.data))
                 });
         }
-    }, []);
+    });
 
     function changeCurrentStep(stepEdited: number, reset = false) {
         if (reset) setCurrentStep(stepEdited + 1);
