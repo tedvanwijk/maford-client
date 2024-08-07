@@ -60,7 +60,7 @@ export default async function Navbar({ children }: { children: React.ReactNode }
                     <ul className="menu text-center w-full p-0">
                         {pages.map((e: any) =>
                             e.name === 'Specifications' ?
-                                <SpecificationLink /> :
+                                <SpecificationLink key={e.name} /> :
                                 <li className="w-full font-bold stroke-2 my-1" key={e.name}>
                                     <Link href={e.href} className="flex flex-row justify-between w-full text-lg m-0">
                                         <h1>{e.name}</h1>

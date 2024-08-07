@@ -49,7 +49,7 @@ function Report() {
             <h1 className="text-lg font-bold">Report Issue</h1>
             {
                 referenceSpecification === null ?
-                    <h1>Note: For issues related to a specification, please click the "Report Issue" button on the details page for that specification.</h1> :
+                    <h1>Note: For issues related to a specification, please click the &quot;Report Issue&quot; button on the details page for that specification.</h1> :
                     ''
             }
 

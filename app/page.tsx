@@ -16,7 +16,7 @@ export default async function Home() {
       <div className='w-full bg-secondary bg-opacity-50 rounded-md p-2 h-full overflow-auto flex flex-col'>
         {
           versions.map((e: Version) => (
-            <div className='mb-4'>
+            <div className='mb-4' key={e.version_id}>
               <span className='font-bold'>[{e.version_number}]</span> <br />
               <span className='whitespace-pre-wrap'>{e.changelog}</span>
             </div>
