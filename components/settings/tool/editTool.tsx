@@ -75,7 +75,6 @@ export default function EditTool() {
             if (!disableButtonUpdate) setApplyButton(<>Create</>);
             setSelectedSeries(series);
             setSeriesInputs([]);
-            formMethods.reset();
             toolSeriesDropdown.current.open = false;
             return;
         }
@@ -95,7 +94,6 @@ export default function EditTool() {
                 setDefaultValues(series, res);
                 setOldSeriesInputLength(res.length);
             });
-        formMethods.reset();
         toolSeriesDropdown.current.open = false;
     }
 
