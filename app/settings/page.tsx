@@ -1,3 +1,5 @@
+'use client'
+
 import SettingSection from "@/components/settings/settingSection";
 import EditTool from "@/components/settings/tool/editTool";
 import General from "@/components/settings/general";
