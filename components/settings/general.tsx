@@ -95,7 +95,7 @@ export default function General() {
                                 </div>
                             </label>
                             <input
-                                {...register('OutputPath', { required: true })}
+                                {...register('MasterPath', { required: true })}
                                 type="text"
                                 placeholder="Enter value"
                                 className="input input-bordered w-full"
