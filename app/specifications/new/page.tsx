@@ -40,24 +40,11 @@ function New() {
             }
         )
             .then(res => res.json())
-            .then(res => setTools(res));
-        if (referenceSpecification !== null) {
-            fetch(
-                `${apiUrl}/specification/${referenceSpecification}`,
-                {
-                    method: "GET",
-                    cache: "no-cache"
-                }
-            )
-                .then(res => res.json())
-                .then(res => {
-                    // TODO: incorporate tool type selection in db data
-                    // await changeToolType({tool_id: 0, name: 'End Mill'});
-                    // let copiedFormData = JSON.parse(res.data);
-                    copyTool(JSON.parse(res.data))
-                });
-        }
-    });
+            .then(res => setTools(res))
+            .then(() => {
+                if (referenceSpecification !== null) copyTool();
+            });
+    }, []);
 
     function changeCurrentStep(stepEdited: number, reset = false) {
         if (reset) setCurrentStep(stepEdited + 1);
@@ -171,7 +158,16 @@ function New() {
             })
     }
 
-    async function copyTool(data: { [k: string]: any }) {
+    async function copyTool() {
+        const data = await fetch(
+            `${apiUrl}/specification/${referenceSpecification}`,
+            {
+                method: "GET",
+                cache: "no-cache"
+            }
+        )
+            .then(res => res.json())
+            .then(res => JSON.parse(res.data));
         changeCurrentStep(0, true);
         fetch(
             `${apiUrl}/series/tool_id/${data.ToolType}`,
