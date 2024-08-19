@@ -6,7 +6,8 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { apiUrl } from "@/lib/api";
 import SpecificationStep from "@/components/specificationStep";
 import SpecificationForm from "@/components/specificationForm";
-import { ToolInput, InputCategory, ToolInputRule, ToolType, CommonToolInput, SeriesInput, Series } from "@/app/types";
+import StepForm from "@/components/stepForm";
+import { ToolInput, InputCategory, ToolInputRule, ToolType, CommonToolInput, SeriesInput, Series, Step } from "@/app/types";
 import SeriesForm from "@/components/seriesForm";
 import ToolSeriesInput from "@/components/toolSeriesInput";
 
@@ -27,6 +28,7 @@ function New() {
     const [selectedSeries, setSelectedSeries] = useState(-1);
     const [seriesInputsShown, setSeriesInputsShown] = useState<SeriesInput[] | null>(null);
     const [series, setSeries]: [Series[], Function] = useState([]);
+    const [stepCount, setStepCount] = useState(0);
     const formMethods = useForm({ mode: 'onChange' });
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -45,6 +47,11 @@ function New() {
                 if (referenceSpecification !== null) copyTool();
             });
     }, []);
+
+    function changeStepCount(increase: boolean) {
+        if (!increase && stepCount === 0) return;
+        setStepCount(stepCount + (increase ? 1 : -1));
+    }
 
     function changeCurrentStep(stepEdited: number, reset = false) {
         if (reset) setCurrentStep(stepEdited + 1);
@@ -192,6 +199,7 @@ function New() {
                         setInputCategories(res.toolCategories);
                         setInputRules(res.toolInputRules);
                         setCommonInputs(res.commonToolInputs);
+                        if (data.StepTool) copySteps(data.Steps);
                         for (const [key, value] of Object.entries(data)) {
                             const inputProperties = res.toolInputs.filter((e: ToolInput) => e.property_name === key);
                             const commonInputProperties = res.commonToolInputs.filter((e: ToolInput) => e.property_name === key);
@@ -214,6 +222,17 @@ function New() {
 
         setToolType(data.ToolType);
         changeSeries(data.ToolSeries);
+    }
+
+    function copySteps(steps: Step[]) {
+        let stepCount = steps.length;
+        formMethods.setValue('StepTool', true);
+        setStepCount(stepCount);
+        for (let i = 0; i < stepCount; i++) {
+            formMethods.setValue(`Steps.${i}.Length`, steps[i].Length);
+            formMethods.setValue(`Steps.${i}.Diameter`, steps[i].Diameter);
+            formMethods.setValue(`Steps.${i}.Angle`, steps[i].Angle);
+        }
     }
 
     async function changeToolType(e: ToolType) {
@@ -329,6 +348,20 @@ function New() {
                         {
                             inputCategories.map((e: InputCategory, i) => {
                                 const categoryInputs = inputs.filter((input: ToolInput) => input.tool_id === e.tool_id && input.tool_input_category_id === e.tool_input_category_id);
+                                if (e.name === 'step') return (
+                                    <SpecificationStep
+                                    defaultChecked={i === 0 ? true : false}
+                                    stepNumber={i + 1}
+                                    header={e.display_title}
+                                    // enabled={currentStep >= (i + 1)}
+                                    enabled={true}
+                                    key={i + 1}
+                                    forceOpen={false}
+                                    arrowEnabled={true}
+                                >
+                                    <StepForm stepCount={stepCount} changeStepCount={changeStepCount} />
+                                </SpecificationStep>  
+                                )
                                 return (
                                     <SpecificationStep
                                         defaultChecked={i === 0 ? true : false}

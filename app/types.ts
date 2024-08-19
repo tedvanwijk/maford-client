@@ -101,3 +101,9 @@ export interface Version {
     changelog: string,
     active: boolean
 }
+
+export interface Step {
+    Diameter: number,
+    Length: number,
+    Angle: number
+}
