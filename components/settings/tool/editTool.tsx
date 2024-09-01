@@ -12,18 +12,24 @@ interface toolTypeInput {
     toggleInputs: ToolInput[]
 };
 
+interface ToolTypeIdOnly {
+    tool_id: number
+};
+
+interface SeriesIdOnly {
+    series_id: number
+}
+
 export default function EditTool() {
     const [series, setSeries]: [Series[], Function] = useState([]);
-    const [selectedSeries, setSelectedSeries] = useState<Series | null>(null);
+    const [selectedSeries, setSelectedSeries] = useState<Series | SeriesIdOnly>({ series_id: -2 });
     const [toolTypes, setToolTypes]: [ToolType[], Function] = useState([]);
-    const [selectedToolType, setSelectedToolType] = useState<ToolType | null>(null);
+    const [selectedToolType, setSelectedToolType] = useState<ToolType | ToolTypeIdOnly>({ tool_id: -1 });
     const [toolTypeInputs, setToolTypeInputs] = useState<toolTypeInput>();
     const [seriesInputs, setSeriesInputs]: [SeriesInput[], Function] = useState([]);
     const [oldSeriesInputLength, setOldSeriesInputLength] = useState(0);
     const [newMode, setNewMode] = useState(false);
     const [applyButton, setApplyButton] = useState(<>Apply</>);
-    const toolTypeDropdown: any = useRef(null);
-    const toolSeriesDropdown: any = useRef(null);
     const formMethods = useForm({ mode: 'onChange' });
 
     useEffect(() => {
@@ -38,7 +44,7 @@ export default function EditTool() {
             .then(res => setToolTypes(res));
     }, []);
 
-    function changeToolType(toolType: ToolType, event: any) {
+    function changeToolType(toolType: ToolType) {
         // user has changed tool type, so load the tool series corresponding to that type
         fetch(
             `${apiUrl}/series/tool_id/${toolType.tool_id}`,
@@ -53,7 +59,7 @@ export default function EditTool() {
                 seriesOptions.push({ name: 'Add new', series_id: -1 })
                 setSelectedToolType(toolType);
                 setSeries(res);
-                setSelectedSeries(null);
+                setSelectedSeries({ series_id: -2 });
             });
 
         fetch(
@@ -63,19 +69,18 @@ export default function EditTool() {
                 cache: 'no-cache'
             }
         )
-        .then(res => res.json())
-        .then(res => setToolTypeInputs(res));
+            .then(res => res.json())
+            .then(res => setToolTypeInputs(res));
         formMethods.reset();
-        toolTypeDropdown.current.open = false;
     }
 
-    function changeSeries(series: Series, event: any, disableButtonUpdate = false) {
+    function changeSeries(series: Series, disableButtonUpdate = false) {
+        formMethods.reset();
         if (series.series_id === -1) {
             setNewMode(true);
             if (!disableButtonUpdate) setApplyButton(<>Create</>);
             setSelectedSeries(series);
             setSeriesInputs([]);
-            toolSeriesDropdown.current.open = false;
             return;
         }
         setNewMode(false);
@@ -94,7 +99,6 @@ export default function EditTool() {
                 setDefaultValues(series, res);
                 setOldSeriesInputLength(res.length);
             });
-        toolSeriesDropdown.current.open = false;
     }
 
     function setDefaultValues(series: Series, seriesInputs: SeriesInput[]) {
@@ -122,7 +126,7 @@ export default function EditTool() {
         const newSeriesInput = {
             index: newIndex,
             name: '',
-            series_id: selectedSeries?.series_id,
+            series_id: selectedSeries,
             type: 'cst',
             value: ''
         }
@@ -142,13 +146,13 @@ export default function EditTool() {
         setSeriesInputs(seriesInputsCopy);
     }
 
-    function submitChanges() {
+    async function submitChanges() {
         // TODO: error checking + loading screen
         const formData = formMethods.getValues();
-
+        let changedSeries;
         if (newMode) {
-            fetch(
-                `${apiUrl}/series/${selectedToolType?.tool_id}/new`,
+            changedSeries = await fetch(
+                `${apiUrl}/series/${selectedToolType.tool_id}/new`,
                 {
                     method: 'POST',
                     cache: 'no-cache',
@@ -162,20 +166,19 @@ export default function EditTool() {
                     })
                 }
             )
-            .then(res => {
-                if (res.status === 201) {
-                    setApplyButton(<>Created<Check /></>);
-                    setTimeout(() => setApplyButton(<>Apply</>), 3000);
-                } else {
-                    setApplyButton(<>Failed</>);
-                    setTimeout(() => setApplyButton(<>Apply</>), 3000);
-                }
-                return res.json();
-            })
-            .then(res =>changeSeries(res, '', true));
+                .then(res => {
+                    if (res.status === 201) {
+                        setApplyButton(<>Created<Check /></>);
+                        setTimeout(() => setApplyButton(<>Apply</>), 3000);
+                    } else {
+                        setApplyButton(<>Failed</>);
+                        setTimeout(() => setApplyButton(<>Apply</>), 3000);
+                    }
+                    return res.json();
+                })
         } else {
-            fetch(
-                `${apiUrl}/series/${selectedSeries?.series_id}`,
+            changedSeries = await fetch(
+                `${apiUrl}/series/${selectedSeries.series_id}`,
                 {
                     method: 'PUT',
                     cache: 'no-cache',
@@ -190,20 +193,35 @@ export default function EditTool() {
                     })
                 }
             )
-            .then(res => {
-                if (res.status === 200) {
-                    setApplyButton(<>Applied<Check /></>);
-                    setTimeout(() => setApplyButton(<>Apply</>), 3000);
-                } else {
-                    setApplyButton(<>Applying failed</>);
-                    setTimeout(() => setApplyButton(<>Apply</>), 3000);
-                }
-                return res.json();
-            })
-            .then(res => changeSeries(res, '', true));
-        }        
-    }
+                .then(res => {
+                    if (res.status === 200) {
+                        setApplyButton(<>Applied<Check /></>);
+                        setTimeout(() => setApplyButton(<>Apply</>), 3000);
+                    } else {
+                        setApplyButton(<>Applying failed</>);
+                        setTimeout(() => setApplyButton(<>Apply</>), 3000);
+                    }
+                    return res.json();
+                })
+        }
 
+        // after a series has been added or changed, re-fetch the series so the new or altered series shows up in the dropdown
+        await fetch(
+            `${apiUrl}/series/tool_id/${selectedToolType.tool_id}`,
+            {
+                method: 'GET',
+                cache: 'no-cache'
+            }
+        )
+            .then(res => res.json())
+            .then(res => {
+                let seriesOptions = res;
+                seriesOptions.push({ name: 'Add new', series_id: -1 })
+                setSeries(res);
+            });
+
+        changeSeries(changedSeries, true);
+    }
     return (
         <div className="">
             <form onSubmit={(e: any) => {
@@ -212,35 +230,29 @@ export default function EditTool() {
             }} className="flex flex-col">
                 <div className="flex flex-row justify-start items-start mb-2">
 
-                    <details className={`dropdown mr-4`} ref={toolTypeDropdown}>
-                        <summary className="btn bg-base-100 m-0 w-[200px]">
-                            {selectedToolType === null ? <>Select Tool Type <ChevronDown /></> : (selectedToolType.name)}
-                        </summary>
-                        <ul className="p-2 shadow menu dropdown-content z-[100] bg-base-100 rounded-box w-[200px]">
-                            {
-                                toolTypes.map((e: ToolType) =>
-                                    <li key={e.tool_id}>
-                                        <button type="button" onClick={(ee) => changeToolType(e, ee)}>{e.name}</button>
-                                    </li>
-                                )
-                            }
-                        </ul>
-                    </details>
+                    <select value={selectedToolType.tool_id} onChange={e => changeToolType(toolTypes.filter((ee: ToolType) => ee.tool_id === parseInt(e.target.value))[0])} className="input input-bordered mr-4">
+                        {
+                            toolTypes.map((e: ToolType) => (
+                                <option value={e.tool_id} key={e.tool_id}>{e.name}</option>
+                            ))
+                        }
+                        <option value={-1} disabled hidden>Select Tool Type</option>
+                    </select>
 
-                    <details className={`dropdown mr-4 ${selectedToolType === null ? 'opacity-30 pointer-events-none' : ''}`} ref={toolSeriesDropdown}>
-                        <summary className="btn bg-base-100 m-0 w-[200px]">
-                            {selectedSeries === null ? <>Select Series <ChevronDown /></> : (selectedSeries.name)}
-                        </summary>
-                        <ul className="p-2 shadow menu dropdown-content z-[100] bg-base-100 rounded-box w-[200px]">
-                            {
-                                series.map((e: Series) =>
-                                    <li key={e.series_id}>
-                                        <button type="button" onClick={(ee) => changeSeries(e, ee)}>{e.name}</button>
-                                    </li>
-                                )
-                            }
-                        </ul>
-                    </details>
+                    <select
+                        value={selectedSeries.series_id}
+                        onChange={e => changeSeries(series.filter((ee: Series) => ee.series_id === parseInt(e.target.value))[0])}
+                        className="input input-bordered mr-4`"
+                        disabled={selectedToolType.tool_id === -1}
+                    >
+                        {
+                            series.map((e: Series) => (
+                                <option value={e.series_id} key={e.series_id}>{e.name}</option>
+                            ))
+                        }
+                        <option value={-2} disabled hidden>Select Series</option>
+                    </select>
+
                 </div>
 
                 <hr className="my-2 border-neutral" />
