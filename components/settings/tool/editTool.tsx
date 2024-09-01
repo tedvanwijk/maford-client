@@ -3,7 +3,7 @@
 import { Series, SeriesInput, ToolType, ToolInput } from "@/app/types";
 import { apiUrl } from "@/lib/api";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, Check } from "react-feather";
+import { Check } from "react-feather";
 import { useForm, FormProvider } from "react-hook-form";
 import EditToolForm from "./editToolForm";
 
