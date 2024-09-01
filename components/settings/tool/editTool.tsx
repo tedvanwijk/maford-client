@@ -242,7 +242,7 @@ export default function EditTool() {
                     <select
                         value={selectedSeries.series_id}
                         onChange={e => changeSeries(series.filter((ee: Series) => ee.series_id === parseInt(e.target.value))[0])}
-                        className="input input-bordered mr-4`"
+                        className="input input-bordered mr-4"
                         disabled={selectedToolType.tool_id === -1}
                     >
                         {
