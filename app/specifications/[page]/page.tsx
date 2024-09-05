@@ -158,7 +158,7 @@ export default async function Specifications(
                             return (
                                 <tr key={e.specification_id} className="hover relative" title={e.versions.active ? "Click row to view details" : "Click row to view details. Warning: This specification was created with an older version, some features might not work as expected" }>
                                     <td>
-                                        <Link href={`/specifications/details/${e.specification_id}`} className="absolute bottom-0 left-0 top-0 right-0" />
+                                        <Link href={`/specifications/details?r=${e.specification_id}`} className="absolute bottom-0 left-0 top-0 right-0" />
                                         <div className="flex flex-row justify-start items-center">
                                             {e.specification_id}
                                             {e.versions.active ? '' : <AlertCircle className="ml-2" />}

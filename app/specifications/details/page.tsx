@@ -1,13 +1,14 @@
 import { ToolInput } from "@/app/types";
 import { AlertCircle } from "react-feather";
 import { join } from 'path';
+import SpecificationEdit from "@/components/specificationEdit";
 
 export default async function SpecificationDetails(
-    { params }:
-        { params: { specification_id: string } }
+    { searchParams }:
+        { searchParams: { r: string } }
 ) {
     const spec = await fetch(
-        `${process.env.API_URL}/specification/${params.specification_id}`,
+        `${process.env.API_URL}/specification/${searchParams.r}`,
         {
             method: "GET",
             cache: "no-cache"
@@ -90,31 +91,33 @@ export default async function SpecificationDetails(
 
     return (
         <>
-            <dialog id="modal" className="modal">
-                <div className="modal-box p-0">
-
+            <div className="flex flex-row justify-between items-center w-full">
+                <div className="flex flex-col justify-start items-start">
+                    <div className="flex flex-row justify-start items-center">
+                        <h1 className="font-bold text-xl mr-2">{"Specification " + spec.specification_id}{spec.name ? `: ${spec.name}` : ''}  </h1>
+                        <div className={`badge ${badgeClasses}`}>{spec.status}</div>
+                    </div>
+                    {
+                        spec.status === ('finished' || 'failed') ?
+                            <h2 className="mb-4 mt-1 cursor-help" title="This location cannot be opened directly due to security restrictions in this browser. Instead, navigate to this location manually">{join(specData.outputPath || '', spec.specification_id?.toString() || '')}</h2>
+                            : ''
+                    }
                 </div>
-            </dialog>
-
-            <div className="flex flex-row justify-start items-center">
-                <h1 className="font-bold text-xl mr-2">{"Specification " + spec.specification_id}{spec.name ? `: ${spec.name}` : ''}  </h1>
-
-                <div className={`badge ${badgeClasses}`}>{spec.status}</div>
+                <div className="flex flex-row justify-end items-start">
+                    <a className="btn btn-primary mr-4" href={`/specifications/new?r=${searchParams.r}`}>Copy to New</a>
+                    <a className="btn" href={`/report?r=${searchParams.r}`}>Report Issue</a>
+                </div>
             </div>
             {
                 spec.versions.active ?
                     '' :
                     <h1 className="flex flex-row justify-start items-center my-2"> <AlertCircle className="mr-2" />This specification was created using an older version. Some of the information below might be incorrect and copying might not work as expected.</h1>
             }
-            {
-                spec.status === ('finished' || 'failed') ?
-                    <h2 className="mb-4 mt-1 cursor-help" title="This location cannot be opened directly due to security restrictions in this browser. Instead, navigate to this location manually">{join(specData.outputPath || '', spec.specification_id?.toString() || '')}</h2>
-                    : ''
-            }
-            {summary}
             {error}
-            <a className="btn btn-primary mr-4" href={`/specifications/new?r=${params.specification_id}`}>Copy</a>
-            <a className="btn" href={`/report?r=${params.specification_id}`}>Report Issue</a>
+            <div className="flex flex-row justify-start items-center">
+                <h1 className="font-bold text-l mr-2 my-2">Specification Inputs</h1>
+            </div>
+            <SpecificationEdit viewOnly={true} />
         </>
     )
 }
