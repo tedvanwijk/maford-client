@@ -5,10 +5,12 @@ import { Plus, X } from "react-feather";
 
 export default function StepForm({
     stepCount,
-    changeStepCount
+    changeStepCount,
+    viewOnly
 }: {
     stepCount: number,
-    changeStepCount: Function
+    changeStepCount: Function,
+    viewOnly: boolean
 }) {
     const { register, getValues } = useFormContext();
 
@@ -23,29 +25,29 @@ export default function StepForm({
 
                     <td className='font-bold'>{i + 1}</td>
                     <td className="border border-slate-400">
-                        <input 
-                        className={`${stepTool ? '' : 'opacity-5'} bg-base-100 p-1 w-full h-full`}
-                        type="number" 
-                        step="any"
-                        {...register(`Steps.${i}.Length`, { disabled: !stepTool })} 
+                        <input
+                            className={`${stepTool ? '' : 'opacity-5'} bg-base-100 p-1 w-full h-full`}
+                            type="number"
+                            step="any"
+                            {...register(`Steps.${i}.Length`, { disabled: !stepTool })}
                         />
-                        </td>
+                    </td>
                     <td className="border border-slate-400">
-                        <input 
-                        className={`${stepTool ? '' : 'opacity-5'} bg-base-100 p-1 w-full h-full`}
-                        type="number" 
-                        step="any"
-                        {...register(`Steps.${i}.Diameter`, { disabled: !stepTool })} 
+                        <input
+                            className={`${stepTool ? '' : 'opacity-5'} bg-base-100 p-1 w-full h-full`}
+                            type="number"
+                            step="any"
+                            {...register(`Steps.${i}.Diameter`, { disabled: !stepTool })}
                         />
-                        </td>
+                    </td>
                     <td className="border border-slate-400">
-                        <input 
-                        className={`${stepTool ? '' : 'opacity-5'} bg-base-100 p-1 w-full h-full`}
-                        type="number" 
-                        step="any"
-                        {...register(`Steps.${i}.Angle`, { disabled: !stepTool })} 
+                        <input
+                            className={`${stepTool ? '' : 'opacity-5'} bg-base-100 p-1 w-full h-full`}
+                            type="number"
+                            step="any"
+                            {...register(`Steps.${i}.Angle`, { disabled: !stepTool })}
                         />
-                        </td>
+                    </td>
                 </tr>
             )
         }
@@ -84,8 +86,13 @@ export default function StepForm({
                     createStepTable()
                 }
                 <div className="flex flex-row justify-start w-full items-center my-4">
-                    <button type="button" disabled={!stepTool} className="btn btn-primary mr-4" onClick={() => changeStepCount(true)}><Plus />Add step</button>
-                    <button type="button" disabled={!stepTool} className="btn bg-base-100 mr-4" onClick={() => changeStepCount(false)}><X />Remove step</button>
+                    {
+                        !viewOnly ?
+                            <>
+                                <button type="button" disabled={!stepTool} className="btn btn-primary mr-4" onClick={() => changeStepCount(true)}><Plus />Add step</button>
+                                <button type="button" disabled={!stepTool} className="btn bg-base-100 mr-4" onClick={() => changeStepCount(false)}><X />Remove step</button>
+                            </> : ''
+                    }
                 </div>
 
             </div>

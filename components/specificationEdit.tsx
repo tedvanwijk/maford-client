@@ -413,7 +413,7 @@ function New({viewOnly = false}: {viewOnly: boolean}) {
                                         forceOpen={false}
                                         arrowEnabled={!viewOnly}
                                     >
-                                        <StepForm stepCount={stepCount} changeStepCount={changeStepCount} />
+                                        <StepForm stepCount={stepCount} changeStepCount={changeStepCount} viewOnly={viewOnly} />
                                     </SpecificationStep>
                                 )
                                 return (
