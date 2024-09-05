@@ -76,7 +76,9 @@ export interface Series {
     tool_series_inputs: string[],
     tool_series_output_range: string,
     tool_series_input_range: string,
-    tools?: ToolType
+    tools?: ToolType,
+    catalog_updated: Date,
+    _count?: any
 }
 
 export interface SeriesInput {
@@ -106,4 +108,12 @@ export interface Step {
     Diameter: number,
     Length: number,
     Angle: number
+}
+
+export interface CatalogTool {
+    catalog_tool_id: number,
+    series_id: number,
+    series?: Series,
+    tool_number: string,
+    data: JSON
 }

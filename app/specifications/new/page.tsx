@@ -44,7 +44,10 @@ function New() {
             .then(res => res.json())
             .then(res => setTools(res))
             .then(() => {
-                if (referenceSpecification !== null) copyTool();
+                if (referenceSpecification !== null) {
+                    if (referenceSpecification[0] === 'c') copyCatalogTool();
+                    else copyTool();
+                }
             });
     }, []);
 
@@ -145,6 +148,10 @@ function New() {
             }
         });
         formDataCopy.ToolSeriesInputs = seriesInputArray;
+
+        // when removing steps, the Steps property does not change length, so we need to cut it down to the amount of steps we have stored
+        formDataCopy.Steps.length = stepCount;
+        
         await fetch(
             `${apiUrl}/specifications/new`,
             {
@@ -165,6 +172,64 @@ function New() {
             })
     }
 
+    async function copyCatalogTool() {
+        const data = await fetch(
+            `${apiUrl}/catalog/${referenceSpecification?.split('_')[1]}/copy`,
+            {
+                method: "GET",
+                cache: "no-cache"
+            }
+        )
+            .then(res => res.json())
+        changeCurrentStep(0, true);
+        await fetch(
+            `${apiUrl}/series/tool_id/${data.ToolType}`,
+            {
+                method: 'GET',
+                cache: 'no-cache'
+            }
+        )
+            .then(res => res.json())
+            .then(res => setSeries(res));
+        const res = await fetch(
+            `${apiUrl}/tool/${data.ToolType}/inputs`,
+            {
+                method: 'GET',
+                cache: 'no-cache'
+            }
+        )
+            .then(res => res.json());
+        setInputs(res.toolInputs);
+        setInputCategories(res.toolCategories);
+        setInputRules(res.toolInputRules);
+        setCommonInputs(res.commonToolInputs);
+
+        // tool inputs are registered by id (except common inputs) so the returned object needs to have all property names converted to ids
+        // For this reason, the data object needs to be manipulated, so we copy it so we can use the unmodified version later
+
+        const unmodifiedData = { ...data };
+
+        if (data.StepTool) copySteps(data.Steps);
+        for (const [key, value] of Object.entries(data)) {
+            const inputProperties = res.toolInputs.filter((e: ToolInput) => e.property_name === key);
+            const commonInputProperties = res.commonToolInputs.filter((e: ToolInput) => e.property_name === key);
+            if (inputProperties.length === 0 && commonInputProperties.length === 0) {
+                delete data[key];
+                continue;
+            } else if (inputProperties.length === 0) {
+                formMethods.setValue(commonInputProperties[0].property_name, value);
+            } else {
+                formMethods.setValue(inputProperties[0].tool_input_id.toString(), value);
+                data[inputProperties[0].tool_input_id.toString()] = value;
+                delete data[key];
+            }
+        }
+        setFormData(data);
+        formMethods.trigger()
+        setToolType(unmodifiedData.ToolType);
+        changeSeries(unmodifiedData.ToolSeries);
+    }
+
     async function copyTool() {
         const data = await fetch(
             `${apiUrl}/specification/${referenceSpecification}`,
@@ -176,7 +241,7 @@ function New() {
             .then(res => res.json())
             .then(res => JSON.parse(res.data));
         changeCurrentStep(0, true);
-        fetch(
+        await fetch(
             `${apiUrl}/series/tool_id/${data.ToolType}`,
             {
                 method: 'GET',
@@ -184,44 +249,44 @@ function New() {
             }
         )
             .then(res => res.json())
-            .then(res => setSeries(res))
-            .then(() => {
-                fetch(
-                    `${apiUrl}/tool/${data.ToolType}/inputs`,
-                    {
-                        method: 'GET',
-                        cache: 'no-cache'
-                    }
-                )
-                    .then(res => res.json())
-                    .then(res => {
-                        setInputs(res.toolInputs);
-                        setInputCategories(res.toolCategories);
-                        setInputRules(res.toolInputRules);
-                        setCommonInputs(res.commonToolInputs);
-                        if (data.StepTool) copySteps(data.Steps);
-                        for (const [key, value] of Object.entries(data)) {
-                            const inputProperties = res.toolInputs.filter((e: ToolInput) => e.property_name === key);
-                            const commonInputProperties = res.commonToolInputs.filter((e: ToolInput) => e.property_name === key);
-                            if (inputProperties.length === 0 && commonInputProperties.length === 0) {
-                                delete data[key];
-                                continue;
-                            } else if (inputProperties.length === 0) {
-                                formMethods.setValue(commonInputProperties[0].property_name, value);
-                            } else {
-                                formMethods.setValue(inputProperties[0].tool_input_id.toString(), value);
-                                data[inputProperties[0].tool_input_id.toString()] = value;
-                                delete data[key];
-                            }
-                        }
-                        // console.log(data)
-                        setFormData(data);
-                    })
-                    .then(() => formMethods.trigger());
-            });
+            .then(res => setSeries(res));
+        const res = await fetch(
+            `${apiUrl}/tool/${data.ToolType}/inputs`,
+            {
+                method: 'GET',
+                cache: 'no-cache'
+            }
+        )
+            .then(res => res.json());
+        setInputs(res.toolInputs);
+        setInputCategories(res.toolCategories);
+        setInputRules(res.toolInputRules);
+        setCommonInputs(res.commonToolInputs);
 
-        setToolType(data.ToolType);
-        changeSeries(data.ToolSeries);
+        // tool inputs are registered by id (except common inputs) so the returned object needs to have all property names converted to ids
+        // For this reason, the data object needs to be manipulated, so we copy it so we can use the unmodified version later
+
+        const unmodifiedData = { ...data };
+
+        if (data.StepTool) copySteps(data.Steps);
+        for (const [key, value] of Object.entries(data)) {
+            const inputProperties = res.toolInputs.filter((e: ToolInput) => e.property_name === key);
+            const commonInputProperties = res.commonToolInputs.filter((e: ToolInput) => e.property_name === key);
+            if (inputProperties.length === 0 && commonInputProperties.length === 0) {
+                delete data[key];
+                continue;
+            } else if (inputProperties.length === 0) {
+                formMethods.setValue(commonInputProperties[0].property_name, value);
+            } else {
+                formMethods.setValue(inputProperties[0].tool_input_id.toString(), value);
+                data[inputProperties[0].tool_input_id.toString()] = value;
+                delete data[key];
+            }
+        }
+        setFormData(data);
+        formMethods.trigger()
+        setToolType(unmodifiedData.ToolType);
+        changeSeries(unmodifiedData.ToolSeries);
     }
 
     function copySteps(steps: Step[]) {
@@ -350,17 +415,17 @@ function New() {
                                 const categoryInputs = inputs.filter((input: ToolInput) => input.tool_id === e.tool_id && input.tool_input_category_id === e.tool_input_category_id);
                                 if (e.name === 'step') return (
                                     <SpecificationStep
-                                    defaultChecked={i === 0 ? true : false}
-                                    stepNumber={i + 1}
-                                    header={e.display_title}
-                                    // enabled={currentStep >= (i + 1)}
-                                    enabled={true}
-                                    key={i + 1}
-                                    forceOpen={false}
-                                    arrowEnabled={true}
-                                >
-                                    <StepForm stepCount={stepCount} changeStepCount={changeStepCount} />
-                                </SpecificationStep>  
+                                        defaultChecked={i === 0 ? true : false}
+                                        stepNumber={i + 1}
+                                        header={e.display_title}
+                                        // enabled={currentStep >= (i + 1)}
+                                        enabled={true}
+                                        key={i + 1}
+                                        forceOpen={false}
+                                        arrowEnabled={true}
+                                    >
+                                        <StepForm stepCount={stepCount} changeStepCount={changeStepCount} />
+                                    </SpecificationStep>
                                 )
                                 return (
                                     <SpecificationStep

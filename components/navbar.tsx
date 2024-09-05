@@ -1,4 +1,4 @@
-import { Home, List, PlusCircle, Settings, AlertTriangle } from "react-feather";
+import { Home, List, PlusCircle, Settings, AlertTriangle, ShoppingCart } from "react-feather";
 import Link from "next/link";
 import UserDropdown from "./userDropdown";
 import SpecificationLink from './navbar/specificationLink';
@@ -18,6 +18,11 @@ export default async function Navbar({ children }: { children: React.ReactNode }
                 name: 'New Specification',
                 href: '/specifications/new',
                 icon: <PlusCircle />
+            },
+            {
+                name: 'Catalog Tools',
+                href: '/catalog/0?s=',
+                icon: <ShoppingCart />
             },
             {
                 name: 'Specifications',

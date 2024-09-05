@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Check } from "react-feather";
 import { useForm, FormProvider } from "react-hook-form";
 import EditToolForm from "./editToolForm";
+import EditCatalog from "./editCatalog";
 
 interface toolTypeInput {
     decimalInputs: ToolInput[],
@@ -30,6 +31,7 @@ export default function EditTool() {
     const [oldSeriesInputLength, setOldSeriesInputLength] = useState(0);
     const [newMode, setNewMode] = useState(false);
     const [applyButton, setApplyButton] = useState(<>Apply</>);
+    const [catalogButton, setCatalogButton] = useState(<>Import catalog tools</>)
     const formMethods = useForm({ mode: 'onChange' });
 
     useEffect(() => {
@@ -74,8 +76,8 @@ export default function EditTool() {
         formMethods.reset();
     }
 
-    function changeSeries(series: Series, disableButtonUpdate = false) {
-        formMethods.reset();
+    function changeSeries(series: Series, disableButtonUpdate = false, resetForm = false) {
+        if (resetForm) formMethods.reset();
         if (series.series_id === -1) {
             setNewMode(true);
             if (!disableButtonUpdate) setApplyButton(<>Create</>);
@@ -96,9 +98,10 @@ export default function EditTool() {
             .then(res => {
                 setSelectedSeries(series);
                 setSeriesInputs(res);
-                setDefaultValues(series, res);
                 setOldSeriesInputLength(res.length);
-            });
+                return {seriesInputs: res, series}
+            })
+            .then(res => setDefaultValues(res.series, res.seriesInputs));
     }
 
     function setDefaultValues(series: Series, seriesInputs: SeriesInput[]) {
@@ -110,12 +113,12 @@ export default function EditTool() {
         formMethods.setValue('tool_series_output_range', series.tool_series_output_range);
 
         type seriesInputColumnType = keyof SeriesInput;
-        const seriesInputColumns: seriesInputColumnType[] = ['name', 'type', 'value'];
+        const seriesInputColumns: seriesInputColumnType[] = ['type', 'name', 'value'];
         for (let i = 0; i < seriesInputs.length; i++) {
             const input = seriesInputs[i];
             for (let column = 0; column < seriesInputColumns.length; column++) {
                 if (input[seriesInputColumns[column]] === null) continue;
-                const formName = `${input.index}__${seriesInputColumns[column]}`;
+                const formName = `series_input.${input.index}.${seriesInputColumns[column]}`;
                 formMethods.setValue(formName, input[seriesInputColumns[column]]);
             }
         }
@@ -131,24 +134,55 @@ export default function EditTool() {
             value: ''
         }
         setSeriesInputs([...seriesInputs, newSeriesInput]);
-        formMethods.setValue(`${newIndex}__type`, newSeriesInput.type);
+        formMethods.setValue(`series_input.${newIndex}.type`, newSeriesInput.type);
     }
 
     function removeSeriesInput() {
         const seriesInputsCopy = [...seriesInputs];
         const removedInput = seriesInputsCopy.pop() as SeriesInput;
         const removedIndex = removedInput.index;
-        type seriesInputColumnType = keyof SeriesInput;
-        const seriesInputColumns: seriesInputColumnType[] = ['name', 'type', 'value'];
-        for (let column = 0; column < seriesInputColumns.length; column++) {
-            formMethods.unregister(`${removedIndex}__${seriesInputColumns[column]}`)
-        }
+        formMethods.unregister(`series_input.${removedIndex}`)
         setSeriesInputs(seriesInputsCopy);
+    }
+
+    function importCatalogTools() {
+        fetch(
+            `${apiUrl}/catalog/${selectedSeries.series_id}/update`,
+            {
+                method: 'PUT',
+                cache: 'no-cache',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+            .then(res => {
+                if (res.status === 200) {
+                    return res.json();;
+                } else {
+                    setCatalogButton(<>Failed</>);
+                    setTimeout(() => setCatalogButton(<>Import catalog tools</>), 3000);
+                    return false
+                }
+            })
+            .then(res => {
+                if (res === false) return;
+                setCatalogButton(<>Added {res.catalogTools.count} catalog tools<Check /></>);
+                setTimeout(() => setCatalogButton(<>Import catalog tools</>), 3000);
+                res.series._count.catalog_tools = res.catalogTools.count;
+                setSelectedSeries(res.series);
+                let seriesCopy = [...series];
+                seriesCopy.filter(e => e.series_id === res.series.series_id)[0] = res.series;
+                setSeries(seriesCopy);
+            })
     }
 
     async function submitChanges() {
         // TODO: error checking + loading screen
         const formData = formMethods.getValues();
+        if (formData.series_input === undefined) formData.series_input = [];
+        else formData.series_input.length = seriesInputs.length;
         let changedSeries;
         if (newMode) {
             changedSeries = await fetch(
@@ -218,10 +252,10 @@ export default function EditTool() {
                 let seriesOptions = res;
                 seriesOptions.push({ name: 'Add new', series_id: -1 })
                 setSeries(res);
-            });
-
-        changeSeries(changedSeries, true);
+            })
+            .then(() => changeSeries(changedSeries, true));
     }
+
     return (
         <div className="">
             <form onSubmit={(e: any) => {
@@ -241,7 +275,7 @@ export default function EditTool() {
 
                     <select
                         value={selectedSeries.series_id}
-                        onChange={e => changeSeries(series.filter((ee: Series) => ee.series_id === parseInt(e.target.value))[0])}
+                        onChange={e => changeSeries(series.filter((ee: Series) => ee.series_id === parseInt(e.target.value))[0], false, true)}
                         className="input input-bordered mr-4"
                         disabled={selectedToolType.tool_id === -1}
                     >
@@ -264,6 +298,11 @@ export default function EditTool() {
                         addSeriesInput={addSeriesInput}
                         removeSeriesInput={removeSeriesInput}
                         toolTypeInputs={toolTypeInputs as toolTypeInput}
+                    />
+                    <EditCatalog
+                        series={selectedSeries as Series}
+                        importCatalogTools={importCatalogTools}
+                        button={catalogButton}
                     />
                 </FormProvider>
 

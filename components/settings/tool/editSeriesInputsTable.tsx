@@ -40,7 +40,7 @@ export default function EditSeriesInputsTable(
                     <tbody>
                         {
                             seriesInputs.map((e: SeriesInput, i: number) => {
-                                const type = watch(`${e.index}__type`, '');
+                                const type = watch(`series_input.${e.index}.type`, '');
 
                                 let nameInput: React.ReactNode;
                                 if (type === 'cst') {
@@ -49,7 +49,7 @@ export default function EditSeriesInputsTable(
                                             <input
                                                 className="bg-base-100 p-1 w-full h-full"
                                                 type="text"
-                                                {...register(`${e.index}__name`, { required: true })}
+                                                {...register(`series_input.${e.index}.name`, { required: true })}
                                             />
                                         </td>
                                 } else {
@@ -57,7 +57,7 @@ export default function EditSeriesInputsTable(
                                         <td>
                                             <select
                                                 className="bg-base-100 p-1 w-full h-full border border-slate-400"
-                                                {...register(`${e.index}__name`, { required: true })}
+                                                {...register(`series_input.${e.index}.name`, { required: true })}
                                             >
                                                 {
                                                     type === 'var' ?
@@ -78,7 +78,7 @@ export default function EditSeriesInputsTable(
                                             <select
                                                 className="bg-base-100 p-1 w-full h-full"
                                                 // type="text"
-                                                {...register(`${e.index}__type`, { required: true, onChange: () => setValue(`${e.index}__name`, '') })}
+                                                {...register(`series_input.${e.index}.type`, { required: true, onChange: () => setValue(`series_input.${e.index}.name`, '') })}
                                             >
                                                 <option value="cst">Constant</option>
                                                 <option value="var">Variable</option>
@@ -89,7 +89,7 @@ export default function EditSeriesInputsTable(
                                             <input
                                                 className={`${type === 'var' ? 'opacity-5' : ''} bg-base-100 p-1 w-full h-full`}
                                                 type="text"
-                                                {...register(`${e.index}__value`, { required: type !== 'var' })}
+                                                {...register(`series_input.${e.index}.value`, { required: type !== 'var' })}
                                             />
                                         </td>
                                     </tr>

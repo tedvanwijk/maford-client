@@ -23,6 +23,9 @@ export default function EditToolForm(
     const { register } = useFormContext();
     return (
         <div className='flex flex-col justify-start items-start'>
+            <div className='font-bold'>
+                Edit series parameters and inputs
+            </div>
             <div className='flex flex-row justify-start items-start'>
                 <div className="flex flex-col mb-4 mr-4">
                     <div className="flex flex-col mb-1">
