@@ -32,8 +32,8 @@ export default function EditSeriesInputsTable(
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Name/Input</th>
                             <th>Type</th>
+                            <th>Name/Input</th>
                             <th>Value</th>
                         </tr>
                     </thead>
@@ -73,7 +73,6 @@ export default function EditSeriesInputsTable(
                                 return (
                                     <tr key={e.index}>
                                         <td className='font-bold'>{e.index + 1}</td>
-                                        {nameInput}
                                         <td className="border border-slate-400">
                                             <select
                                                 className="bg-base-100 p-1 w-full h-full"
@@ -85,6 +84,7 @@ export default function EditSeriesInputsTable(
                                                 <option value="toggle">Toggle</option>
                                             </select>
                                         </td>
+                                        {nameInput}
                                         <td className="border border-slate-400">
                                             <input
                                                 className={`${type === 'var' ? 'opacity-5' : ''} bg-base-100 p-1 w-full h-full`}
