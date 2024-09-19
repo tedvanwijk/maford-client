@@ -14,7 +14,7 @@ export default async function SpecificationDetails(
             cache: "no-cache"
         }
     ).then(res => res.json());
-    let specData = await JSON.parse(spec.data);
+    let specData = spec.data;
     let inputs = await fetch(
         `${process.env.API_URL}/tool/${specData.ToolType}/inputs`,
         {

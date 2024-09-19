@@ -150,7 +150,7 @@ function New({viewOnly = false}: {viewOnly: boolean}) {
         formDataCopy.ToolSeriesInputs = seriesInputArray;
 
         // when removing steps, the Steps property does not change length, so we need to cut it down to the amount of steps we have stored
-        formDataCopy.Steps.length = stepCount;
+        if (formDataCopy.StepTool) formDataCopy.Steps.length = stepCount;
         
         await fetch(
             `${apiUrl}/specifications/new`,
@@ -166,7 +166,7 @@ function New({viewOnly = false}: {viewOnly: boolean}) {
         )
             .then(res => res.json())
             .then(res => {
-                if (!stayOnPage) router.push(`/specifications/details/${res.specification_id}`);
+                if (!stayOnPage) router.push(`/specifications/details?r=${res.specification_id}`);
                 else setSaveWindowOpen(false);
                 formMethods.trigger();
             })
@@ -239,7 +239,7 @@ function New({viewOnly = false}: {viewOnly: boolean}) {
             }
         )
             .then(res => res.json())
-            .then(res => JSON.parse(res.data));
+            .then(res => res.data);
         changeCurrentStep(0, true);
         await fetch(
             `${apiUrl}/series/tool_id/${data.ToolType}`,
