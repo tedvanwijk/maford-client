@@ -7,11 +7,11 @@ import { apiUrl } from "@/lib/api";
 import SpecificationStep from "@/components/specificationStep";
 import SpecificationForm from "@/components/specificationForm";
 import StepForm from "@/components/stepForm";
-import { ToolInput, InputCategory, ToolInputRule, ToolType, CommonToolInput, SeriesInput, Series, Step } from "@/app/types";
+import { ToolInput, InputCategory, ToolInputRule, ToolType, CommonToolInput, SeriesInput, Series, Step, DefaultValue } from "@/app/types";
 import SeriesForm from "@/components/seriesForm";
 import ToolSeriesInput from "@/components/toolSeriesInput";
 
-function New({viewOnly = false}: {viewOnly: boolean}) {
+function New({ viewOnly = false }: { viewOnly: boolean }) {
     // TODO: remove all tool series input stuff. Only the tool series needs to be selected, but no custom inputs need to be generated
     const [tools, setTools]: [ToolType[], Function] = useState([]);
     const [currentStep, setCurrentStep] = useState(0);
@@ -151,7 +151,7 @@ function New({viewOnly = false}: {viewOnly: boolean}) {
 
         // when removing steps, the Steps property does not change length, so we need to cut it down to the amount of steps we have stored
         if (formDataCopy.StepTool) formDataCopy.Steps.length = stepCount;
-        
+
         await fetch(
             `${apiUrl}/specifications/new`,
             {
@@ -173,14 +173,15 @@ function New({viewOnly = false}: {viewOnly: boolean}) {
     }
 
     async function copyCatalogTool() {
-        const data = await fetch(
+        const result = await fetch(
             `${apiUrl}/catalog/${referenceSpecification?.split('_')[1]}/copy`,
             {
                 method: "GET",
                 cache: "no-cache"
             }
         )
-            .then(res => res.json())
+            .then(res => res.json());
+        const { data, defaultValues } = result;
         changeCurrentStep(0, true);
         await fetch(
             `${apiUrl}/series/tool_id/${data.ToolType}`,
@@ -228,6 +229,7 @@ function New({viewOnly = false}: {viewOnly: boolean}) {
         formMethods.trigger()
         setToolType(unmodifiedData.ToolType);
         changeSeries(unmodifiedData.ToolSeries);
+        enterDefaultValues(defaultValues);
     }
 
     async function copyTool() {
@@ -307,7 +309,7 @@ function New({viewOnly = false}: {viewOnly: boolean}) {
             if (!answer) return;
         };
         changeCurrentStep(0, true);
-        fetch(
+        const defaultValues = await fetch(
             `${apiUrl}/tool/${e.tool_id}/inputs`,
             {
                 method: 'GET',
@@ -320,8 +322,9 @@ function New({viewOnly = false}: {viewOnly: boolean}) {
                 setInputCategories(res.toolCategories);
                 setInputRules(res.toolInputRules);
                 setCommonInputs(res.commonToolInputs);
+                return res.defaultValues;
             });
-        fetch(
+        await fetch(
             `${apiUrl}/series/tool_id/${e.tool_id}`,
             {
                 method: 'GET',
@@ -331,6 +334,24 @@ function New({viewOnly = false}: {viewOnly: boolean}) {
             .then(res => res.json())
             .then(res => setSeries(res));
         setToolType(e.tool_id);
+        enterDefaultValues(defaultValues);
+    }
+
+    function enterDefaultValues(defaultValues: DefaultValue[]) {
+        for (let i = 0; i < defaultValues.length; i++) {
+            const defaultValue = defaultValues[i];
+            let value;
+            if (defaultValue.tool_inputs?.type === 'toggle') {
+                value = defaultValue.value === 'true';
+            } else if (defaultValue.tool_inputs?.type === 'decimal') {
+                value = parseFloat(defaultValue.value);
+            } else {
+                value = defaultValue.value;
+            }
+            formMethods.setValue(defaultValues[i].tool_input_id.toString(), value);
+        }
+        // TODO: when this entire garbage page has been moved over from formData to formMethods.getValues(), this can be removed
+        setFormData(formMethods.getValues())
     }
 
     const seriesInput = <ToolSeriesInput
@@ -460,21 +481,21 @@ function New({viewOnly = false}: {viewOnly: boolean}) {
                                     </SpecificationStep>
                                     {
                                         viewOnly ?
-                                        '' :
-                                        <SpecificationStep
-                                        stepNumber={inputCategories.length + 2}
-                                        header="Create Specification"
-                                        // enabled={currentStep >= (inputCategories.length + 2)} 
-                                        enabled={true}
-                                        forceOpen={true}
-                                        defaultChecked={viewOnly}
-                                        arrowEnabled={false}
-                                        
-                                    >
-                                        <div className="p-0 flex flex-col items-center">
-                                            <button onClick={() => setSaveWindowOpen(true)} type="submit" className="rounded-none btn w-full btn-primary">Create</button>
-                                        </div>
-                                    </SpecificationStep>
+                                            '' :
+                                            <SpecificationStep
+                                                stepNumber={inputCategories.length + 2}
+                                                header="Create Specification"
+                                                // enabled={currentStep >= (inputCategories.length + 2)} 
+                                                enabled={true}
+                                                forceOpen={true}
+                                                defaultChecked={viewOnly}
+                                                arrowEnabled={false}
+
+                                            >
+                                                <div className="p-0 flex flex-col items-center">
+                                                    <button onClick={() => setSaveWindowOpen(true)} type="submit" className="rounded-none btn w-full btn-primary">Create</button>
+                                                </div>
+                                            </SpecificationStep>
                                     }
                                 </>
                         }
@@ -485,7 +506,7 @@ function New({viewOnly = false}: {viewOnly: boolean}) {
     )
 }
 
-export default function SpecificationEdit({viewOnly = false}: {viewOnly: boolean}) {
+export default function SpecificationEdit({ viewOnly = false }: { viewOnly: boolean }) {
     return (
         <Suspense>
             <New viewOnly={viewOnly} />

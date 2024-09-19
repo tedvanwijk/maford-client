@@ -117,3 +117,11 @@ export interface CatalogTool {
     tool_number: string,
     data: JSON
 }
+
+export interface DefaultValue {
+    default_input_value_id: number,
+    tool_input_id: number,
+    new_tool: boolean,
+    value: string,
+    tool_inputs?: ToolInput
+}
