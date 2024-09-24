@@ -21,7 +21,6 @@ export default async function CatalogToolDetails(
             if (key === '_tool') continue;
 
             let isMetric = false;
-            console.log(tool.convertedData)
             if (isMetricTool && tool.convertedData[key] !== undefined) isMetric = true;
 
             propertyColumn.push(
