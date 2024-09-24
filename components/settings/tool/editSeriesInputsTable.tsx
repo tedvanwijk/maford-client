@@ -54,6 +54,16 @@ export default function EditSeriesInputsTable(
                                                 {...register(`series_input.${e.index}.name`, { required: true })}
                                             />
                                         </td>
+                                } else if (type === 'unit') {
+                                    nameInput =
+                                        <td className="border border-slate-400">
+                                            <input
+                                                
+                                                className="bg-base-100 p-1 w-full h-full opacity-5 text-base-100/0 pointer-events-none"
+                                                type="text"
+                                                {...register(`series_input.${e.index}.name`, { required: true })}
+                                            />
+                                        </td>
                                 } else {
                                     nameInput =
                                         <td>
@@ -92,11 +102,17 @@ export default function EditSeriesInputsTable(
                                         <td className="border border-slate-400">
                                             <select
                                                 className="bg-base-100 p-1 w-full h-full"
-                                                {...register(`series_input.${e.index}.type`, { required: true, onChange: () => setValue(`series_input.${e.index}.name`, '') })}
+                                                {...register(`series_input.${e.index}.type`, {
+                                                    required: true, onChange: (ee) => {
+                                                        if (ee.target.value === 'unit') setValue(`series_input.${e.index}.name`, 'Unit')
+                                                        else setValue(`series_input.${e.index}.name`, '')
+                                                    }
+                                                })}
                                             >
                                                 <option value="cst">Constant</option>
                                                 <option value="var">Variable</option>
                                                 <option value="toggle">Toggle</option>
+                                                <option value="unit">Unit</option>
                                             </select>
                                         </td>
                                         {nameInput}

@@ -15,22 +15,36 @@ export default async function CatalogToolDetails(
     function createSummary() {
         let propertyColumn = [];
         let valueColumn = [];
+        let convertedColumn = [];
+        let isMetricTool = tool.convertedData !== undefined
         for (const [key, value] of Object.entries(tool.data)) {
             if (key === '_tool') continue;
+
+            let isMetric = false;
+            console.log(tool.convertedData)
+            if (isMetricTool && tool.convertedData[key] !== undefined) isMetric = true;
+
             propertyColumn.push(
                 <p>{key}: </p>
             )
 
             valueColumn.push(
-                <p>{(value as string).toString() || '\u200B'}</p>
+                <p>{`${(value as string).toString()}${isMetric ? 'mm' : ''}` || '\u200B'}</p>
+            )
+
+            convertedColumn.push(
+                <p>{isMetric ? `→ ${tool.convertedData[key]}"` : '\u200B'}</p>
             )
         }
         return <>
             <div className="flex flex-col justify-start items-start mr-4">
                 {propertyColumn}
             </div>
-            <div className="flex flex-col justify-start items-end">
+            <div className="flex flex-col justify-start items-end mr-4">
                 {valueColumn}
+            </div>
+            <div className="flex flex-col justify-start items-start">
+                {convertedColumn}
             </div>
         </>;
     }
