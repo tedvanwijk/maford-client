@@ -28,7 +28,7 @@ export default function EditSeriesInputsTable(
                 <div className='label font-bold'>
                     Excel File Inputs
                 </div>
-                
+
                 <table className='w-full border-collapse border-spacing-0 table-auto'>
                     <thead>
                         <tr>
@@ -76,7 +76,19 @@ export default function EditSeriesInputsTable(
                                     <tr key={e.index}>
                                         <td className='font-bold'>{e.index + 1}</td>
                                         <td className="border border-slate-400 w-3">
-                                            <input type="number" className="bg-base-100 p-1 w-full h-full" />
+                                            <select
+                                                className="bg-base-100 p-1 w-full h-full"
+                                                {...register(`series_input.${e.index}.catalog_index`, { required: true })}
+                                            >
+                                                {
+                                                    [...Array(seriesInputs.length).keys()].map((catalogIndex: number) =>
+                                                        <option key={catalogIndex} value={catalogIndex}>
+                                                            {catalogIndex + 1}
+                                                        </option>
+                                                    )
+                                                }
+                                            </select>
+                                            {/* <input type="number" className="bg-base-100 p-1 w-full h-full" /> */}
                                         </td>
                                         <td className="border border-slate-400">
                                             <select

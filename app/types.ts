@@ -88,7 +88,8 @@ export interface SeriesInput {
     type: string,
     value: string|null,
     options: string[],
-    index: number
+    index: number,
+    catalog_index: number
 }
 
 export interface CustomParam {

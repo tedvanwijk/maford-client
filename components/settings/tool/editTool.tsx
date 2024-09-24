@@ -113,7 +113,7 @@ export default function EditTool() {
         formMethods.setValue('tool_series_output_range', series.tool_series_output_range);
 
         type seriesInputColumnType = keyof SeriesInput;
-        const seriesInputColumns: seriesInputColumnType[] = ['type', 'name', 'value'];
+        const seriesInputColumns: seriesInputColumnType[] = ['type', 'name', 'value', 'catalog_index'];
         for (let i = 0; i < seriesInputs.length; i++) {
             const input = seriesInputs[i];
             for (let column = 0; column < seriesInputColumns.length; column++) {
@@ -131,10 +131,12 @@ export default function EditTool() {
             name: '',
             series_id: selectedSeries,
             type: 'cst',
-            value: ''
+            value: '',
+            catalog_index: newIndex
         }
         setSeriesInputs([...seriesInputs, newSeriesInput]);
         formMethods.setValue(`series_input.${newIndex}.type`, newSeriesInput.type);
+        formMethods.setValue(`series_input.${newIndex}.catalog_index`, newSeriesInput.catalog_index);
     }
 
     function removeSeriesInput() {
