@@ -25,13 +25,15 @@ export default function EditSeriesInputsTable(
     else return (
         <>
             <div className='flex-grow flex-col justify-start items-start w-full'>
-                <div className='label'>
+                <div className='label font-bold'>
                     Excel File Inputs
                 </div>
+                
                 <table className='w-full border-collapse border-spacing-0 table-auto'>
                     <thead>
                         <tr>
                             <th></th>
+                            <th>Catalog index</th>
                             <th>Type</th>
                             <th>Name/Input</th>
                             <th>Value</th>
@@ -73,6 +75,9 @@ export default function EditSeriesInputsTable(
                                 return (
                                     <tr key={e.index}>
                                         <td className='font-bold'>{e.index + 1}</td>
+                                        <td className="border border-slate-400 w-3">
+                                            <input type="number" className="bg-base-100 p-1 w-full h-full" />
+                                        </td>
                                         <td className="border border-slate-400">
                                             <select
                                                 className="bg-base-100 p-1 w-full h-full"
