@@ -13,17 +13,26 @@ export default async function CatalogToolDetails(
     ).then(res => res.json());
 
     function createSummary() {
-        let summary = [];
+        let propertyColumn = [];
+        let valueColumn = [];
         for (const [key, value] of Object.entries(tool.data)) {
             if (key === '_tool') continue;
-            summary.push(
-                <div className="flex flex-row justify-between w-full" key={key}>
+            propertyColumn.push(
                 <p>{key}: </p>
-                <p>{(value as string).toString()}</p>
-            </div>
+            )
+
+            valueColumn.push(
+                <p>{(value as string).toString() || '\u200B'}</p>
             )
         }
-        return summary;
+        return <>
+            <div className="flex flex-col justify-start items-start mr-4">
+                {propertyColumn}
+            </div>
+            <div className="flex flex-col justify-start items-end">
+                {valueColumn}
+            </div>
+        </>;
     }
 
     return (
@@ -32,7 +41,7 @@ export default async function CatalogToolDetails(
                 <h1 className="font-bold text-xl mr-2">{"Catalog tool: " + tool.tool_number}</h1>
             </div>
                 <h1 className="font-bold text-lg">Catalog data</h1>
-                <div className="flex flex-col items-start hero bg-base-200 rounded-xl p-4 mb-4">
+                <div className="flex flex-row items-start hero bg-base-200 rounded-xl p-4 mb-4">
                     {createSummary()}
                 </div>
                 <a className="btn btn-primary mr-4" href={`/specifications/new?r=c_${params.catalog_tool_id}`}>Copy</a>

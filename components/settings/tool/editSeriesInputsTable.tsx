@@ -88,12 +88,10 @@ export default function EditSeriesInputsTable(
                                                     )
                                                 }
                                             </select>
-                                            {/* <input type="number" className="bg-base-100 p-1 w-full h-full" /> */}
                                         </td>
                                         <td className="border border-slate-400">
                                             <select
                                                 className="bg-base-100 p-1 w-full h-full"
-                                                // type="text"
                                                 {...register(`series_input.${e.index}.type`, { required: true, onChange: () => setValue(`series_input.${e.index}.name`, '') })}
                                             >
                                                 <option value="cst">Constant</option>
