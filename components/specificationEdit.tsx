@@ -299,6 +299,9 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
             formMethods.setValue(`Steps.${i}.Length`, steps[i].Length);
             formMethods.setValue(`Steps.${i}.Diameter`, steps[i].Diameter);
             formMethods.setValue(`Steps.${i}.Angle`, steps[i].Angle);
+            formMethods.setValue(`Steps.${i}.Type`, steps[i].Type);
+            formMethods.setValue(`Steps.${i}.RTop`, steps[i].RTop);
+            formMethods.setValue(`Steps.${i}.RBottom`, steps[i].RBottom);
         }
     }
 

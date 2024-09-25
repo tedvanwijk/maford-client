@@ -108,7 +108,10 @@ export interface Version {
 export interface Step {
     Diameter: number,
     Length: number,
-    Angle: number
+    Angle: number,
+    Type: string,
+    RTop: number,
+    RBottom: number
 }
 
 export interface CatalogTool {
