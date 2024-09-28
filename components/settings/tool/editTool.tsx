@@ -111,6 +111,7 @@ export default function EditTool() {
         formMethods.setValue('tool_series_file_name', series.tool_series_file_name);
         formMethods.setValue('tool_series_input_range', series.tool_series_input_range);
         formMethods.setValue('tool_series_output_range', series.tool_series_output_range);
+        formMethods.setValue('straight_flute', series.straight_flute);
 
         type seriesInputColumnType = keyof SeriesInput;
         const seriesInputColumns: seriesInputColumnType[] = ['type', 'name', 'value', 'catalog_index'];
@@ -183,8 +184,14 @@ export default function EditTool() {
     async function submitChanges() {
         // TODO: error checking + loading screen
         const formData = formMethods.getValues();
+
         if (formData.series_input === undefined) formData.series_input = [];
         else formData.series_input.length = seriesInputs.length;
+
+        if (formData.straight_flute) {
+            formData.flute_count = 2;
+            formData.helix_angle = 40;
+        }
         let changedSeries;
         if (newMode) {
             changedSeries = await fetch(
@@ -300,6 +307,7 @@ export default function EditTool() {
                         addSeriesInput={addSeriesInput}
                         removeSeriesInput={removeSeriesInput}
                         toolTypeInputs={toolTypeInputs as toolTypeInput}
+                        toolType={selectedToolType as ToolType}
                     />
                     <EditCatalog
                         series={selectedSeries as Series}

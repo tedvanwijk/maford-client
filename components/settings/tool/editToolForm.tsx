@@ -1,4 +1,4 @@
-import { SeriesInput, ToolInput } from '@/app/types';
+import { SeriesInput, ToolInput, ToolType } from '@/app/types';
 import { useFormContext } from 'react-hook-form';
 import EditSeriesInputsTable from './editSeriesInputsTable';
 
@@ -8,7 +8,8 @@ export default function EditToolForm(
         seriesInputs,
         addSeriesInput,
         removeSeriesInput,
-        toolTypeInputs
+        toolTypeInputs,
+        toolType
     }: {
         enabled: boolean,
         seriesInputs: SeriesInput[],
@@ -17,10 +18,12 @@ export default function EditToolForm(
         toolTypeInputs: {
             decimalInputs: ToolInput[],
             toggleInputs: ToolInput[]
-        }
+        },
+        toolType: ToolType
     }
 ) {
-    const { register } = useFormContext();
+    const { register, watch } = useFormContext();
+    const straightFlute = watch('straight_flute', false);
     return (
         <div className='flex flex-col justify-start items-start'>
             <div className='font-bold'>
@@ -35,7 +38,7 @@ export default function EditToolForm(
                             </div>
                         </label>
                         <input
-                            {...register('name', {required: true, disabled: !enabled})}
+                            {...register('name', { required: true, disabled: !enabled })}
                             type="text"
                             placeholder="Enter value"
                             className="input input-bordered w-full"
@@ -48,12 +51,29 @@ export default function EditToolForm(
                             </div>
                         </label>
                         <input
-                            {...register('flute_count', {required: true, disabled: !enabled})}
+                            {...register('flute_count', { required: true, disabled: (!enabled || straightFlute) })}
                             type="number"
                             placeholder="Enter value"
                             className="input input-bordered w-full"
                         />
                     </div>
+                    {
+                        toolType.name === 'Drill' ?
+                            <div className="flex flex-col mb-1">
+                                <label className="form-control transition-opacity">
+                                    <div className="label">
+                                        <span>Straight Flute</span>
+                                    </div>
+                                </label>
+                                <input
+                                    {...register('straight_flute', { disabled: !enabled })}
+                                    placeholder="Enter value"
+                                    type="checkbox"
+                                    className="toggle toggle-primary my-auto"
+                                />
+                            </div> :
+                            ''
+                    }
 
                 </div>
 
@@ -65,7 +85,7 @@ export default function EditToolForm(
                             </div>
                         </label>
                         <input
-                            {...register('helix_angle', {required: true, disabled: !enabled})}
+                            {...register('helix_angle', { required: true, disabled: (!enabled || straightFlute) })}
                             type="number"
                             placeholder="Enter value"
                             className="input input-bordered w-full"
@@ -78,7 +98,7 @@ export default function EditToolForm(
                             </div>
                         </label>
                         <input
-                            {...register('tool_series_file_name', {required: true, disabled: !enabled})}
+                            {...register('tool_series_file_name', { required: true, disabled: !enabled })}
                             type="text"
                             placeholder="Enter value"
                             className="input input-bordered w-full"
@@ -95,7 +115,7 @@ export default function EditToolForm(
                             </div>
                         </label>
                         <input
-                            {...register('tool_series_input_range', {required: true, disabled: !enabled})}
+                            {...register('tool_series_input_range', { required: true, disabled: !enabled })}
                             type="text"
                             placeholder="Enter value"
                             className="input input-bordered w-full"
@@ -108,7 +128,7 @@ export default function EditToolForm(
                             </div>
                         </label>
                         <input
-                            {...register('tool_series_output_range', {required: true, disabled: !enabled})}
+                            {...register('tool_series_output_range', { required: true, disabled: !enabled })}
                             type="text"
                             placeholder="Enter value"
                             className="input input-bordered w-full"

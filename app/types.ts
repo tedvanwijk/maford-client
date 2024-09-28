@@ -78,7 +78,8 @@ export interface Series {
     tool_series_input_range: string,
     tools?: ToolType,
     catalog_updated: Date,
-    _count?: any
+    _count?: any,
+    straight_flute: boolean
 }
 
 export interface SeriesInput {
