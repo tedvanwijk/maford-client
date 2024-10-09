@@ -183,18 +183,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         setCommonInputs(res.commonToolInputs);
 
         if (data.StepTool) copySteps(data.Steps);
-        for (const [key, value] of Object.entries(data)) {
-            const inputProperties = res.toolInputs.filter((e: ToolInput) => e.property_name === key);
-            const commonInputProperties = res.commonToolInputs.filter((e: ToolInput) => e.property_name === key);
-            if (inputProperties.length === 0 && commonInputProperties.length === 0) {
-                continue;
-            } else if (inputProperties.length === 0) {
-                formMethods.setValue(commonInputProperties[0].property_name, value);
-            } else {
-                formMethods.setValue(inputProperties[0].property_name, value);
-            }
-        }
-        formMethods.trigger()
+        enterValues(data);
         setToolType(data.ToolType);
         changeSeries(data.ToolSeries);
         enterDefaultValues(defaultValues);
@@ -234,19 +223,21 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         setCommonInputs(res.commonToolInputs);
 
         if (data.StepTool) copySteps(data.Steps);
-        for (const [key, value] of Object.entries(data)) {
-            const inputProperties = res.toolInputs.filter((e: ToolInput) => e.property_name === key);
-            const commonInputProperties = res.commonToolInputs.filter((e: ToolInput) => e.property_name === key);
-            if (inputProperties.length === 0 && commonInputProperties.length === 0) {
-                continue;
-            } else if (inputProperties.length === 0) {
-                formMethods.setValue(commonInputProperties[0].property_name, value);
-            } else {
-                formMethods.setValue(inputProperties[0].property_name, value);
-            }
-        }
+        enterValues(data);
         setToolType(data.ToolType);
         changeSeries(data.ToolSeries);
+    }
+
+    function enterValues(values: any, category = '') {
+        for (const [key, value] of Object.entries(values)) {
+            let id = key;
+            // if category is not empty, it is a subset (e.g. prp.blablabla)
+            if (category !== '') id = `${category}.${id}`;
+            // if the value itself is an object, it means it is a separate category, call this function again with that value
+            // and the key name as the category
+            if (typeof value === 'object') enterValues(value, key);
+            formMethods.setValue(id, value);
+        }
     }
 
     function copySteps(steps: Step[]) {
