@@ -39,7 +39,10 @@ export interface ToolInputRule {
     tool_input_dependency_id_2: number,
     rule_type: string,
     disable: boolean,
-    check_value: string
+    check_value: string,
+    tool_dependency_inputs_1: ToolInput,
+    tool_dependency_inputs_2: ToolInput,
+    tool_inputs: ToolInput
 }
 
 export interface Specification {

@@ -2,18 +2,12 @@ import { SeriesInput, Series } from "@/app/types";
 
 export default function ToolSeriesInput(
     {
-        formData,
-        setFormData,
         selectedSeries,
-        seriesInputsShown,
         changeSeries,
         series,
     }:
         {
-            formData: { [k: string]: any },
-            setFormData: Function,
             selectedSeries: number,
-            seriesInputsShown: SeriesInput[] | null,
             changeSeries: Function,
             series: Series[],
         }

@@ -6,19 +6,18 @@ export default function SpecificationForm(
     {
         inputs,
         inputRules,
-        formData,
-        common,
-        toolSeriesInput
+        toolSeriesInput,
+        type
     }: {
         inputs: ToolInput[],
         inputRules: ToolInputRule[],
-        formData: any,
-        common: boolean,
-        toolSeriesInput?: React.ReactNode
+        toolSeriesInput?: React.ReactNode,
+        type: string
     }
 ) {
-    const { register } = useFormContext();
+    const { register, watch } = useFormContext();
     function generateGroup(inputs: ToolInput[]) {
+        const formData = watch();
         let groupElements: React.ReactNode[] = [];
         for (let i = 0; i < inputs.length; i++) {
             const input = inputs[i];
@@ -36,10 +35,10 @@ export default function SpecificationForm(
                 disabled = true;
                 additionalClasses = 'opacity-30';
                 for (const rule of rules) {
-                    let dependencyValue1 = formData[rule.tool_input_dependency_id_1.toString()];
+                    let dependencyValue1 = formData[rule.tool_dependency_inputs_1.property_name];
                     let dependencyValue2;
                     if (rule.tool_input_dependency_id_2 !== null) {
-                        dependencyValue2 = formData[rule.tool_input_dependency_id_2.toString()];
+                        dependencyValue2 = formData[rule.tool_dependency_inputs_2.property_name];
                     }
                     if (dependencyValue1 === '' || dependencyValue2 === '') continue;
 
@@ -90,7 +89,8 @@ export default function SpecificationForm(
             }
 
             let inputElement: React.ReactNode;
-            const registerId = common ? input.property_name : input.tool_input_id.toString();
+            let registerId = input.property_name;
+            if (type !== 'General') registerId = `${type}.${registerId}`;
             switch (input.type) {
                 case 'decimal':
                     inputElement = <input

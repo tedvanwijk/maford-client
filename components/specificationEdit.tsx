@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, FormEvent, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, FormProvider } from 'react-hook-form';
 import { apiUrl } from "@/lib/api";
@@ -8,7 +8,6 @@ import SpecificationStep from "@/components/specificationStep";
 import SpecificationForm from "@/components/specificationForm";
 import StepForm from "@/components/stepForm";
 import { ToolInput, InputCategory, ToolInputRule, ToolType, CommonToolInput, SeriesInput, Series, Step, DefaultValue } from "@/app/types";
-import SeriesForm from "@/components/seriesForm";
 import ToolSeriesInput from "@/components/toolSeriesInput";
 
 function New({ viewOnly = false }: { viewOnly: boolean }) {
@@ -20,13 +19,10 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
     const [inputs, setInputs]: [ToolInput[], Function] = useState([]);
     const [commonInputs, setCommonInputs] = useState([]);
     const [inputRules, setInputRules] = useState([]);
-    const [formData, setFormData]: [{ [k: string]: any }, Function] = useState({});
     const [saveWindowOpen, setSaveWindowOpen] = useState(false);
     const [specName, setSpecName] = useState('');
-    const [seriesFormData, setSeriesFormData]: [{ [k: string]: any }, Function] = useState({});
     const [seriesInputs, setSeriesInputs] = useState<SeriesInput[] | null>(null);
     const [selectedSeries, setSelectedSeries] = useState(-1);
-    const [seriesInputsShown, setSeriesInputsShown] = useState<SeriesInput[] | null>(null);
     const [series, setSeries]: [Series[], Function] = useState([]);
     const [stepCount, setStepCount] = useState(0);
     const formMethods = useForm({ mode: 'onChange' });
@@ -63,15 +59,6 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         }
     }
 
-    function handleFormSubmit(data: object) {
-        // const formData = new FormData(e.currentTarget);
-        // setFormData(formData);
-    }
-
-    function handleFormChange(e: FormEvent<HTMLFormElement>) {
-        setFormData(formMethods.getValues())
-    }
-
     function changeSeries(seriesId: number) {
         fetch(
             `${apiUrl}/series/${seriesId}/inputs`,
@@ -82,6 +69,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         )
             .then(res => res.json())
             .then(res => {
+                // TODO: remove?
                 setSeriesInputs(res);
                 const seriesInputsShown = res.filter((e: SeriesInput) => e.type === 'toggle');
                 let formData: { [k: string]: any } = {};
@@ -91,34 +79,22 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                             formData[e.name] = false
                     }
                 });
-                setSeriesFormData(formData);
-                setSeriesInputsShown(seriesInputsShown);
             });
         setSelectedSeries(seriesId);
     }
 
     // TODO: for some reason, some inputs are added to the formData object by default and others only after the input has changed
     async function saveSpecification(stayOnPage = false) {
+        // hard copy form data
         let formDataCopy = { ...formMethods.getValues() }
         for (const [key, value] of Object.entries(formDataCopy)) {
-            if (isNaN(+key)) continue;
-            const inputProperty = inputs.filter((e: ToolInput) => e.tool_input_id === parseInt(key))[0].property_name;
-            // form-handler gives a value of undefined when an input is disabled. We set it to 0 so the controller does not give an error and the tolerance sheets work properly
-            formDataCopy[inputProperty] = value === undefined ? 0 : value;
-            delete formDataCopy[key];
+            if (value === undefined) {
+                formDataCopy[key] = 0;
+            }
         }
 
-        // formData.ToolSeries = series.find((e: Series) => e.series_id === selectedSeries)?.name;
+        // add variables to formData obj that are not in the form
         formDataCopy.ToolSeries = selectedSeries;
-
-        if (toolType === 0) {
-            // End mill
-            formDataCopy.LOF = formDataCopy.LOC;
-        } else if (toolType === 1) {
-            // Drill
-            formDataCopy.LOC = formDataCopy.LOF;
-        }
-
         formDataCopy.ToolType = toolType;
         formDataCopy.specName = specName;
         formDataCopy.user_id = parseInt(localStorage.getItem('user_id') || '-1');
@@ -135,6 +111,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                     }
                     seriesInputArray.push(value);
                     break;
+                case 'unit':
                 case 'cst':
                     seriesInputArray.push(e.value);
                     break;
@@ -205,30 +182,21 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         setInputRules(res.toolInputRules);
         setCommonInputs(res.commonToolInputs);
 
-        // tool inputs are registered by id (except common inputs) so the returned object needs to have all property names converted to ids
-        // For this reason, the data object needs to be manipulated, so we copy it so we can use the unmodified version later
-
-        const unmodifiedData = { ...data };
-
         if (data.StepTool) copySteps(data.Steps);
         for (const [key, value] of Object.entries(data)) {
             const inputProperties = res.toolInputs.filter((e: ToolInput) => e.property_name === key);
             const commonInputProperties = res.commonToolInputs.filter((e: ToolInput) => e.property_name === key);
             if (inputProperties.length === 0 && commonInputProperties.length === 0) {
-                delete data[key];
                 continue;
             } else if (inputProperties.length === 0) {
                 formMethods.setValue(commonInputProperties[0].property_name, value);
             } else {
-                formMethods.setValue(inputProperties[0].tool_input_id.toString(), value);
-                data[inputProperties[0].tool_input_id.toString()] = value;
-                delete data[key];
+                formMethods.setValue(inputProperties[0].property_name, value);
             }
         }
-        setFormData(data);
         formMethods.trigger()
-        setToolType(unmodifiedData.ToolType);
-        changeSeries(unmodifiedData.ToolSeries);
+        setToolType(data.ToolType);
+        changeSeries(data.ToolSeries);
         enterDefaultValues(defaultValues);
     }
 
@@ -265,30 +233,20 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         setInputRules(res.toolInputRules);
         setCommonInputs(res.commonToolInputs);
 
-        // tool inputs are registered by id (except common inputs) so the returned object needs to have all property names converted to ids
-        // For this reason, the data object needs to be manipulated, so we copy it so we can use the unmodified version later
-
-        const unmodifiedData = { ...data };
-
         if (data.StepTool) copySteps(data.Steps);
         for (const [key, value] of Object.entries(data)) {
             const inputProperties = res.toolInputs.filter((e: ToolInput) => e.property_name === key);
             const commonInputProperties = res.commonToolInputs.filter((e: ToolInput) => e.property_name === key);
             if (inputProperties.length === 0 && commonInputProperties.length === 0) {
-                delete data[key];
                 continue;
             } else if (inputProperties.length === 0) {
                 formMethods.setValue(commonInputProperties[0].property_name, value);
             } else {
-                formMethods.setValue(inputProperties[0].tool_input_id.toString(), value);
-                data[inputProperties[0].tool_input_id.toString()] = value;
-                delete data[key];
+                formMethods.setValue(inputProperties[0].property_name, value);
             }
         }
-        setFormData(data);
-        formMethods.trigger()
-        setToolType(unmodifiedData.ToolType);
-        changeSeries(unmodifiedData.ToolSeries);
+        setToolType(data.ToolType);
+        changeSeries(data.ToolSeries);
     }
 
     function copySteps(steps: Step[]) {
@@ -351,27 +309,20 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
             } else {
                 value = defaultValue.value;
             }
-            formMethods.setValue(defaultValues[i].tool_input_id.toString(), value);
+            formMethods.setValue(defaultValues[i].tool_inputs?.property_name as string, value);
         }
-        // TODO: when this entire garbage page has been moved over from formData to formMethods.getValues(), this can be removed
-        setFormData(formMethods.getValues())
     }
 
     const seriesInput = <ToolSeriesInput
         key={-1}
-        formData={seriesFormData}
-        setFormData={setSeriesFormData}
         selectedSeries={selectedSeries}
-        seriesInputsShown={seriesInputsShown}
         changeSeries={changeSeries}
         series={series}
     />
 
     return (
         <>
-
             <dialog className={`modal ${saveWindowOpen ? 'modal-open' : ''}`} id="modal">
-
                 <div className="modal-box p-0">
                     <form onSubmit={e => {
                         e.preventDefault();
@@ -390,11 +341,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                             <button className="rounded-none btn w-[50%] btn-primary" type="submit">Create</button>
                             <button className="rounded-none btn w-[50%] btn-accent" onClick={() => saveSpecification(true)} type="button">Create and stay on this page</button>
                         </div>
-
-
                     </form>
-
-
                 </div>
 
 
@@ -405,8 +352,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
             <div className={`${viewOnly ? 'pointer-events-none' : ''} flex flex-col justify-start items-start w-full`}>
                 <FormProvider {...formMethods}>
                     <form className="w-full"
-                        onSubmit={formMethods.handleSubmit(handleFormSubmit)}
-                        onChange={handleFormChange}
+                        onSubmit={e => e.preventDefault()}
                     >
                         <SpecificationStep defaultChecked={false} stepNumber={0} header="Choose Tool Type" enabled={currentStep >= 0} forceOpen={true} arrowEnabled={false}>
                             <div className="w-full flex flex-row justify-between">
@@ -454,8 +400,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                                         <SpecificationForm
                                             inputs={categoryInputs}
                                             inputRules={inputRules.filter((inputRule: ToolInputRule) => categoryInputs.some((input: ToolInput) => input.tool_input_id === inputRule.tool_input_id))}
-                                            formData={formData}
-                                            common={false}
+                                            type="General"
                                             toolSeriesInput={seriesInput}
                                         />
                                     </SpecificationStep>
@@ -476,10 +421,9 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                                         arrowEnabled={!viewOnly}
                                     >
                                         <SpecificationForm
-                                            common={true}
                                             inputs={commonInputs.filter((e: CommonToolInput) => e.category_name === 'prp')}
                                             inputRules={[]}
-                                            formData={formData}
+                                            type="Prp"
                                         />
                                     </SpecificationStep>
                                     {
