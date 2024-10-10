@@ -7,12 +7,12 @@ export default function SpecificationForm(
         inputs,
         inputRules,
         toolSeriesInput,
-        type
+        type = 'General'
     }: {
         inputs: ToolInput[],
         inputRules: ToolInputRule[],
         toolSeriesInput?: React.ReactNode,
-        type: string
+        type?: string
     }
 ) {
     const { register, watch } = useFormContext();

@@ -391,7 +391,6 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                                         <SpecificationForm
                                             inputs={categoryInputs}
                                             inputRules={inputRules.filter((inputRule: ToolInputRule) => categoryInputs.some((input: ToolInput) => input.tool_input_id === inputRule.tool_input_id))}
-                                            type="General"
                                             toolSeriesInput={seriesInput}
                                         />
                                     </SpecificationStep>
