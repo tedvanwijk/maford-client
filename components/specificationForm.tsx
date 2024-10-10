@@ -15,6 +15,7 @@ export default function SpecificationForm(
         type?: string
     }
 ) {
+    console.log(type)
     const { register, watch } = useFormContext();
     function generateGroup(inputs: ToolInput[]) {
         const formData = watch();

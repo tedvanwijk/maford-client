@@ -363,7 +363,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                         {
                             inputCategories.map((e: InputCategory, i) => {
                                 const categoryInputs = inputs.filter((input: ToolInput) => input.tool_id === e.tool_id && input.tool_input_category_id === e.tool_input_category_id);
-                                if (e.name === 'step') return (
+                                if (e.name === 'Step') return (
                                     <SpecificationStep
                                         defaultChecked={viewOnly ? true : (i === 0 ? true : false)}
                                         stepNumber={i + 1}
@@ -392,6 +392,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                                             inputs={categoryInputs}
                                             inputRules={inputRules.filter((inputRule: ToolInputRule) => categoryInputs.some((input: ToolInput) => input.tool_input_id === inputRule.tool_input_id))}
                                             toolSeriesInput={seriesInput}
+                                            type={e.name || 'General'}
                                         />
                                     </SpecificationStep>
                                 )
