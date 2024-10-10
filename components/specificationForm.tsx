@@ -93,7 +93,7 @@ export default function SpecificationForm(
             switch (input.type) {
                 case 'decimal':
                     inputElement = <input
-                        {...register(registerId, {disabled})}
+                        {...register(registerId, { disabled })}
                         type="number"
                         placeholder="Enter value"
                         step="any"
@@ -103,9 +103,21 @@ export default function SpecificationForm(
                     />
                     additionalClasses += ' h-[88px]';
                     break;
+                case 'int':
+                    inputElement = <input
+                        {...register(registerId, { disabled })}
+                        type="number"
+                        placeholder="Enter value"
+                        step="1"
+                        // disabled={disabled}
+                        className="input input-bordered w-full"
+                        lang="en-US"
+                    />
+                    additionalClasses += ' h-[88px]';
+                    break;
                 case 'toggle':
                     inputElement = <input
-                        {...register(registerId, {disabled})}
+                        {...register(registerId, { disabled })}
                         type="checkbox"
                         // disabled={disabled}
                         className="toggle toggle-primary my-auto"
@@ -118,7 +130,7 @@ export default function SpecificationForm(
                             <div
                                 className="flex flex-row justify-start align-center pb-2" key={e}>
                                 <input
-                                    {...register(registerId, {disabled})}
+                                    {...register(registerId, { disabled })}
                                     type='radio'
                                     value={e}
                                     className="radio checked:bg-primary h-full"
@@ -132,7 +144,7 @@ export default function SpecificationForm(
                     break;
                 case 'text':
                     inputElement = <input
-                        {...register(registerId, {disabled})}
+                        {...register(registerId, { disabled })}
                         type="text"
                         placeholder="Enter value"
                         // disabled={disabled}
