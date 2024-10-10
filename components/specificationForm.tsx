@@ -15,7 +15,6 @@ export default function SpecificationForm(
         type?: string
     }
 ) {
-    console.log(type)
     const { register, watch } = useFormContext();
     function generateGroup(inputs: ToolInput[]) {
         const formData = watch();
@@ -31,7 +30,6 @@ export default function SpecificationForm(
             let disabled = false;
             let additionalClasses = '';
             if (rules.length > 0) {
-                rules = rules.sort(e => e.disable ? -1 : 1); // sort the rules so the disabled rules are first
                 // there are rules for this input
                 disabled = true;
                 additionalClasses = 'opacity-30';
