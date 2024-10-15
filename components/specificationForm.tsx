@@ -82,6 +82,15 @@ export default function SpecificationForm(
                             disabled = !check;
                             additionalClasses = check ? '' : 'opacity-30';
                             break;
+                        case 'not_equal':
+                            if (rule.tool_input_dependency_id_2 === null) {
+                                if (isNaN(+rule.check_value)) check = dependencyValue1 !== rule.check_value;
+                                else check = dependencyValue1 !== parseFloat(rule.check_value);
+                            } 
+                            else check = dependencyValue1 !== dependencyValue2;
+                            disabled = !check;
+                            additionalClasses = check ? '' : 'opacity-30';
+                            break;
                     }
 
                     if (check && rule.disable) {
