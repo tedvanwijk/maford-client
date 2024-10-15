@@ -62,19 +62,22 @@ export default function SpecificationForm(
                             additionalClasses = dependencyValue1 ? 'opacity-30' : '';
                             break;
                         case 'greater_than':
-                            // if (dependencyValue1 === '' || dependencyValue2 === '') break;
-                            check = dependencyValue1 > dependencyValue2;
+                            if (rule.tool_input_dependency_id_2 === null) check = dependencyValue1 > rule.check_value;
+                            else check = dependencyValue1 > dependencyValue2;
                             disabled = !check;
                             additionalClasses = check ? '' : 'opacity-30';
                             break;
                         case 'less_than':
-                            // if (dependencyValue1 === '' || dependencyValue2 === '') break;
-                            check = dependencyValue1 < dependencyValue2;
+                            if (rule.tool_input_dependency_id_2 === null) check = dependencyValue1 < rule.check_value;
+                            else check = dependencyValue1 < dependencyValue2;
                             disabled = !check;
                             additionalClasses = check ? '' : 'opacity-30';
                             break;
                         case 'equal':
-                            if (rule.tool_input_dependency_id_2 === null) check = dependencyValue1 === rule.check_value;
+                            if (rule.tool_input_dependency_id_2 === null) {
+                                if (isNaN(+rule.check_value)) check = dependencyValue1 === rule.check_value;
+                                else check = dependencyValue1 === parseFloat(rule.check_value);
+                            } 
                             else check = dependencyValue1 === dependencyValue2;
                             disabled = !check;
                             additionalClasses = check ? '' : 'opacity-30';
