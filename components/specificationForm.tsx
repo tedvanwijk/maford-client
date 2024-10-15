@@ -53,25 +53,17 @@ export default function SpecificationForm(
                     switch (rule.rule_type) {
                         case 'enabled':
                             check = dependencyValue1;
-                            disabled = !check;
-                            additionalClasses = check ? '' : 'opacity-30';
                             break;
                         case 'disabled':
                             check = !dependencyValue1;
-                            disabled = !check;
-                            additionalClasses = check ? '' : 'opacity-30';
                             break;
                         case 'greater_than':
                             if (rule.tool_input_dependency_id_2 === null) check = dependencyValue1 > rule.check_value;
                             else check = dependencyValue1 > dependencyValue2;
-                            disabled = !check;
-                            additionalClasses = check ? '' : 'opacity-30';
                             break;
                         case 'less_than':
                             if (rule.tool_input_dependency_id_2 === null) check = dependencyValue1 < rule.check_value;
                             else check = dependencyValue1 < dependencyValue2;
-                            disabled = !check;
-                            additionalClasses = check ? '' : 'opacity-30';
                             break;
                         case 'equal':
                             if (rule.tool_input_dependency_id_2 === null) {
@@ -79,8 +71,6 @@ export default function SpecificationForm(
                                 else check = dependencyValue1 === parseFloat(rule.check_value);
                             } 
                             else check = dependencyValue1 === dependencyValue2;
-                            disabled = !check;
-                            additionalClasses = check ? '' : 'opacity-30';
                             break;
                         case 'not_equal':
                             if (rule.tool_input_dependency_id_2 === null) {
@@ -88,10 +78,11 @@ export default function SpecificationForm(
                                 else check = dependencyValue1 !== parseFloat(rule.check_value);
                             } 
                             else check = dependencyValue1 !== dependencyValue2;
-                            disabled = !check;
-                            additionalClasses = check ? '' : 'opacity-30';
                             break;
                     }
+
+                    disabled = !check;
+                    additionalClasses = check ? '' : 'opacity-30';
 
                     if (check && rule.disable) {
                         // if the current rule being check has disabled = true, it takes priority and cancels the loop if the rule is validated
