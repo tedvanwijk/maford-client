@@ -35,9 +35,14 @@ export default function SpecificationForm(
                 additionalClasses = 'opacity-30';
                 for (const rule of rules) {
                     let dependencyValue1 = formData[rule.tool_dependency_inputs_1.property_name];
+                    if (rule.tool_dependency_inputs_1.tool_input_categories?.name !== null && rule.tool_dependency_inputs_1.tool_input_categories?.name !== undefined && formData[rule.tool_dependency_inputs_1.tool_input_categories.name] !== undefined) 
+                        dependencyValue1 = formData[rule.tool_dependency_inputs_1.tool_input_categories.name][rule.tool_dependency_inputs_1.property_name];
+
                     let dependencyValue2;
                     if (rule.tool_input_dependency_id_2 !== null) {
                         dependencyValue2 = formData[rule.tool_dependency_inputs_2.property_name];
+                        if (rule.tool_dependency_inputs_2.tool_input_categories?.name !== null && rule.tool_dependency_inputs_2.tool_input_categories?.name !== undefined && formData[rule.tool_dependency_inputs_2.tool_input_categories.name] !== undefined)
+                            dependencyValue2 = formData[rule.tool_dependency_inputs_2.tool_input_categories.name][rule.tool_dependency_inputs_2.property_name];
                     }
                     if (dependencyValue1 === '' || dependencyValue2 === '') continue;
 

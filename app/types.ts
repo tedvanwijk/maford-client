@@ -19,7 +19,8 @@ export interface ToolInput {
     type: string,
     group: number,
     required: boolean,
-    options: string[]
+    options: string[],
+    tool_input_categories?: InputCategory
 }
 
 export interface CommonToolInput {
