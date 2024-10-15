@@ -54,12 +54,12 @@ export default function SpecificationForm(
                         case 'enabled':
                             check = dependencyValue1;
                             disabled = !check;
-                            additionalClasses = dependencyValue1 ? '' : 'opacity-30';
+                            additionalClasses = check ? '' : 'opacity-30';
                             break;
                         case 'disabled':
-                            check = dependencyValue1;
-                            disabled = Boolean(check);
-                            additionalClasses = dependencyValue1 ? 'opacity-30' : '';
+                            check = !dependencyValue1;
+                            disabled = !check;
+                            additionalClasses = check ? '' : 'opacity-30';
                             break;
                         case 'greater_than':
                             if (rule.tool_input_dependency_id_2 === null) check = dependencyValue1 > rule.check_value;
