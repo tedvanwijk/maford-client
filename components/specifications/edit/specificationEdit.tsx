@@ -224,8 +224,8 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
             .then(res => res.json());
         setInputCategories(res.toolCategories);
         if (data.StepTool) copySteps(data.Steps);
-        copyCenters(data.Center);
         enterValues(data);
+        copyCenters(data.Center);
         setToolType(data.ToolType);
         changeSeries(data.ToolSeries);
     }
