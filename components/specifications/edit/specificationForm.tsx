@@ -28,12 +28,12 @@ export default function SpecificationForm(
                 continue
             }
 
-            if (input.property_name === 'UpperCenter') {
+            if (input.property_name === 'UpperCenterType') {
                 groupElements.push(upperCenterDropdown);
                 continue
             }
 
-            if (input.property_name === 'LowerCenter') {
+            if (input.property_name === 'LowerCenterType') {
                 groupElements.push(lowerCenterDropdown);
                 continue
             }

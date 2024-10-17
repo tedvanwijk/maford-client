@@ -133,3 +133,8 @@ export interface CenterType {
     center_type_id: number,
     name: string
 }
+
+export interface CenterInfo {
+    LowerCenterType: string,
+    UpperCenterType: string
+}

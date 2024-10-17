@@ -7,7 +7,7 @@ import { apiUrl } from "@/lib/api";
 import SpecificationStep from "@/components/specifications/edit/specificationStep";
 import SpecificationForm from "@/components/specifications/edit/specificationForm";
 import StepForm from "@/components/specifications/edit/stepForm";
-import { InputCategory, ToolType, Series, Step, DefaultValue, SeriesInput } from "@/app/types";
+import { InputCategory, ToolType, Series, Step, DefaultValue, SeriesInput, CenterInfo, CenterType } from "@/app/types";
 import ToolSeriesInput from "@/components/specifications/edit/toolSeriesInput";
 import CenterDropdown from "./centerDropdown";
 
@@ -23,6 +23,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
     const [selectedSeries, setSelectedSeries] = useState(-1);
     const [series, setSeries]: [Series[], Function] = useState([]);
     const [stepCount, setStepCount] = useState(0);
+    const [centers, setCenters] = useState<CenterType[]>([]);
     const formMethods = useForm({ mode: 'onChange' });
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -43,6 +44,15 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                     else copyTool();
                 }
             });
+        fetch(
+            `${apiUrl}/centers`,
+            {
+                method: "GET",
+                cache: "no-cache"
+            }
+        )
+            .then(res => res.json())
+            .then(res => setCenters(res));
     }, []);
 
     function changeStepCount(increase: boolean) {
@@ -214,6 +224,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
             .then(res => res.json());
         setInputCategories(res.toolCategories);
         if (data.StepTool) copySteps(data.Steps);
+        copyCenters(data.Center);
         enterValues(data);
         setToolType(data.ToolType);
         changeSeries(data.ToolSeries);
@@ -243,6 +254,15 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
             formMethods.setValue(`Steps.${i}.RTop`, steps[i].RTop);
             formMethods.setValue(`Steps.${i}.RBottom`, steps[i].RBottom);
         }
+    }
+
+    function copyCenters(centerInfo: CenterInfo | undefined) {
+        if (centerInfo === undefined || centerInfo === null) return;
+
+        if (centerInfo.LowerCenterType !== '' && centerInfo.LowerCenterType !== undefined) formMethods.setValue('Center.LowerCenterType', centerInfo.LowerCenterType);
+        else formMethods.setValue('Center.LowerCenterType', '-1');
+        if (centerInfo.UpperCenterType !== '' && centerInfo.UpperCenterType !== undefined) formMethods.setValue('Center.UpperCenterType', centerInfo.UpperCenterType);
+        else formMethods.setValue('Center.UpperCenterType', '-1');
     }
 
     async function changeToolType(e: ToolType) {
@@ -299,8 +319,8 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         series={series}
     />
 
-    const upperCenterDropdown = <CenterDropdown type="Upper" />
-    const lowerCenterDropdown = <CenterDropdown type="Lower" />
+    const upperCenterDropdown = <CenterDropdown type="Upper" centers={centers} />
+    const lowerCenterDropdown = <CenterDropdown type="Lower" centers={centers} />
 
     return (
         <>

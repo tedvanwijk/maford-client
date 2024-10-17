@@ -1,28 +1,13 @@
 import { useFormContext } from 'react-hook-form';
-import { useEffect, useState } from 'react';
 import { CenterType } from '@/app/types';
-import { apiUrl } from '@/lib/api';
 
 export default function CenterDropdown({
-    type
+    type,
+    centers
 }: {
-    type: string
+    type: string,
+    centers: CenterType[]
 }) {
-    const [centers, setCenters] = useState<CenterType[]>([]);
-
-    useEffect(() => {
-        fetch(
-            `${apiUrl}/centers`,
-            {
-                method: "GET",
-                cache: "no-cache"
-            }
-        )
-        .then(res => res.json())
-        .then(res => setCenters(res));
-    }, [])
-
-
     const { register } = useFormContext();
     return(
         // TODO: throws a missing key warning?
@@ -31,8 +16,8 @@ export default function CenterDropdown({
                 <span>{type === 'Upper' ? 'Upper Center' : 'Lower Center'}</span>
             </div>
 
-            <select className="input input-bordered mr-4" {...register(`Center.${type}Type`)}>
-                <option value={''} key="-1">No Center</option>
+            <select className="input input-bordered mr-4" {...register(`Center.${type}CenterType`)}>
+                <option value={'-1'} key="-1">No Center</option>
                 {
                     centers.map((e: CenterType) =>
                         <option key={e.center_type_id} value={e.center_type_id}>
