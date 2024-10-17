@@ -7,30 +7,24 @@ export interface InputCategory {
     tool_input_category_id: number,
     tool_id: number,
     name: string,
-    display_title: string
+    display_title: string,
+    tool_inputs: ToolInput[],
+    tool_inputs_common: ToolInput[],
+    common: boolean
 }
 
 export interface ToolInput {
     client_name: string,
     property_name: string,
     tool_input_id: number,
-    tool_id: number,
+    tool_id?: number,
     tool_input_category_id: number,
     type: string,
     group: number,
-    required: boolean,
+    required?: boolean,
     options: string[],
-    tool_input_categories?: InputCategory
-}
-
-export interface CommonToolInput {
-    tool_input_id: number,
-    client_name: string,
-    property_name: string,
-    category_name: string,
-    type: string,
-    group: number,
-    order: number
+    tool_input_categories?: InputCategory,
+    tool_input_rules?: ToolInputRule[]
 }
 
 export interface ToolInputRule {

@@ -5,12 +5,10 @@ import { ToolInput, ToolInputRule } from "@/app/types";
 export default function SpecificationForm(
     {
         inputs,
-        inputRules,
         toolSeriesInput,
         type = 'General'
     }: {
         inputs: ToolInput[],
-        inputRules: ToolInputRule[],
         toolSeriesInput?: React.ReactNode,
         type?: string
     }
@@ -26,7 +24,7 @@ export default function SpecificationForm(
                 continue
             }
 
-            let rules: ToolInputRule[] = inputRules.filter((e: ToolInputRule) => e.tool_input_id === input.tool_input_id);
+            let rules = input.tool_input_rules as ToolInputRule[];
             let disabled = false;
             let additionalClasses = '';
             if (rules.length > 0) {

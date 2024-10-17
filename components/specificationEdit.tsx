@@ -7,7 +7,7 @@ import { apiUrl } from "@/lib/api";
 import SpecificationStep from "@/components/specificationStep";
 import SpecificationForm from "@/components/specificationForm";
 import StepForm from "@/components/stepForm";
-import { ToolInput, InputCategory, ToolInputRule, ToolType, CommonToolInput, SeriesInput, Series, Step, DefaultValue } from "@/app/types";
+import { InputCategory, ToolType, Series, Step, DefaultValue, SeriesInput } from "@/app/types";
 import ToolSeriesInput from "@/components/toolSeriesInput";
 
 function New({ viewOnly = false }: { viewOnly: boolean }) {
@@ -16,9 +16,6 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
     const [currentStep, setCurrentStep] = useState(0);
     const [toolType, setToolType] = useState(-1);
     const [inputCategories, setInputCategories] = useState([]);
-    const [inputs, setInputs]: [ToolInput[], Function] = useState([]);
-    const [commonInputs, setCommonInputs] = useState([]);
-    const [inputRules, setInputRules] = useState([]);
     const [saveWindowOpen, setSaveWindowOpen] = useState(false);
     const [specName, setSpecName] = useState('');
     const [seriesInputs, setSeriesInputs] = useState<SeriesInput[] | null>(null);
@@ -177,10 +174,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
             }
         )
             .then(res => res.json());
-        setInputs(res.toolInputs);
         setInputCategories(res.toolCategories);
-        setInputRules(res.toolInputRules);
-        setCommonInputs(res.commonToolInputs);
 
         if (data.StepTool) copySteps(data.Steps);
         enterValues(data);
@@ -217,11 +211,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
             }
         )
             .then(res => res.json());
-        setInputs(res.toolInputs);
         setInputCategories(res.toolCategories);
-        setInputRules(res.toolInputRules);
-        setCommonInputs(res.commonToolInputs);
-
         if (data.StepTool) copySteps(data.Steps);
         enterValues(data);
         setToolType(data.ToolType);
@@ -270,10 +260,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         )
             .then(res => res.json())
             .then(res => {
-                setInputs(res.toolInputs);
                 setInputCategories(res.toolCategories);
-                setInputRules(res.toolInputRules);
-                setCommonInputs(res.commonToolInputs);
                 return res.defaultValues;
             });
         await fetch(
@@ -362,7 +349,6 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                         </SpecificationStep>
                         {
                             inputCategories.map((e: InputCategory, i) => {
-                                const categoryInputs = inputs.filter((input: ToolInput) => input.tool_id === e.tool_id && input.tool_input_category_id === e.tool_input_category_id);
                                 if (e.name === 'Step') return (
                                     <SpecificationStep
                                         defaultChecked={viewOnly ? true : (i === 0 ? true : false)}
@@ -389,8 +375,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                                         arrowEnabled={!viewOnly}
                                     >
                                         <SpecificationForm
-                                            inputs={categoryInputs}
-                                            inputRules={inputRules.filter((inputRule: ToolInputRule) => categoryInputs.some((input: ToolInput) => input.tool_input_id === inputRule.tool_input_id))}
+                                            inputs={e.tool_inputs}
                                             toolSeriesInput={seriesInput}
                                             type={e.name || 'General'}
                                         />
@@ -399,43 +384,21 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                             })
                         }
                         {
-                            toolType === -1 ?
-                                '' :
-                                <>
-                                    <SpecificationStep
-                                        stepNumber={inputCategories.length + 1}
-                                        header="Enter Sheet Data"
-                                        // enabled={currentStep >= (inputCategories.length + 1)} 
-                                        enabled={true}
-                                        forceOpen={false}
-                                        defaultChecked={viewOnly}
-                                        arrowEnabled={!viewOnly}
-                                    >
-                                        <SpecificationForm
-                                            inputs={commonInputs.filter((e: CommonToolInput) => e.category_name === 'prp')}
-                                            inputRules={[]}
-                                            type="Prp"
-                                        />
-                                    </SpecificationStep>
-                                    {
-                                        viewOnly ?
-                                            '' :
-                                            <SpecificationStep
-                                                stepNumber={inputCategories.length + 2}
-                                                header="Create Specification"
-                                                // enabled={currentStep >= (inputCategories.length + 2)} 
-                                                enabled={true}
-                                                forceOpen={true}
-                                                defaultChecked={viewOnly}
-                                                arrowEnabled={false}
+                            (toolType !== -1 && !viewOnly) ?
+                                <SpecificationStep
+                                    stepNumber={inputCategories.length + 2}
+                                    header="Create Specification"
+                                    // enabled={currentStep >= (inputCategories.length + 2)} 
+                                    enabled={true}
+                                    forceOpen={true}
+                                    defaultChecked={viewOnly}
+                                    arrowEnabled={false}
 
-                                            >
-                                                <div className="p-0 flex flex-col items-center">
-                                                    <button onClick={() => setSaveWindowOpen(true)} type="submit" className="rounded-none btn w-full btn-primary">Create</button>
-                                                </div>
-                                            </SpecificationStep>
-                                    }
-                                </>
+                                >
+                                    <div className="p-0 flex flex-col items-center">
+                                        <button onClick={() => setSaveWindowOpen(true)} type="submit" className="rounded-none btn w-full btn-primary">Create</button>
+                                    </div>
+                                </SpecificationStep> : ''
                         }
                     </form>
                 </FormProvider>
