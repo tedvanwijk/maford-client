@@ -6,10 +6,14 @@ export default function SpecificationForm(
     {
         inputs,
         toolSeriesInput,
+        upperCenterDropdown,
+        lowerCenterDropdown,
         type = 'General'
     }: {
         inputs: ToolInput[],
-        toolSeriesInput?: React.ReactNode,
+        toolSeriesInput: React.ReactNode,
+        upperCenterDropdown: React.ReactNode
+        lowerCenterDropdown: React.ReactNode
         type?: string
     }
 ) {
@@ -21,6 +25,16 @@ export default function SpecificationForm(
             const input = inputs[i];
             if (input.property_name === 'ToolSeries') {
                 groupElements.push(toolSeriesInput);
+                continue
+            }
+
+            if (input.property_name === 'UpperCenter') {
+                groupElements.push(upperCenterDropdown);
+                continue
+            }
+
+            if (input.property_name === 'LowerCenter') {
+                groupElements.push(lowerCenterDropdown);
                 continue
             }
 

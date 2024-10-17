@@ -9,6 +9,7 @@ import SpecificationForm from "@/components/specifications/edit/specificationFor
 import StepForm from "@/components/specifications/edit/stepForm";
 import { InputCategory, ToolType, Series, Step, DefaultValue, SeriesInput } from "@/app/types";
 import ToolSeriesInput from "@/components/specifications/edit/toolSeriesInput";
+import CenterDropdown from "./centerDropdown";
 
 function New({ viewOnly = false }: { viewOnly: boolean }) {
     // TODO: remove all tool series input stuff. Only the tool series needs to be selected, but no custom inputs need to be generated
@@ -298,6 +299,9 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         series={series}
     />
 
+    const upperCenterDropdown = <CenterDropdown type="Upper" />
+    const lowerCenterDropdown = <CenterDropdown type="Lower" />
+
     return (
         <>
             <dialog className={`modal ${saveWindowOpen ? 'modal-open' : ''}`} id="modal">
@@ -377,6 +381,8 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                                         <SpecificationForm
                                             inputs={e.tool_inputs}
                                             toolSeriesInput={seriesInput}
+                                            upperCenterDropdown={upperCenterDropdown}
+                                            lowerCenterDropdown={lowerCenterDropdown}
                                             type={e.name || 'General'}
                                         />
                                     </SpecificationStep>

@@ -128,3 +128,8 @@ export interface DefaultValue {
     value: string,
     tool_inputs?: ToolInput
 }
+
+export interface CenterType {
+    center_type_id: number,
+    name: string
+}
