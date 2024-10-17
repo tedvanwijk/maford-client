@@ -319,8 +319,8 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         series={series}
     />
 
-    const upperCenterDropdown = <CenterDropdown type="Upper" centers={centers} />
-    const lowerCenterDropdown = <CenterDropdown type="Lower" centers={centers} />
+    const upperCenterDropdown = <CenterDropdown type="Upper" centers={centers} key="Upper" />
+    const lowerCenterDropdown = <CenterDropdown type="Lower" centers={centers} key="Lower" />
 
     return (
         <>

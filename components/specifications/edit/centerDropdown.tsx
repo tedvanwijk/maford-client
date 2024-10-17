@@ -10,7 +10,6 @@ export default function CenterDropdown({
 }) {
     const { register } = useFormContext();
     return(
-        // TODO: throws a missing key warning?
         <label className={`form-control w-[200px] transition-opacity`}>
             <div className="label">
                 <span>{type === 'Upper' ? 'Upper Center' : 'Lower Center'}</span>
