@@ -1,4 +1,4 @@
-import SpecificationEdit from "@/components/specificationEdit";
+import SpecificationEdit from "@/components/specifications/edit/specificationEdit";
 
 export default function New() {
     return (

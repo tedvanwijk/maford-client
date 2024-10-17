@@ -1,7 +1,7 @@
 import { ToolInput } from "@/app/types";
 import { AlertCircle } from "react-feather";
 import { join } from 'path';
-import SpecificationEdit from "@/components/specificationEdit";
+import SpecificationEdit from "@/components/specifications/edit/specificationEdit";
 
 export default async function SpecificationDetails(
     { searchParams }:

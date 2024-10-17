@@ -4,11 +4,11 @@ import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, FormProvider } from 'react-hook-form';
 import { apiUrl } from "@/lib/api";
-import SpecificationStep from "@/components/specificationStep";
-import SpecificationForm from "@/components/specificationForm";
-import StepForm from "@/components/stepForm";
+import SpecificationStep from "@/components/specifications/edit/specificationStep";
+import SpecificationForm from "@/components/specifications/edit/specificationForm";
+import StepForm from "@/components/specifications/edit/stepForm";
 import { InputCategory, ToolType, Series, Step, DefaultValue, SeriesInput } from "@/app/types";
-import ToolSeriesInput from "@/components/toolSeriesInput";
+import ToolSeriesInput from "@/components/specifications/edit/toolSeriesInput";
 
 function New({ viewOnly = false }: { viewOnly: boolean }) {
     // TODO: remove all tool series input stuff. Only the tool series needs to be selected, but no custom inputs need to be generated
