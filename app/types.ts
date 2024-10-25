@@ -131,7 +131,17 @@ export interface DefaultValue {
 
 export interface CenterType {
     center_type_id: number,
-    name: string
+    name?: string,
+    d1_lower?: number,
+    d1_upper?: number,
+    d2_lower?: number,
+    d2_upper?: number,
+    a1_lower?: number,
+    a1_upper?: number,
+    a2_lower?: number,
+    a2_upper?: number,
+    l_lower?: number,
+    l_upper?: number,
 }
 
 export interface CenterInfo {

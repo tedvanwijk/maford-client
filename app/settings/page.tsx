@@ -2,6 +2,7 @@ import SettingSection from "@/components/settings/settingSection";
 import EditTool from "@/components/settings/tool/editTool";
 import General from "@/components/settings/general";
 import Users from "@/components/settings/users";
+import Centers from "@/components/settings/centers/centers";
 
 export default function Settings() {
     return(
@@ -15,6 +16,9 @@ export default function Settings() {
             </SettingSection>
             <SettingSection header="Add/Remove User">
                 <Users />
+            </SettingSection>
+            <SettingSection header="Add/Edit Center">
+                <Centers />
             </SettingSection>
         </>
     )

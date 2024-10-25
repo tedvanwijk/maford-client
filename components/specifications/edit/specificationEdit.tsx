@@ -45,7 +45,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                 }
             });
         fetch(
-            `${apiUrl}/centers`,
+            `${apiUrl}/centers?nameOnly=true`,
             {
                 method: "GET",
                 cache: "no-cache"
@@ -412,7 +412,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                         {
                             (toolType !== -1 && !viewOnly) ?
                                 <SpecificationStep
-                                    stepNumber={inputCategories.length + 2}
+                                    stepNumber={inputCategories.length + 1}
                                     header="Create Specification"
                                     // enabled={currentStep >= (inputCategories.length + 2)} 
                                     enabled={true}
