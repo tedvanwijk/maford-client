@@ -16,7 +16,8 @@ export default function Centers() {
     const [centerTypes, setCenterTypes] = useState<CenterType[]>([]);
     const [selectedCenterType, setSelectedCenterType] = useState<CenterType | CenterTypeIdOnly>({ center_type_id: -2 });
     const [applyButton, setApplyButton] = useState(<>Apply</>);
-    const formMethods = useForm({ mode: 'onChange' });
+    const disabled = selectedCenterType.center_type_id === -2;
+    const formMethods = useForm({ mode: 'onChange', disabled: disabled});
 
     useEffect(() => {
         fetch(
@@ -152,7 +153,6 @@ export default function Centers() {
             .then(() => changeCenterType(changedCenter, true));
     }
 
-    const disabled = selectedCenterType.center_type_id === -2;
     return (
         <form
             onSubmit={(e) => {

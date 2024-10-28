@@ -20,7 +20,7 @@ export default function DoubleInput({
             </label>
             <div className="flex flex-col input h-24 input-bordered w-full p-0 max-w-[249px]">
                 <input
-                    {...register(`${name}_upper`, { disabled })}
+                    {...register(`${name}_upper`)}
                     type="number"
                     step="any"
                     placeholder={`${tolerance ? 'Enter upper limit' : 'Enter value'}`}
@@ -29,14 +29,14 @@ export default function DoubleInput({
                 <hr className="border-neutral opacity-25" />
                 <div className={`relative w-full p-0 m-0 flex flex-row justify-between items-center`}>
                     <input
-                        {...register(`${name}_lower`, { disabled: (!tolerance || disabled) })}
+                        {...register(`${name}_lower`, { disabled: !tolerance })}
                         type="number"
                         step="any"
                         placeholder={tolerance ? 'Enter lower limit' : 'Enable tolerance'}
                         className="input border-none w-0 pr-0 grow rounded-t-none"
                     />
                     <input
-                        {...register(`${name}_tolerance`, { onChange: () => setValue(`${name}_lower`, undefined), disabled })}
+                        {...register(`${name}_tolerance`, { onChange: () => setValue(`${name}_lower`, undefined) })}
                         type="checkbox"
                         className="toggle toggle-primary my-0 mr-2 z-50 absolute right-0"
                     />
