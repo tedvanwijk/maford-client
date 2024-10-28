@@ -10,7 +10,7 @@ export default function DoubleInput({
     disabled: boolean
 }) {
     const { register, watch, setValue } = useFormContext();
-    const tolerance = watch(`${name}_tolerance`, true);
+    const tolerance = watch(`${name}_tolerance`);
     return (
         <div className="flex flex-col mb-1">
             <label className="form-control transition-opacity">

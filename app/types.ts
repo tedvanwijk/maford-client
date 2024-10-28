@@ -142,6 +142,10 @@ export interface CenterType {
     a2_upper?: number,
     l_lower?: number,
     l_upper?: number,
+    boss_diameter_lower?: number,
+    boss_diameter_upper?: number,
+    boss_length_lower?: number,
+    boss_length_upper?: number
 }
 
 export interface CenterInfo {

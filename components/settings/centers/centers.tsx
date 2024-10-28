@@ -36,7 +36,9 @@ export default function Centers() {
             'd2',
             'a1',
             'a2',
-            'l'
+            'l',
+            'boss_diameter',
+            'boss_length'
         ];
 
         if (c === undefined) {
@@ -54,7 +56,11 @@ export default function Centers() {
                 a2_lower: undefined,
                 a2_upper: undefined,
                 l_lower: undefined,
-                l_upper: undefined
+                l_upper: undefined,
+                boss_diameter_lower: undefined,
+                boss_diameter_upper: undefined,
+                boss_length_lower: undefined,
+                boss_length_upper: undefined
             }
             if (!disableButtonUpdate) setApplyButton(<>Create</>);
         } else {
@@ -68,7 +74,6 @@ export default function Centers() {
         for (let d of dimensionNames) {
             const lowerValue = centerType[`${d}_lower`];
             const upperValue = centerType[`${d}_upper`];
-
             formMethods.setValue(`${d}_upper`, upperValue);
             if (lowerValue !== upperValue) {
                 formMethods.setValue(`${d}_lower`, lowerValue);
@@ -148,7 +153,6 @@ export default function Centers() {
     }
 
     const disabled = selectedCenterType.center_type_id === -2;
-
     return (
         <form
             onSubmit={(e) => {
@@ -192,6 +196,10 @@ export default function Centers() {
                         <DoubleInput name="a1" displayName="A1" disabled={disabled} />
                         <DoubleInput name="a2" displayName="A2" disabled={disabled} />
                         <DoubleInput name="l" displayName="L" disabled={disabled} />
+                    </div>
+                    <div className='flex flex-col justify-start items-start mr-5'>
+                        <DoubleInput name="boss_diameter" displayName="Boss Diameter" disabled={disabled} />
+                        <DoubleInput name="boss_length" displayName="Boss Length" disabled={disabled} />
                     </div>
                 </div>
             </FormProvider>
