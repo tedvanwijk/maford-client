@@ -130,6 +130,20 @@ export default function General() {
                             />
                         </div>
 
+                        <div className="flex flex-col mb-1">
+                            <label className="form-control transition-opacity">
+                                <div className="label">
+                                    <span>Dimension Insertion Excel File</span>
+                                </div>
+                            </label>
+                            <input
+                                {...register('DimensionPath', { required: true })}
+                                type="text"
+                                placeholder="Enter value"
+                                className="input input-bordered w-full"
+                            />
+                        </div>
+
                     </div>
 
                 </div>
