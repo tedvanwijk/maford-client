@@ -68,7 +68,7 @@ export default function EditSeriesInputsTable(
                                     nameInput =
                                         <td>
                                             <select
-                                                className="bg-base-100 p-1 w-full h-full border border-slate-400"
+                                                className="bg-base-100 p-1 w-full h-full border-none"
                                                 {...register(`series_input.${e.index}.name`, { required: true })}
                                             >
                                                 {
