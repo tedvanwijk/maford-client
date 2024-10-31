@@ -1,4 +1,3 @@
-import { ToolInput } from "@/app/types";
 import { AlertCircle } from "react-feather";
 import { join } from 'path';
 import SpecificationEdit from "@/components/specifications/edit/specificationEdit";
@@ -28,6 +27,9 @@ export default async function SpecificationDetails(
         case 'failed':
             badgeClasses = 'bg-red-700 text-base-100'
             error = generateErrorContent();
+            break;
+        case 'pending':
+            badgeClasses = 'bg-accent';
             break;
     }
 
@@ -61,8 +63,13 @@ export default async function SpecificationDetails(
                     }
                 </div>
                 <div className="flex flex-row justify-end items-start">
-                    <a className="btn btn-primary mr-4" href={`/specifications/new?r=${searchParams.r}`}>Copy to New</a>
-                    <a className="btn" href={`/report?r=${searchParams.r}`}>Report Issue</a>
+                    {
+                        (spec.status === 'generating' || spec.status === 'pending') ?
+                        <a className="btn" href={`/cancel?r=${searchParams.r}`}>Cancel</a>
+                        : ''
+                    }
+                    <a className="btn ml-4" href={`/report?r=${searchParams.r}`}>Report Issue</a>
+                    <a className="btn btn-primary ml-4" href={`/specifications/new?r=${searchParams.r}`}>Copy</a>
                 </div>
             </div>
             {

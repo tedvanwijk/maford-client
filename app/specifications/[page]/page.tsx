@@ -154,9 +154,12 @@ export default async function Specifications(
                                 case 'failed':
                                     badgeClasses = 'bg-red-700 text-base-100'
                                     break;
+                                case 'pending':
+                                    badgeClasses = 'bg-accent';
+                                    break;
                             }
                             return (
-                                <tr key={e.specification_id} className="hover relative" title={e.versions.active ? "Click row to view details" : "Click row to view details. Warning: This specification was created with an older version, some features might not work as expected" }>
+                                <tr key={e.specification_id} className="hover relative" title={e.versions.active ? "Click row to view details" : "Click row to view details. Warning: This specification was created with an older version, some features might not work as expected"}>
                                     <td>
                                         <Link href={`/specifications/details?r=${e.specification_id}`} className="absolute bottom-0 left-0 top-0 right-0" />
                                         <div className="flex flex-row justify-start items-center">
