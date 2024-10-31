@@ -95,44 +95,14 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
     async function saveSpecification(stayOnPage = false) {
         // hard copy form data
         let formDataCopy = { ...formMethods.getValues() }
-        for (const [key, value] of Object.entries(formDataCopy)) {
-            if (value === undefined) {
-                formDataCopy[key] = 0;
-            }
-        }
 
         // add variables to formData obj that are not in the form
         formDataCopy.ToolSeries = selectedSeries;
         formDataCopy.ToolType = toolType;
         formDataCopy.specName = specName;
         formDataCopy.user_id = parseInt(localStorage.getItem('user_id') || '-1');
+        formDataCopy.seriesInputs = seriesInputs;
 
-        // set tolerance sheet form data as 1 input
-        let seriesInputArray: any[] = [];
-        seriesInputs?.forEach((e: SeriesInput) => {
-            let value;
-            switch (e.type) {
-                case 'var':
-                    value = formDataCopy[e.name];
-                    if (value !== undefined) {
-                        if (value.toString().startsWith('.') || value.toString().startsWith(',')) value = `0${value}`
-                    }
-                    seriesInputArray.push(value);
-                    break;
-                case 'unit':
-                case 'cst':
-                    seriesInputArray.push(e.value);
-                    break;
-                case 'toggle':
-                    value = formDataCopy[e.name];
-                    // if the toggle is set to true, we push the string in the value column, otherwise just an empty string
-                    if (value !== undefined) value ? seriesInputArray.push(e.value) : seriesInputArray.push('');
-                    break;
-                default:
-                    seriesInputArray.push(formDataCopy[e.name])
-            }
-        });
-        formDataCopy.ToolSeriesInputs = seriesInputArray;
 
         // when removing steps, the Steps property does not change length, so we need to cut it down to the amount of steps we have stored
         if (formDataCopy.StepTool) formDataCopy.Steps.length = stepCount;
@@ -146,7 +116,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(formDataCopy)
+                body: JSON.stringify(formDataCopy, (key, value) => value === undefined ? 0 : value)
             }
         )
             .then(res => res.json())
