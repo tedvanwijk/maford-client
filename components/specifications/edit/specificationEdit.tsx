@@ -271,6 +271,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
             const answer = window.confirm('Changing the tool type will reset all input parameters to their default values. Are you sure?');
             if (!answer) return;
         };
+        formMethods.reset();
         changeCurrentStep(0, true);
         const defaultValues = await fetch(
             `${apiUrl}/tool/${e.tool_id}/inputs`,
