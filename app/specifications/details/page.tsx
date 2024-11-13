@@ -1,3 +1,5 @@
+'use client'
+
 import { AlertCircle } from "react-feather";
 import { join } from 'path';
 import SpecificationEdit from "@/components/specifications/edit/specificationEdit";

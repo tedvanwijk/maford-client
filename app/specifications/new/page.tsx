@@ -1,3 +1,5 @@
+'use client'
+
 import SpecificationEdit from "@/components/specifications/edit/specificationEdit";
 
 export default function New() {
