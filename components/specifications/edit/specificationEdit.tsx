@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, FormProvider } from 'react-hook-form';
 import { apiUrl } from "@/lib/api";
@@ -11,7 +11,7 @@ import { InputCategory, ToolType, Series, Step, DefaultValue, SeriesInput, Cente
 import ToolSeriesInput from "@/components/specifications/edit/toolSeriesInput";
 import CenterDropdown from "./centerDropdown";
 
-function New({ viewOnly = false }: { viewOnly: boolean }) {
+export default function New({ viewOnly = false }: { viewOnly: boolean }) {
     // TODO: remove all tool series input stuff. Only the tool series needs to be selected, but no custom inputs need to be generated
     const [tools, setTools]: [ToolType[], Function] = useState([]);
     const [currentStep, setCurrentStep] = useState(0);
@@ -401,13 +401,5 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                 </FormProvider>
             </div>
         </>
-    )
-}
-
-export default function SpecificationEdit({ viewOnly = false }: { viewOnly: boolean }) {
-    return (
-        <Suspense>
-            <New viewOnly={viewOnly} />
-        </Suspense>
     )
 }

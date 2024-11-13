@@ -1,6 +1,7 @@
 'use client'
 
 import { AlertCircle } from "react-feather";
+import { Suspense } from "react";
 import { join } from 'path';
 import SpecificationEdit from "@/components/specifications/edit/specificationEdit";
 
@@ -67,8 +68,8 @@ export default async function SpecificationDetails(
                 <div className="flex flex-row justify-end items-start">
                     {
                         (spec.status === 'generating' || spec.status === 'pending') ?
-                        <a className="btn" href={`/cancel?r=${searchParams.r}`}>Cancel</a>
-                        : ''
+                            <a className="btn" href={`/cancel?r=${searchParams.r}`}>Cancel</a>
+                            : ''
                     }
                     <a className="btn ml-4" href={`/report?r=${searchParams.r}`}>Report Issue</a>
                     <a className="btn btn-primary ml-4" href={`/specifications/new?r=${searchParams.r}`}>Copy</a>
@@ -83,7 +84,9 @@ export default async function SpecificationDetails(
             <div className="flex flex-row justify-start items-center">
                 <h1 className="font-bold text-l mr-2 my-2">Specification Inputs</h1>
             </div>
-            <SpecificationEdit viewOnly={true} />
+            <Suspense>
+                <SpecificationEdit viewOnly={true} />
+            </Suspense>
         </>
     )
 }
