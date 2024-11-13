@@ -20,6 +20,14 @@ export default function General() {
     const { register, setValue, getValues } = useForm({ mode: 'onChange' });;
 
     useEffect(() => {
+        function setValues(customParams: CustomParam[]) {
+            setCustomParams(customParams);
+            for (let i = 0; i < customParams.length; i++) {
+                const customParam = customParams[i];
+                setValue(customParam.title, customParam.value);
+            }
+        }
+
         fetch(
             `${apiUrl}/custom_params`,
             {
@@ -29,15 +37,7 @@ export default function General() {
         )
             .then(res => res.json())
             .then(res => setValues(res));
-    }, [])
-
-    function setValues(customParams: CustomParam[]) {
-        setCustomParams(customParams);
-        for (let i = 0; i < customParams.length; i++) {
-            const customParam = customParams[i];
-            setValue(customParam.title, customParam.value);
-        }
-    }
+    }, [setValue])
 
     function submitChanges() {
         const formData = getValues();

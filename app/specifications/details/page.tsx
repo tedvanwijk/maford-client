@@ -1,5 +1,3 @@
-'use client'
-
 import { AlertCircle } from "react-feather";
 import { Suspense } from "react";
 import { join } from 'path';

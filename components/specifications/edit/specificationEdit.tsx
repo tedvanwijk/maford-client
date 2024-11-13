@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, FormProvider } from 'react-hook-form';
 import { apiUrl } from "@/lib/api";
@@ -27,8 +27,163 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
     const formMethods = useForm({ mode: 'onChange' });
     const router = useRouter();
     const searchParams = useSearchParams();
-    const referenceSpecification = searchParams.get('r')
+    const referenceSpecification = searchParams.get('r');
+
+    const enterDefaultValues = useCallback((defaultValues: DefaultValue[]) => {
+        for (let i = 0; i < defaultValues.length; i++) {
+            const defaultValue = defaultValues[i];
+            let value;
+            if (defaultValue.tool_inputs?.type === 'toggle') {
+                value = defaultValue.value === 'true';
+            } else if (defaultValue.tool_inputs?.type === 'decimal') {
+                value = parseFloat(defaultValue.value);
+            } else {
+                value = defaultValue.value;
+            }
+            formMethods.setValue(defaultValues[i].tool_inputs?.property_name as string, value);
+        }
+    }, [formMethods]);
+
+    const changeCurrentStep = useCallback((stepEdited: number, reset = false) => {
+        if (reset) setCurrentStep(stepEdited + 1);
+        else {
+            if (currentStep <= stepEdited) setCurrentStep(stepEdited + 1);
+        }
+    }, [currentStep])
+
     useEffect(() => {
+        function changeSeries(seriesId: number) {
+            fetch(
+                `${apiUrl}/series/${seriesId}/inputs`,
+                {
+                    method: 'GET',
+                    cache: 'no-cache'
+                }
+            )
+                .then(res => res.json())
+                .then(res => {
+                    // TODO: remove?
+                    setSeriesInputs(res);
+                    const seriesInputsShown = res.filter((e: SeriesInput) => e.type === 'toggle');
+                    let formData: { [k: string]: any } = {};
+                    seriesInputsShown.forEach((e: SeriesInput) => {
+                        switch (e.type) {
+                            case 'toggle':
+                                formData[e.name] = false
+                        }
+                    });
+                });
+            setSelectedSeries(seriesId);
+        }
+
+        async function copyCatalogTool() {
+            const result = await fetch(
+                `${apiUrl}/catalog/${referenceSpecification?.split('_')[1]}/copy`,
+                {
+                    method: "GET",
+                    cache: "no-cache"
+                }
+            )
+                .then(res => res.json());
+            const { data, defaultValues } = result;
+            changeCurrentStep(0, true);
+            await fetch(
+                `${apiUrl}/series/tool_id/${data.ToolType}`,
+                {
+                    method: 'GET',
+                    cache: 'no-cache'
+                }
+            )
+                .then(res => res.json())
+                .then(res => setSeries(res));
+            const res = await fetch(
+                `${apiUrl}/tool/${data.ToolType}/inputs`,
+                {
+                    method: 'GET',
+                    cache: 'no-cache'
+                }
+            )
+                .then(res => res.json());
+            setInputCategories(res.toolCategories);
+    
+            if (data.StepTool) copySteps(data.Steps);
+            enterValues(data);
+            setToolType(data.ToolType);
+            changeSeries(data.ToolSeries);
+            enterDefaultValues(defaultValues);
+        }
+    
+        async function copyTool() {
+            const data = await fetch(
+                `${apiUrl}/specification/${referenceSpecification}`,
+                {
+                    method: "GET",
+                    cache: "no-cache"
+                }
+            )
+                .then(res => res.json())
+                .then(res => res.data);
+            changeCurrentStep(0, true);
+            await fetch(
+                `${apiUrl}/series/tool_id/${data.ToolType}`,
+                {
+                    method: 'GET',
+                    cache: 'no-cache'
+                }
+            )
+                .then(res => res.json())
+                .then(res => setSeries(res));
+            const res = await fetch(
+                `${apiUrl}/tool/${data.ToolType}/inputs`,
+                {
+                    method: 'GET',
+                    cache: 'no-cache'
+                }
+            )
+                .then(res => res.json());
+            setInputCategories(res.toolCategories);
+            if (data.StepTool) copySteps(data.Steps);
+            enterValues(data);
+            copyCenters(data.Center);
+            setToolType(data.ToolType);
+            changeSeries(data.ToolSeries);
+        }
+
+        function enterValues(values: any, category = '') {
+            for (const [key, value] of Object.entries(values)) {
+                let id = key;
+                // if category is not empty, it is a subset (e.g. prp.blablabla)
+                if (category !== '') id = `${category}.${id}`;
+                // if the value itself is an object, it means it is a separate category, call this function again with that value
+                // and the key name as the category
+                if (typeof value === 'object') enterValues(value, key);
+                formMethods.setValue(id, value);
+            }
+        }
+    
+        function copySteps(steps: Step[]) {
+            let stepCount = steps.length;
+            formMethods.setValue('StepTool', true);
+            setStepCount(stepCount);
+            for (let i = 0; i < stepCount; i++) {
+                formMethods.setValue(`Steps.${i}.Length`, steps[i].Length);
+                formMethods.setValue(`Steps.${i}.Diameter`, steps[i].Diameter);
+                formMethods.setValue(`Steps.${i}.Angle`, steps[i].Angle);
+                formMethods.setValue(`Steps.${i}.Type`, steps[i].Type);
+                formMethods.setValue(`Steps.${i}.RTop`, steps[i].RTop);
+                formMethods.setValue(`Steps.${i}.RBottom`, steps[i].RBottom);
+            }
+        }
+    
+        function copyCenters(centerInfo: CenterInfo | undefined) {
+            if (centerInfo === undefined || centerInfo === null) return;
+    
+            if (centerInfo.LowerCenterType !== '' && centerInfo.LowerCenterType !== undefined) formMethods.setValue('Center.LowerCenterType', centerInfo.LowerCenterType);
+            else formMethods.setValue('Center.LowerCenterType', '-1');
+            if (centerInfo.UpperCenterType !== '' && centerInfo.UpperCenterType !== undefined) formMethods.setValue('Center.UpperCenterType', centerInfo.UpperCenterType);
+            else formMethods.setValue('Center.UpperCenterType', '-1');
+        }
+
         fetch(
             `${apiUrl}/tools`,
             {
@@ -53,18 +208,11 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
         )
             .then(res => res.json())
             .then(res => setCenters(res));
-    }, []);
+    }, [referenceSpecification, formMethods, changeCurrentStep, enterDefaultValues]);
 
     function changeStepCount(increase: boolean) {
         if (!increase && stepCount === 0) return;
         setStepCount(stepCount + (increase ? 1 : -1));
-    }
-
-    function changeCurrentStep(stepEdited: number, reset = false) {
-        if (reset) setCurrentStep(stepEdited + 1);
-        else {
-            if (currentStep <= stepEdited) setCurrentStep(stepEdited + 1);
-        }
     }
 
     function changeSeries(seriesId: number) {
@@ -127,114 +275,6 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
             })
     }
 
-    async function copyCatalogTool() {
-        const result = await fetch(
-            `${apiUrl}/catalog/${referenceSpecification?.split('_')[1]}/copy`,
-            {
-                method: "GET",
-                cache: "no-cache"
-            }
-        )
-            .then(res => res.json());
-        const { data, defaultValues } = result;
-        changeCurrentStep(0, true);
-        await fetch(
-            `${apiUrl}/series/tool_id/${data.ToolType}`,
-            {
-                method: 'GET',
-                cache: 'no-cache'
-            }
-        )
-            .then(res => res.json())
-            .then(res => setSeries(res));
-        const res = await fetch(
-            `${apiUrl}/tool/${data.ToolType}/inputs`,
-            {
-                method: 'GET',
-                cache: 'no-cache'
-            }
-        )
-            .then(res => res.json());
-        setInputCategories(res.toolCategories);
-
-        if (data.StepTool) copySteps(data.Steps);
-        enterValues(data);
-        setToolType(data.ToolType);
-        changeSeries(data.ToolSeries);
-        enterDefaultValues(defaultValues);
-    }
-
-    async function copyTool() {
-        const data = await fetch(
-            `${apiUrl}/specification/${referenceSpecification}`,
-            {
-                method: "GET",
-                cache: "no-cache"
-            }
-        )
-            .then(res => res.json())
-            .then(res => res.data);
-        changeCurrentStep(0, true);
-        await fetch(
-            `${apiUrl}/series/tool_id/${data.ToolType}`,
-            {
-                method: 'GET',
-                cache: 'no-cache'
-            }
-        )
-            .then(res => res.json())
-            .then(res => setSeries(res));
-        const res = await fetch(
-            `${apiUrl}/tool/${data.ToolType}/inputs`,
-            {
-                method: 'GET',
-                cache: 'no-cache'
-            }
-        )
-            .then(res => res.json());
-        setInputCategories(res.toolCategories);
-        if (data.StepTool) copySteps(data.Steps);
-        enterValues(data);
-        copyCenters(data.Center);
-        setToolType(data.ToolType);
-        changeSeries(data.ToolSeries);
-    }
-
-    function enterValues(values: any, category = '') {
-        for (const [key, value] of Object.entries(values)) {
-            let id = key;
-            // if category is not empty, it is a subset (e.g. prp.blablabla)
-            if (category !== '') id = `${category}.${id}`;
-            // if the value itself is an object, it means it is a separate category, call this function again with that value
-            // and the key name as the category
-            if (typeof value === 'object') enterValues(value, key);
-            formMethods.setValue(id, value);
-        }
-    }
-
-    function copySteps(steps: Step[]) {
-        let stepCount = steps.length;
-        formMethods.setValue('StepTool', true);
-        setStepCount(stepCount);
-        for (let i = 0; i < stepCount; i++) {
-            formMethods.setValue(`Steps.${i}.Length`, steps[i].Length);
-            formMethods.setValue(`Steps.${i}.Diameter`, steps[i].Diameter);
-            formMethods.setValue(`Steps.${i}.Angle`, steps[i].Angle);
-            formMethods.setValue(`Steps.${i}.Type`, steps[i].Type);
-            formMethods.setValue(`Steps.${i}.RTop`, steps[i].RTop);
-            formMethods.setValue(`Steps.${i}.RBottom`, steps[i].RBottom);
-        }
-    }
-
-    function copyCenters(centerInfo: CenterInfo | undefined) {
-        if (centerInfo === undefined || centerInfo === null) return;
-
-        if (centerInfo.LowerCenterType !== '' && centerInfo.LowerCenterType !== undefined) formMethods.setValue('Center.LowerCenterType', centerInfo.LowerCenterType);
-        else formMethods.setValue('Center.LowerCenterType', '-1');
-        if (centerInfo.UpperCenterType !== '' && centerInfo.UpperCenterType !== undefined) formMethods.setValue('Center.UpperCenterType', centerInfo.UpperCenterType);
-        else formMethods.setValue('Center.UpperCenterType', '-1');
-    }
-
     async function changeToolType(e: ToolType) {
         if (e.tool_id === toolType) return
         else if (toolType !== -1) {
@@ -266,21 +306,6 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
             .then(res => setSeries(res));
         setToolType(e.tool_id);
         enterDefaultValues(defaultValues);
-    }
-
-    function enterDefaultValues(defaultValues: DefaultValue[]) {
-        for (let i = 0; i < defaultValues.length; i++) {
-            const defaultValue = defaultValues[i];
-            let value;
-            if (defaultValue.tool_inputs?.type === 'toggle') {
-                value = defaultValue.value === 'true';
-            } else if (defaultValue.tool_inputs?.type === 'decimal') {
-                value = parseFloat(defaultValue.value);
-            } else {
-                value = defaultValue.value;
-            }
-            formMethods.setValue(defaultValues[i].tool_inputs?.property_name as string, value);
-        }
     }
 
     const seriesInput = <ToolSeriesInput

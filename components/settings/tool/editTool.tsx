@@ -192,7 +192,7 @@ export default function EditTool() {
             formData.flute_count = 2;
             formData.helix_angle = 40;
         }
-        let changedSeries;
+        let changedSeries: Series;
         if (newMode) {
             changedSeries = await fetch(
                 `${apiUrl}/series/${selectedToolType.tool_id}/new`,

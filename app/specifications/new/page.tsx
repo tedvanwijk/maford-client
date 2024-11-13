@@ -1,5 +1,3 @@
-'use client'
-
 import SpecificationEdit from "@/components/specifications/edit/specificationEdit";
 import { Suspense } from "react";
 

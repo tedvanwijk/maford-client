@@ -2,6 +2,8 @@ import { Home, List, PlusCircle, Settings, AlertTriangle, ShoppingCart } from "r
 import Link from "next/link";
 import UserDropdown from "./userDropdown";
 import SpecificationLink from './navbar/specificationLink';
+import Image from 'next/image'
+import image from '@/public/ma-ford-logo.png';
 
 export default async function Navbar({ children }: { children: React.ReactNode }) {
     const pages: {
@@ -57,8 +59,8 @@ export default async function Navbar({ children }: { children: React.ReactNode }
             </div>
             <div className="h-dvh bg-white text-neutral bg-opacity-50 p-5 shadow-2xl flex flex-col justify-between">
                 <div className="w-full flex flex-col justify-start items-start">
-                    <img
-                        src={'/ma-ford-logo.png'}
+                    <Image
+                        src={image}
                         alt="M.A. Ford Logo"
                         className="w-64" />
                     <h1 className="my-5 px-4 text-center font-bold text-xl">M.A. Ford Tool Generator</h1>

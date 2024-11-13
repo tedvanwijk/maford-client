@@ -15,7 +15,7 @@ export default function UserDropdown({ users }: { users: User[] }) {
     useEffect(() => {
         const user_id = window.localStorage.getItem('user_id') || '';
         setUserId(user_id);
-    })
+    }, [])
 
     return (
         <select value={userId} onChange={e => changeUser(parseInt(e.target.value))} className="input input-bordered w-full">

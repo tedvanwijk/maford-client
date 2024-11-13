@@ -90,7 +90,7 @@ export default function Centers() {
     async function submitChanges() {
         const formData = formMethods.getValues();
 
-        let changedCenter;
+        let changedCenter: CenterType;
         if (newMode) {
             changedCenter = await fetch(
                 `${apiUrl}/centers`,
