@@ -24,6 +24,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
     const [series, setSeries]: [Series[], Function] = useState([]);
     const [stepCount, setStepCount] = useState(0);
     const [centers, setCenters] = useState<CenterType[]>([]);
+    const [userId, setUserId] = useState<null | string>();
     const formMethods = useForm({ mode: 'onChange' });
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -105,14 +106,14 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
             )
                 .then(res => res.json());
             setInputCategories(res.toolCategories);
-    
+
             if (data.StepTool) copySteps(data.Steps);
             enterValues(data);
             setToolType(data.ToolType);
             changeSeries(data.ToolSeries);
             enterDefaultValues(defaultValues);
         }
-    
+
         async function copyTool() {
             const data = await fetch(
                 `${apiUrl}/specification/${referenceSpecification}`,
@@ -160,7 +161,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                 formMethods.setValue(id, value);
             }
         }
-    
+
         function copySteps(steps: Step[]) {
             let stepCount = steps.length;
             formMethods.setValue('StepTool', true);
@@ -174,10 +175,10 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                 formMethods.setValue(`Steps.${i}.RBottom`, steps[i].RBottom);
             }
         }
-    
+
         function copyCenters(centerInfo: CenterInfo | undefined) {
             if (centerInfo === undefined || centerInfo === null) return;
-    
+
             if (centerInfo.LowerCenterType !== '' && centerInfo.LowerCenterType !== undefined) formMethods.setValue('Center.LowerCenterType', centerInfo.LowerCenterType);
             else formMethods.setValue('Center.LowerCenterType', '-1');
             if (centerInfo.UpperCenterType !== '' && centerInfo.UpperCenterType !== undefined) formMethods.setValue('Center.UpperCenterType', centerInfo.UpperCenterType);
@@ -208,6 +209,8 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
         )
             .then(res => res.json())
             .then(res => setCenters(res));
+            
+            setUserId(localStorage.getItem('user_id'));
     }, [referenceSpecification, formMethods, changeCurrentStep, enterDefaultValues]);
 
     function changeStepCount(increase: boolean) {
@@ -248,7 +251,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
         formDataCopy.ToolSeries = selectedSeries;
         formDataCopy.ToolType = toolType;
         formDataCopy.specName = specName;
-        formDataCopy.user_id = parseInt(localStorage.getItem('user_id') || '-1');
+        formDataCopy.user_id = parseInt(userId as string);
         formDataCopy.seriesInputs = seriesInputs;
 
 
@@ -317,6 +320,12 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
 
     const upperCenterDropdown = <CenterDropdown type="Upper" centers={centers} key="Upper" />
     const lowerCenterDropdown = <CenterDropdown type="Lower" centers={centers} key="Lower" />
+
+    if ((userId === null || userId === undefined) && !viewOnly) return (
+        <>
+            Please select a user before creating a specification
+        </>
+    )
 
     return (
         <>
