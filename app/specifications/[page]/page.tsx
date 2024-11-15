@@ -118,11 +118,11 @@ export default async function Specifications(
                 <div className="flex flex-row justify-start items-center">
                     <h1 className="text-xl font-bold">{(searchParams.u === 'null' || searchParams.u === '-1') ? 'All' : `Your`} specifications</h1>
                     {
-                        (searchParams.u === 'null' || searchParams.u === '-1') ?
-                            <Link href={`/specifications/${0}?u=${searchParams.r}&r=${searchParams.r}&s=${searchParams.s}`} className="btn ml-4">View your specifications</Link> :
-                            <Link href={`/specifications/${0}?u=null&r=${searchParams.r}&s=${searchParams.s}`} className="btn ml-4">View all specifications</Link>
+                        searchParams.r === 'null' ?
+                            '' : (searchParams.u === 'null' || searchParams.u === '-1') ?
+                                <Link href={`/specifications/${0}?u=${searchParams.r}&r=${searchParams.r}&s=${searchParams.s}`} className="btn ml-4">View your specifications</Link> :
+                                <Link href={`/specifications/${0}?u=null&r=${searchParams.r}&s=${searchParams.s}`} className="btn ml-4">View all specifications</Link>
                     }
-
                 </div>
                 <SearchButton p={params.page} u={searchParams.u} r={searchParams.r} s={searchParams.s} />
             </div>
