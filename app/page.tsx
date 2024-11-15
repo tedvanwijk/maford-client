@@ -1,14 +1,13 @@
-import Image from 'next/image'
 import { Version } from './types';
 
 export default async function Home() {
   const versions = await fetch(
     `${process.env.API_URL}/versions`,
     {
-        method: "GET",
-        cache: "no-cache"
+      method: "GET",
+      cache: "no-cache"
     }
-).then(res => res.json());
+  ).then(res => res.json());
   return (
     <div className="flex flex-col justify-start items-start h-full">
       <h1 className='text-xl font-bold'>Home</h1>

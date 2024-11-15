@@ -1,11 +1,38 @@
+'use client'
+
 import { Home, List, PlusCircle, Settings, AlertTriangle, ShoppingCart } from "react-feather";
 import Link from "next/link";
 import UserDropdown from "./userDropdown";
 import SpecificationLink from './navbar/specificationLink';
 import Image from 'next/image'
 import image from '@/public/ma-ford-logo.png';
+import { useEffect, useState } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { apiUrl } from "@/lib/api";
+import { User } from "@/app/types";
 
-export default async function Navbar({ children }: { children: React.ReactNode }) {
+export default function Navbar({ children }: { children: React.ReactNode }) {
+    const [userId, setUserId] = useState<string | undefined>(undefined);
+    const [users, setUsers] = useState<User[]>([]);
+
+    const router = useRouter();
+    const pathName = usePathname();
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        const user_id = window.localStorage.getItem('user_id') || '';
+        setUserId(user_id);
+
+        fetch(
+            `${apiUrl}/users`,
+            {
+                method: 'GET',
+                cache: 'no-cache'
+            }
+        ).then(res => res.json())
+            .then(res => setUsers(res));
+    }, []);
+
     const pages: {
         name: string,
         href: string,
@@ -43,13 +70,16 @@ export default async function Navbar({ children }: { children: React.ReactNode }
             }
         ]
 
-    const users = await fetch(
-        `${process.env.API_URL}/users`,
-        {
-            method: 'GET',
-            cache: 'no-cache'
+    function changeUser(userId: number) {
+        window.localStorage.setItem('user_id', userId.toString());
+        setUserId(userId.toString());
+        const pathNameElements = pathName.split('/');
+        if (pathNameElements[1] === 'specifications' && !isNaN(+pathNameElements[2])) {
+            const searchTerm = searchParams.get('s');
+            if (searchParams.get('u') === 'null') router.replace(`/specifications/${pathNameElements[2]}?u=null&r=${userId}&s=${searchTerm}`);
+            else router.replace(`/specifications/0?u=${userId}&r=${userId}&s=${searchTerm}`);
         }
-    ).then(res => res.json());
+    }
 
     return (
         <div className="drawer drawer-open bg-base-100 h-screen">
@@ -67,7 +97,7 @@ export default async function Navbar({ children }: { children: React.ReactNode }
                     <ul className="menu text-center w-full p-0">
                         {pages.map((e: any) =>
                             e.name === 'Specifications' ?
-                                <SpecificationLink key={e.name} /> :
+                                <SpecificationLink key={e.name} userId={userId} /> :
                                 <li className="w-full font-bold stroke-2 my-1" key={e.name}>
                                     <Link href={e.href} className="flex flex-row justify-between w-full text-lg m-0">
                                         <h1>{e.name}</h1>
@@ -79,7 +109,7 @@ export default async function Navbar({ children }: { children: React.ReactNode }
                 </div>
                 <div className="w-full flex flex-row px-4">
                     <div className="flex justify-center items-center font-bold mr-4">User</div>
-                    <UserDropdown users={users}></UserDropdown>
+                    <UserDropdown users={users} changeUser={changeUser} userId={userId}></UserDropdown>
                 </div>
             </div>
         </div>
