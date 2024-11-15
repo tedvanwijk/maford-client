@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, FormProvider } from 'react-hook-form';
 import { apiUrl } from "@/lib/api";
@@ -11,7 +11,7 @@ import { InputCategory, ToolType, Series, Step, DefaultValue, SeriesInput, Cente
 import ToolSeriesInput from "@/components/specifications/edit/toolSeriesInput";
 import CenterDropdown from "./centerDropdown";
 
-export default function New({ viewOnly = false }: { viewOnly: boolean }) {
+function New({ viewOnly = false }: { viewOnly: boolean }) {
     const [tools, setTools]: [ToolType[], Function] = useState([]);
     const [toolType, setToolType] = useState(-1);
     const [inputCategories, setInputCategories] = useState([]);
@@ -173,8 +173,8 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
         )
             .then(res => res.json())
             .then(res => setCenters(res));
-            
-            setUserId(localStorage.getItem('user_id'));
+
+        setUserId(localStorage.getItem('user_id'));
     }, [referenceSpecification, formMethods, enterDefaultValues]);
 
     function changeStepCount(increase: boolean) {
@@ -370,5 +370,13 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                 </FormProvider>
             </div>
         </>
+    )
+}
+
+export default function Page({ viewOnly = false }: { viewOnly: boolean }) {
+    return (
+        <Suspense>
+            <New viewOnly={viewOnly} />
+        </Suspense>
     )
 }
