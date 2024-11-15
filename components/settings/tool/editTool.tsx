@@ -32,7 +32,7 @@ export default function EditTool() {
     const [newMode, setNewMode] = useState(false);
     const [applyButton, setApplyButton] = useState(<>Apply</>);
     const [catalogButton, setCatalogButton] = useState(<>Import catalog tools</>)
-    const formMethods = useForm({ mode: 'onChange' });
+    const formMethods = useForm({ mode: 'onChange', disabled: (selectedSeries.series_id === -2) });
 
     useEffect(() => {
         fetch(
@@ -164,14 +164,14 @@ export default function EditTool() {
                 if (res.status === 200) {
                     return res.json();;
                 } else {
-                    setCatalogButton(<>Failed</>);
+                    setCatalogButton(<>Importing failed</>);
                     setTimeout(() => setCatalogButton(<>Import catalog tools</>), 3000);
                     return false
                 }
             })
             .then(res => {
                 if (res === false) return;
-                setCatalogButton(<>Added {res.catalogTools.count} catalog tools<Check /></>);
+                setCatalogButton(<>Imported {res.catalogTools.count} catalog tools<Check /></>);
                 setTimeout(() => setCatalogButton(<>Import catalog tools</>), 3000);
                 res.series._count.catalog_tools = res.catalogTools.count;
                 setSelectedSeries(res.series);
@@ -302,7 +302,7 @@ export default function EditTool() {
 
                 <FormProvider {...formMethods}>
                     <EditToolForm
-                        enabled={selectedSeries !== null}
+                        enabled={selectedSeries.series_id !== -2}
                         seriesInputs={seriesInputs}
                         addSeriesInput={addSeriesInput}
                         removeSeriesInput={removeSeriesInput}
@@ -313,13 +313,14 @@ export default function EditTool() {
                         series={selectedSeries as Series}
                         importCatalogTools={importCatalogTools}
                         button={catalogButton}
+                        enabled={formMethods.watch('tool_series_file_name') !== ''}
                     />
                 </FormProvider>
 
                 <hr className="mt-2 border-neutral" />
 
                 <div className="flex flex-row mt-4">
-                    <button type="submit" disabled={selectedSeries === null} className={`${selectedSeries === null ? 'opacity-30 pointer-events-none' : ''} btn btn-primary mr-4`}>{applyButton}</button>
+                    <button type="submit" disabled={selectedSeries.series_id === -2} className={`${selectedSeries === null ? 'opacity-30 pointer-events-none' : ''} btn btn-primary mr-4`}>{applyButton}</button>
                 </div>
 
             </form>

@@ -7,14 +7,17 @@ interface SeriesIdOnly {
 export default function EditCatalog({
     series,
     importCatalogTools,
-    button
+    button,
+    enabled
 }: {
     series: Series,
     importCatalogTools: Function,
-    button: React.ReactNode
+    button: React.ReactNode,
+    enabled: boolean
 }) {
     let catalogUpdated: Date = new Date(series.catalog_updated);
     if (series.helix_angle === undefined) return <></>;
+    if (!enabled) return <></>;
     return (
         <>
             <hr className="my-2 border-neutral" />
