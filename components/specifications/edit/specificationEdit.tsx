@@ -13,7 +13,6 @@ import CenterDropdown from "./centerDropdown";
 
 export default function New({ viewOnly = false }: { viewOnly: boolean }) {
     const [tools, setTools]: [ToolType[], Function] = useState([]);
-    const [currentStep, setCurrentStep] = useState(0);
     const [toolType, setToolType] = useState(-1);
     const [inputCategories, setInputCategories] = useState([]);
     const [saveWindowOpen, setSaveWindowOpen] = useState(false);
@@ -43,13 +42,6 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
         }
     }, [formMethods]);
 
-    const changeCurrentStep = useCallback((stepEdited: number, reset = false) => {
-        if (reset) setCurrentStep(stepEdited + 1);
-        else {
-            if (currentStep <= stepEdited) setCurrentStep(stepEdited + 1);
-        }
-    }, [currentStep])
-
     useEffect(() => {
         async function copyCatalogTool() {
             const result = await fetch(
@@ -61,7 +53,6 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
             )
                 .then(res => res.json());
             const { data, defaultValues } = result;
-            changeCurrentStep(0, true);
             await fetch(
                 `${apiUrl}/series/tool_id/${data.ToolType}`,
                 {
@@ -98,7 +89,6 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
             )
                 .then(res => res.json())
                 .then(res => res.data);
-            changeCurrentStep(0, true);
             await fetch(
                 `${apiUrl}/series/tool_id/${data.ToolType}`,
                 {
@@ -185,7 +175,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
             .then(res => setCenters(res));
             
             setUserId(localStorage.getItem('user_id'));
-    }, [referenceSpecification, formMethods, changeCurrentStep, enterDefaultValues]);
+    }, [referenceSpecification, formMethods, enterDefaultValues]);
 
     function changeStepCount(increase: boolean) {
         if (!increase && stepCount === 0) return;
@@ -233,7 +223,6 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
             if (!answer) return;
         };
         formMethods.reset();
-        changeCurrentStep(0, true);
         setSelectedSeries(-1);
         const defaultValues = await fetch(
             `${apiUrl}/tool/${e.tool_id}/inputs`,
@@ -310,7 +299,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                     <form className="w-full"
                         onSubmit={e => e.preventDefault()}
                     >
-                        <SpecificationStep defaultChecked={false} stepNumber={0} header="Choose Tool Type" enabled={currentStep >= 0} forceOpen={true} arrowEnabled={false}>
+                        <SpecificationStep defaultChecked={false} enabled={true} stepNumber={0} header="Choose Tool Type" forceOpen={true} arrowEnabled={false}>
                             <div className="w-full flex flex-row justify-between">
                                 {tools.map((e: ToolType, i) => {
                                     return (
@@ -332,7 +321,6 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                                         defaultChecked={viewOnly ? true : (i === 0 ? true : false)}
                                         stepNumber={i + 1}
                                         header={e.display_title}
-                                        // enabled={currentStep >= (i + 1)}
                                         enabled={true}
                                         key={i + 1}
                                         forceOpen={false}
@@ -346,7 +334,6 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                                         defaultChecked={viewOnly ? true : (i === 0 ? true : false)}
                                         stepNumber={i + 1}
                                         header={e.display_title}
-                                        // enabled={currentStep >= (i + 1)}
                                         enabled={true}
                                         key={i + 1}
                                         forceOpen={false}
@@ -368,7 +355,6 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                                 <SpecificationStep
                                     stepNumber={inputCategories.length + 1}
                                     header="Create Specification"
-                                    // enabled={currentStep >= (inputCategories.length + 2)} 
                                     enabled={true}
                                     forceOpen={true}
                                     defaultChecked={viewOnly}
