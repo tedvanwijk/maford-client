@@ -12,14 +12,12 @@ import ToolSeriesInput from "@/components/specifications/edit/toolSeriesInput";
 import CenterDropdown from "./centerDropdown";
 
 export default function New({ viewOnly = false }: { viewOnly: boolean }) {
-    // TODO: remove all tool series input stuff. Only the tool series needs to be selected, but no custom inputs need to be generated
     const [tools, setTools]: [ToolType[], Function] = useState([]);
     const [currentStep, setCurrentStep] = useState(0);
     const [toolType, setToolType] = useState(-1);
     const [inputCategories, setInputCategories] = useState([]);
     const [saveWindowOpen, setSaveWindowOpen] = useState(false);
     const [specName, setSpecName] = useState('');
-    const [seriesInputs, setSeriesInputs] = useState<SeriesInput[] | null>(null);
     const [selectedSeries, setSelectedSeries] = useState(-1);
     const [series, setSeries]: [Series[], Function] = useState([]);
     const [stepCount, setStepCount] = useState(0);
@@ -53,30 +51,6 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
     }, [currentStep])
 
     useEffect(() => {
-        function changeSeries(seriesId: number) {
-            fetch(
-                `${apiUrl}/series/${seriesId}/inputs`,
-                {
-                    method: 'GET',
-                    cache: 'no-cache'
-                }
-            )
-                .then(res => res.json())
-                .then(res => {
-                    // TODO: remove?
-                    setSeriesInputs(res);
-                    const seriesInputsShown = res.filter((e: SeriesInput) => e.type === 'toggle');
-                    let formData: { [k: string]: any } = {};
-                    seriesInputsShown.forEach((e: SeriesInput) => {
-                        switch (e.type) {
-                            case 'toggle':
-                                formData[e.name] = false
-                        }
-                    });
-                });
-            setSelectedSeries(seriesId);
-        }
-
         async function copyCatalogTool() {
             const result = await fetch(
                 `${apiUrl}/catalog/${referenceSpecification?.split('_')[1]}/copy`,
@@ -110,7 +84,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
             if (data.StepTool) copySteps(data.Steps);
             enterValues(data);
             setToolType(data.ToolType);
-            changeSeries(data.ToolSeries);
+            setSelectedSeries(data.ToolSeries);
             enterDefaultValues(defaultValues);
         }
 
@@ -147,7 +121,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
             enterValues(data);
             copyCenters(data.Center);
             setToolType(data.ToolType);
-            changeSeries(data.ToolSeries);
+            setSelectedSeries(data.ToolSeries);
         }
 
         function enterValues(values: any, category = '') {
@@ -218,30 +192,6 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
         setStepCount(stepCount + (increase ? 1 : -1));
     }
 
-    function changeSeries(seriesId: number) {
-        fetch(
-            `${apiUrl}/series/${seriesId}/inputs`,
-            {
-                method: 'GET',
-                cache: 'no-cache'
-            }
-        )
-            .then(res => res.json())
-            .then(res => {
-                // TODO: remove?
-                setSeriesInputs(res);
-                const seriesInputsShown = res.filter((e: SeriesInput) => e.type === 'toggle');
-                let formData: { [k: string]: any } = {};
-                seriesInputsShown.forEach((e: SeriesInput) => {
-                    switch (e.type) {
-                        case 'toggle':
-                            formData[e.name] = false
-                    }
-                });
-            });
-        setSelectedSeries(seriesId);
-    }
-
     // TODO: for some reason, some inputs are added to the formData object by default and others only after the input has changed
     async function saveSpecification(stayOnPage = false) {
         // hard copy form data
@@ -252,8 +202,6 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
         formDataCopy.ToolType = toolType;
         formDataCopy.specName = specName;
         formDataCopy.user_id = parseInt(userId as string);
-        formDataCopy.seriesInputs = seriesInputs;
-
 
         // when removing steps, the Steps property does not change length, so we need to cut it down to the amount of steps we have stored
         if (formDataCopy.StepTool) formDataCopy.Steps.length = stepCount;
@@ -315,7 +263,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
     const seriesInput = <ToolSeriesInput
         key={-1}
         selectedSeries={selectedSeries}
-        changeSeries={changeSeries}
+        changeSeries={setSelectedSeries}
         series={series}
     />
 
