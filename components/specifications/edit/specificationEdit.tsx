@@ -286,6 +286,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
         };
         formMethods.reset();
         changeCurrentStep(0, true);
+        setSelectedSeries(-1);
         const defaultValues = await fetch(
             `${apiUrl}/tool/${e.tool_id}/inputs`,
             {
