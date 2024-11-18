@@ -43,6 +43,8 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
     }, [formMethods]);
 
     useEffect(() => {
+        setUserId(localStorage.getItem('user_id'));
+        
         async function copyCatalogTool() {
             const result = await fetch(
                 `${apiUrl}/catalog/${referenceSpecification?.split('_')[1]}/copy`,
@@ -173,9 +175,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         )
             .then(res => res.json())
             .then(res => setCenters(res));
-
-        setUserId(localStorage.getItem('user_id'));
-    }, [referenceSpecification, formMethods, enterDefaultValues]);
+    }, [referenceSpecification, formMethods, enterDefaultValues, userId]);
 
     function changeStepCount(increase: boolean) {
         if (!increase && stepCount === 0) return;
