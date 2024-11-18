@@ -16,6 +16,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
     const [toolType, setToolType] = useState(-1);
     const [inputCategories, setInputCategories] = useState([]);
     const [saveWindowOpen, setSaveWindowOpen] = useState(false);
+    const [copyWindowOpen, setCopyWindowOpen] = useState(false);
     const [specName, setSpecName] = useState('');
     const [selectedSeries, setSelectedSeries] = useState(-1);
     const [series, setSeries]: [Series[], Function] = useState([]);
@@ -44,7 +45,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
 
     useEffect(() => {
         setUserId(localStorage.getItem('user_id'));
-        
+
         async function copyCatalogTool() {
             const result = await fetch(
                 `${apiUrl}/catalog/${referenceSpecification?.split('_')[1]}/copy`,
@@ -288,15 +289,34 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                         </div>
                     </form>
                 </div>
-
-
                 <form method="dialog" className="modal-backdrop">
                     <button onClick={() => setSaveWindowOpen(false)}></button>
                 </form>
             </dialog>
-            <div className={`${viewOnly ? 'pointer-events-none' : ''} flex flex-col justify-start items-start w-full`}>
+
+            <dialog className={`modal ${copyWindowOpen ? 'modal-open' : ''}`} id="modal">
+                <div className="modal-box p-0">
+                    <div className="w-full h-full flex flex-col justify-start items-center">
+                        <div className="p-6">
+                            Do you want to copy this specification?
+                        </div>
+                        <div className="flex flex-row justify-between items-center flex-grow w-full">
+                            <button className="rounded-none btn w-[50%] btn-primary" onClick={() => router.push(`/specifications/new?r=${referenceSpecification}`)} type="button">Yes</button>
+                            <button className="rounded-none btn w-[50%] btn-accent" onClick={() => setCopyWindowOpen(false)} type="button">No</button>
+                        </div>
+                    </div>
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button onClick={() => setCopyWindowOpen(false)}></button>
+                </form>
+            </dialog>
+
+            <div className={`flex flex-col justify-start items-start w-full ${viewOnly ? 'cursor-pointer' : ''}`} onClick={() => {
+                if (!viewOnly) return;
+                setCopyWindowOpen(true);
+            }}>
                 <FormProvider {...formMethods}>
-                    <form className="w-full"
+                    <form className={`${viewOnly ? 'pointer-events-none' : ''} w-full`}
                         onSubmit={e => e.preventDefault()}
                     >
                         <SpecificationStep defaultChecked={false} enabled={true} stepNumber={0} header="Choose Tool Type" forceOpen={true} arrowEnabled={false}>
