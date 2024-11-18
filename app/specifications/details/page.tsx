@@ -51,7 +51,7 @@ export default async function SpecificationDetails(
 
     return (
         <>
-            <div className="flex flex-row justify-between items-center w-full">
+            <div className="flex flex-row justify-between items-center w-full mb-4">
                 <div className="flex flex-col justify-start items-start">
                     <div className="flex flex-row justify-start items-center">
                         <h1 className="font-bold text-xl mr-2">{"Specification " + spec.specification_id}{spec.name ? `: ${spec.name}` : ''}  </h1>
@@ -79,9 +79,6 @@ export default async function SpecificationDetails(
                     <h1 className="flex flex-row justify-start items-center my-2"> <AlertCircle className="mr-2" />This specification was created using an older version. Some of the information below might be incorrect and copying might not work as expected.</h1>
             }
             {error}
-            <div className="flex flex-row justify-start items-center">
-                <h1 className="font-bold text-l mr-2 my-2">Specification Inputs</h1>
-            </div>
             <Suspense>
                 <SpecificationEdit viewOnly={true} />
             </Suspense>
