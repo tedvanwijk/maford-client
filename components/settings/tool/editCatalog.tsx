@@ -23,7 +23,7 @@ export default function EditCatalog({
             <hr className="my-2 border-neutral" />
             <div className='flex flex-col justify-start items-start'>
                 <div className="font-bold mb-4">
-                    Edit/Add catalog tools for series
+                    Import catalog tools
                 </div>
                 <div className="flex flex-row justify-start items-center w-full">
                     <button type="button" className="btn btn-primary mr-4" onClick={(e) => importCatalogTools()}>

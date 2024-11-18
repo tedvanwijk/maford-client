@@ -33,7 +33,7 @@ export default function EditTool() {
     const [applyButton, setApplyButton] = useState(<>Save changes</>);
     const [applyCopyButton, setApplyCopyButton] = useState(<>Save as copy</>);
     const [deleteButton, setDeleteButton] = useState(<>Delete series</>);
-    const [catalogButton, setCatalogButton] = useState(<>Import catalog tools</>)
+    const [catalogButton, setCatalogButton] = useState(<>Import</>)
     const formMethods = useForm({ mode: 'onChange', disabled: (selectedSeries.series_id === -2) });
 
     useEffect(() => {
@@ -167,14 +167,14 @@ export default function EditTool() {
                     return res.json();;
                 } else {
                     setCatalogButton(<>Importing failed</>);
-                    setTimeout(() => setCatalogButton(<>Import catalog tools</>), 3000);
+                    setTimeout(() => setCatalogButton(<>Import</>), 3000);
                     return false
                 }
             })
             .then(res => {
                 if (res === false) return;
-                setCatalogButton(<>Imported {res.catalogTools.count} catalog tools<Check /></>);
-                setTimeout(() => setCatalogButton(<>Import catalog tools</>), 3000);
+                setCatalogButton(<>Imported {res.catalogTools.count} tools<Check /></>);
+                setTimeout(() => setCatalogButton(<>Import</>), 3000);
                 res.series._count.catalog_tools = res.catalogTools.count;
                 setSelectedSeries(res.series);
                 let seriesCopy = [...series];
