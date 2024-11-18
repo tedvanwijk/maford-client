@@ -30,7 +30,9 @@ export default function EditTool() {
     const [seriesInputs, setSeriesInputs]: [SeriesInput[], Function] = useState([]);
     const [oldSeriesInputLength, setOldSeriesInputLength] = useState(0);
     const [newMode, setNewMode] = useState(false);
-    const [applyButton, setApplyButton] = useState(<>Apply</>);
+    const [applyButton, setApplyButton] = useState(<>Save changes</>);
+    const [applyCopyButton, setApplyCopyButton] = useState(<>Save as copy</>);
+    const [deleteButton, setDeleteButton] = useState(<>Delete series</>);
     const [catalogButton, setCatalogButton] = useState(<>Import catalog tools</>)
     const formMethods = useForm({ mode: 'onChange', disabled: (selectedSeries.series_id === -2) });
 
@@ -86,7 +88,7 @@ export default function EditTool() {
             return;
         }
         setNewMode(false);
-        if (!disableButtonUpdate) setApplyButton(<>Apply</>);
+        if (!disableButtonUpdate) setApplyButton(<>Save changes</>);
         fetch(
             `${apiUrl}/series/${series.series_id}/inputs`,
             {
@@ -99,7 +101,7 @@ export default function EditTool() {
                 setSelectedSeries(series);
                 setSeriesInputs(res);
                 setOldSeriesInputLength(res.length);
-                return {seriesInputs: res, series}
+                return { seriesInputs: res, series }
             })
             .then(res => setDefaultValues(res.series, res.seriesInputs));
     }
@@ -181,7 +183,7 @@ export default function EditTool() {
             })
     }
 
-    async function submitChanges() {
+    async function submitChanges(copy = false) {
         // TODO: error checking + loading screen
         const formData = formMethods.getValues();
 
@@ -192,8 +194,13 @@ export default function EditTool() {
             formData.flute_count = 2;
             formData.helix_angle = 40;
         }
+
+        if (copy) {
+            formData.name += ' - Copy';
+        }
+
         let changedSeries: Series;
-        if (newMode) {
+        if (newMode || copy) {
             changedSeries = await fetch(
                 `${apiUrl}/series/${selectedToolType.tool_id}/new`,
                 {
@@ -211,11 +218,21 @@ export default function EditTool() {
             )
                 .then(res => {
                     if (res.status === 201) {
-                        setApplyButton(<>Created<Check /></>);
-                        setTimeout(() => setApplyButton(<>Apply</>), 3000);
+                        if (copy) {
+                            setApplyCopyButton(<>Saved as copy<Check /></>);
+                            setTimeout(() => setApplyCopyButton(<>Save as copy</>), 3000);
+                        } else {
+                            setApplyButton(<>Created<Check /></>);
+                            setTimeout(() => setApplyButton(<>Save changes</>), 3000);
+                        }
                     } else {
-                        setApplyButton(<>Failed</>);
-                        setTimeout(() => setApplyButton(<>Apply</>), 3000);
+                        if (copy) {
+                            setApplyCopyButton(<>Failed</>);
+                            setTimeout(() => setApplyCopyButton(<>Save as copy</>), 3000);
+                        } else {
+                            setApplyButton(<>Failed</>);
+                            setTimeout(() => setApplyButton(<>Save changes</>), 3000);
+                        }
                     }
                     return res.json();
                 })
@@ -238,11 +255,11 @@ export default function EditTool() {
             )
                 .then(res => {
                     if (res.status === 200) {
-                        setApplyButton(<>Applied<Check /></>);
-                        setTimeout(() => setApplyButton(<>Apply</>), 3000);
+                        setApplyButton(<>Saved<Check /></>);
+                        setTimeout(() => setApplyButton(<>Save changes</>), 3000);
                     } else {
-                        setApplyButton(<>Applying failed</>);
-                        setTimeout(() => setApplyButton(<>Apply</>), 3000);
+                        setApplyButton(<>Saving failed</>);
+                        setTimeout(() => setApplyButton(<>Save changes</>), 3000);
                     }
                     return res.json();
                 })
@@ -263,6 +280,48 @@ export default function EditTool() {
                 setSeries(res);
             })
             .then(() => changeSeries(changedSeries, true));
+    }
+
+    async function deleteSeries() {
+        const answer = window.confirm(`Are you sure you want to delete ${(selectedSeries as Series).name}?`);
+        if (!answer) return;
+
+        const deletedSeries = await fetch(
+            `${apiUrl}/series/${selectedSeries.series_id}`,
+            {
+                method: 'DELETE',
+                cache: 'no-cache',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+            .then(res => {
+                if (res.status !== 200) {
+                    setDeleteButton(<>Deleting failed</>);
+                    setTimeout(() => setDeleteButton(<>Delete series</>), 3000);
+                } else {
+                    setSelectedSeries({ series_id: -2 });
+                    setSeriesInputs([]);
+                    formMethods.reset();
+                }
+                return res.json();
+            });
+
+        await fetch(
+            `${apiUrl}/series/tool_id/${selectedToolType.tool_id}`,
+            {
+                method: 'GET',
+                cache: 'no-cache'
+            }
+        )
+            .then(res => res.json())
+            .then(res => {
+                let seriesOptions = res;
+                seriesOptions.push({ name: 'Add new', series_id: -1 })
+                setSeries(res);
+            });
     }
 
     return (
@@ -320,9 +379,10 @@ export default function EditTool() {
                 <hr className="mt-2 border-neutral" />
 
                 <div className="flex flex-row mt-4">
-                    <button type="submit" disabled={selectedSeries.series_id === -2} className={`${selectedSeries === null ? 'opacity-30 pointer-events-none' : ''} btn btn-primary mr-4`}>{applyButton}</button>
+                    <button type="submit" disabled={selectedSeries.series_id === -2} className="btn btn-primary mr-4">{applyButton}</button>
+                    <button type="button" disabled={selectedSeries.series_id === -2 || newMode} className="btn btn-primary mr-4" onClick={() => submitChanges(true)}>{applyCopyButton}</button>
+                    <button type="button" disabled={selectedSeries.series_id === -2 || newMode} className="btn bg-base-100" onClick={() => deleteSeries()}>{deleteButton}</button>
                 </div>
-
             </form>
         </div>
     )
