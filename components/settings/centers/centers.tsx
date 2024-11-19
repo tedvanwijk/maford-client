@@ -16,8 +16,10 @@ export default function Centers() {
     const [centerTypes, setCenterTypes] = useState<CenterType[]>([]);
     const [selectedCenterType, setSelectedCenterType] = useState<CenterType | CenterTypeIdOnly>({ center_type_id: -2 });
     const [applyButton, setApplyButton] = useState(<>Apply</>);
+    const [applyCopyButton, setApplyCopyButton] = useState(<>Save as copy</>);
+    const [deleteButton, setDeleteButton] = useState(<>Delete center</>);
     const disabled = selectedCenterType.center_type_id === -2;
-    const formMethods = useForm({ mode: 'onChange', disabled: disabled});
+    const formMethods = useForm({ mode: 'onChange', disabled: disabled });
 
     useEffect(() => {
         fetch(
@@ -87,11 +89,13 @@ export default function Centers() {
         formMethods.setValue('name', c.name);
     }
 
-    async function submitChanges() {
+    async function submitChanges(copy = false) {
         const formData = formMethods.getValues();
+        console.log(formData)
 
         let changedCenter: CenterType;
-        if (newMode) {
+        if (newMode || copy) {
+            if (copy) formData.name += ' - Copy';
             changedCenter = await fetch(
                 `${apiUrl}/centers`,
                 {
@@ -106,11 +110,21 @@ export default function Centers() {
             )
                 .then(res => {
                     if (res.status === 201) {
-                        setApplyButton(<>Created<Check /></>);
-                        setTimeout(() => setApplyButton(<>Apply</>), 3000);
+                        if (copy) {
+                            setApplyCopyButton(<>Saved as copy<Check /></>);
+                            setTimeout(() => setApplyCopyButton(<>Save as copy</>), 3000);
+                        } else {
+                            setApplyButton(<>Created<Check /></>);
+                            setTimeout(() => setApplyButton(<>Apply</>), 3000);
+                        }
                     } else {
-                        setApplyButton(<>Failed</>);
-                        setTimeout(() => setApplyButton(<>Apply</>), 3000);
+                        if (copy) {
+                            setApplyCopyButton(<>Failed</>);
+                            setTimeout(() => setApplyCopyButton(<>Save as copy</>), 3000);
+                        } else {
+                            setApplyButton(<>Failed</>);
+                            setTimeout(() => setApplyButton(<>Apply</>), 3000);
+                        }
                     }
                     return res.json();
                 })
@@ -151,6 +165,43 @@ export default function Centers() {
                 setCenterTypes(res);
             })
             .then(() => changeCenterType(changedCenter, true));
+    }
+
+    async function deleteCenter() {
+        const answer = window.confirm(`Are you sure you want to delete ${(selectedCenterType as CenterType).name}?`);
+        if (!answer) return;
+
+        const deletedCenter = await fetch(
+            `${apiUrl}/centers/${selectedCenterType.center_type_id}`,
+            {
+                method: 'DELETE',
+                cache: 'no-cache',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+            .then(res => {
+                if (res.status !== 200) {
+                    setDeleteButton(<>Deleting failed</>);
+                    setTimeout(() => setDeleteButton(<>Delete series</>), 3000);
+                } else {
+                    setSelectedCenterType({ center_type_id: -2 });
+                    formMethods.reset();
+                }
+                return res.json();
+            });
+
+        await fetch(
+            `${apiUrl}/centers`,
+            {
+                method: 'GET',
+                cache: 'no-cache'
+            }
+        )
+            .then(res => res.json())
+            .then(res => setCenterTypes(res));
     }
 
     return (
@@ -205,8 +256,14 @@ export default function Centers() {
             </FormProvider>
 
             <div className="flex flex-row mt-4">
-                <button type="submit" disabled={disabled} className={`${disabled ? 'opacity-30 pointer-events-none' : ''} btn btn-primary mr-4`}>
+                <button type="submit" disabled={disabled} className="btn btn-primary mr-4">
                     {applyButton}
+                </button>
+                <button type="button" disabled={disabled || newMode} className="btn btn-primary mr-4" onClick={() => submitChanges(true)}>
+                    {applyCopyButton}
+                </button>
+                <button type="button" disabled={disabled || newMode} className="btn bg-base-100 mr-4" onClick={() => deleteCenter()}>
+                    {deleteButton}
                 </button>
             </div>
         </form>
