@@ -91,7 +91,6 @@ export default function Centers() {
 
     async function submitChanges(copy = false) {
         const formData = formMethods.getValues();
-        console.log(formData)
 
         let changedCenter: CenterType;
         if (newMode || copy) {
