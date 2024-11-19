@@ -8,16 +8,16 @@ export default function Settings() {
     return(
         <>
         <h1 className="text-xl font-bold mb-4">Settings</h1>
-            <SettingSection header="General">
+            <SettingSection header="Paths">
                 <General />
             </SettingSection>
-            <SettingSection header="Add/Edit Tool Series">
+            <SettingSection header="Tool Series">
                 <EditTool />
             </SettingSection>
-            <SettingSection header="Add/Remove User">
+            <SettingSection header="Users">
                 <Users />
             </SettingSection>
-            <SettingSection header="Add/Edit Center">
+            <SettingSection header="Centers">
                 <Centers />
             </SettingSection>
         </>

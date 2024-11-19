@@ -9,8 +9,8 @@ export default function Users() {
     const [name, setName] = useState('');
     const [button, setButton] = useState(<>Add</>);
 
-    const [removeName, setRemoveName] = useState('');
-    const [removeButton, setRemoveButton] = useState(<>Remove</>);
+    const [removeUserId, setRemoveUserId] = useState(-1);
+    const [removeButton, setRemoveButton] = useState(<>Delete</>);
 
     const [users, setUsers] = useState<User[]>([]);
 
@@ -54,8 +54,11 @@ export default function Users() {
     }
 
     function remove() {
+        const answer = window.confirm(`Are you sure you want to delete the user account for ${users.find(e => e.user_id === removeUserId)?.name}?`);
+        if (!answer) return;
+
         fetch(
-            `${apiUrl}/users/${removeName}`,
+            `${apiUrl}/users/${removeUserId}`,
             {
                 method: 'DELETE',
                 cache: 'no-cache',
@@ -67,22 +70,22 @@ export default function Users() {
         )
         .then(res => {
             if (res.status === 200) {
-                setRemoveButton(<>Removed<Check /></>);
-                setTimeout(() => setRemoveButton(<>Remove</>), 3000);
+                setRemoveButton(<>Deleted<Check /></>);
+                setTimeout(() => setRemoveButton(<>Delete</>), 3000);
             } else {
-                setRemoveButton(<>Removing failed</>);
-                setTimeout(() => setRemoveButton(<>Remove</>), 3000);
+                setRemoveButton(<>Failed</>);
+                setTimeout(() => setRemoveButton(<>Delete</>), 3000);
             }
             return res.json();
         })
         .then(res => {
             setUsers(res);
-            setRemoveName('');
+            setRemoveUserId(-1);
         });
     }
 
     return (
-        <div className="w-full flex flex-row justify-start items-center">
+        <div className="w-full flex flex-col justify-start items-start">
             <form onSubmit={e => {
                 e.preventDefault();
                 submit();
@@ -103,7 +106,7 @@ export default function Users() {
                 </div>
                 <button className="btn btn-primary ml-4 mb-1">{button}</button>
             </form>
-
+            <hr className="my-2 border-neutral w-full" />
             <form onSubmit={e => {
                 e.preventDefault();
                 remove();
@@ -111,19 +114,19 @@ export default function Users() {
                 <div className="flex flex-col mb-1">
                     <label className="form-control transition-opacity">
                         <div className="label">
-                            <span>Remove user</span>
+                            <span>Delete user</span>
                         </div>
                     </label>
-                    <select value={removeName} onChange={e => setRemoveName(e.target.value)} className="input input-bordered w-full">
+                    <select value={removeUserId} onChange={e => setRemoveUserId(parseInt(e.target.value))} className="input input-bordered w-full">
                         {
                             users.map(e => (
                                 <option value={e.user_id} key={e.user_id}>{e.name}</option>
                             ))
                         }
-                        <option value="" disabled hidden>Choose user</option>
+                        <option value={-1} disabled hidden>Choose user</option>
                     </select>
                 </div>
-                <button className="btn btn-primary ml-4 mb-1">{removeButton}</button>
+                <button className="btn bg-base-100 ml-4 mb-1">{removeButton}</button>
             </form>
         </div>
 
