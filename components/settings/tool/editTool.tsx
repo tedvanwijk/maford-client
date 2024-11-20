@@ -34,7 +34,7 @@ export default function EditTool() {
     const [applyCopyButton, setApplyCopyButton] = useState(<>Save as copy</>);
     const [deleteButton, setDeleteButton] = useState(<>Delete series</>);
     const [catalogButton, setCatalogButton] = useState(<>Import</>)
-    const formMethods = useForm({ mode: 'onChange', disabled: (selectedSeries.series_id === -2) });
+    const formMethods = useForm({ mode: 'onChange' });
 
     useEffect(() => {
         fetch(
