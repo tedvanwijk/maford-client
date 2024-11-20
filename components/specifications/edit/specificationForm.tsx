@@ -152,7 +152,7 @@ export default function SpecificationForm(
                         {...register(registerId, { disabled })}
                         type="checkbox"
                         // disabled={disabled}
-                        className="toggle toggle-primary my-auto"
+                        className="toggle toggle-primary my-auto bg-base-300"
                         tabIndex={tabIndex}
                     />
                     additionalClasses += ' h-[88px]';
