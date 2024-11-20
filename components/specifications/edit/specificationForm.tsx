@@ -8,13 +8,15 @@ export default function SpecificationForm(
         toolSeriesInput,
         upperCenterDropdown,
         lowerCenterDropdown,
-        type = 'General'
+        type = 'General',
+        submitMode
     }: {
         inputs: ToolInput[],
         toolSeriesInput: React.ReactNode,
         upperCenterDropdown: React.ReactNode
         lowerCenterDropdown: React.ReactNode
-        type?: string
+        type?: string,
+        submitMode: boolean
     }
 ) {
     const { register, watch } = useFormContext();
@@ -94,18 +96,25 @@ export default function SpecificationForm(
                     }
 
                     disabled = !check;
-                    additionalClasses = check ? '' : 'opacity-30';
+                    additionalClasses = check ? '' : 'opacity-20 pointer-events-none';
 
                     if (check && rule.disable) {
                         // if the current rule being check has disabled = true, it takes priority and cancels the loop if the rule is validated
                         disabled = true;
-                        additionalClasses = 'opacity-30';
+                        additionalClasses = 'opacity-20 pointer-events-none';
                         break;
                     }
 
                     if (!rule.disable && !disabled) break; // since we have sorted the array so the disabled rules are first, once a rule is not of type disabled and it has been validated, we can break out of the loop
                 }
             }
+
+            // if not submitting, don't actually disable inputs so the values can still be retrieved
+            // this way, if a rule depends on an initially disabled input, it will still evaluate correctly
+            // disable the inputs using opacity and pointer events in this situation
+            // when submitting, actually disable inputs so that the retrieved values for disabled
+            // inputs are undefined
+            if (!submitMode) disabled = false;
 
             let inputElement: React.ReactNode;
             let registerId = input.property_name;

@@ -214,7 +214,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                 if (!stayOnPage) router.push(`/specifications/details?r=${res.specification_id}`);
                 else setSaveWindowOpen(false);
                 formMethods.trigger();
-            })
+            });
     }
 
     async function changeToolType(e: ToolType) {
@@ -365,6 +365,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                                             upperCenterDropdown={upperCenterDropdown}
                                             lowerCenterDropdown={lowerCenterDropdown}
                                             type={e.name || 'General'}
+                                            submitMode={saveWindowOpen}
                                         />
                                     </SpecificationStep>
                                 )
