@@ -114,6 +114,7 @@ export default function SpecificationForm(
             // disable the inputs using opacity and pointer events in this situation
             // when submitting, actually disable inputs so that the retrieved values for disabled
             // inputs are undefined
+            const tabIndex = disabled ? -1 : 0;
             if (!submitMode) disabled = false;
 
             let inputElement: React.ReactNode;
@@ -129,6 +130,7 @@ export default function SpecificationForm(
                         // disabled={disabled}
                         className="input input-bordered w-full"
                         lang="en-US"
+                        tabIndex={tabIndex}
                     />
                     additionalClasses += ' h-[88px]';
                     break;
@@ -141,6 +143,7 @@ export default function SpecificationForm(
                         // disabled={disabled}
                         className="input input-bordered w-full"
                         lang="en-US"
+                        tabIndex={tabIndex}
                     />
                     additionalClasses += ' h-[88px]';
                     break;
@@ -150,6 +153,7 @@ export default function SpecificationForm(
                         type="checkbox"
                         // disabled={disabled}
                         className="toggle toggle-primary my-auto"
+                        tabIndex={tabIndex}
                     />
                     additionalClasses += ' h-[88px]';
                     break;
@@ -165,6 +169,7 @@ export default function SpecificationForm(
                                     className="radio checked:bg-primary h-full"
                                     defaultChecked={e === input.options[0]}
                                     id={e}
+                                    tabIndex={tabIndex}
                                 />
                                 <label className="ml-2" htmlFor={e}>{e}</label>
                             </div>
@@ -178,6 +183,7 @@ export default function SpecificationForm(
                         placeholder="Enter value"
                         // disabled={disabled}
                         className="input input-bordered w-full"
+                        tabIndex={tabIndex}
                     />
                     additionalClasses += ' h-[88px]';
                     break;
