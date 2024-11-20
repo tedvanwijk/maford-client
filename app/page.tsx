@@ -34,6 +34,7 @@ export default async function Home() {
         <div className='mb-4'>
           <span className='font-bold'>[0.3.0]</span> <br />
           <span className='whitespace-pre-wrap'>
+            11-13-2024<br />
             - Added blank tool type<br />
             - Added EM cooling<br />
             - Added centers<br />
@@ -52,6 +53,7 @@ export default async function Home() {
         <div className='mb-4'>
           <span className='font-bold'>[0.2.0]</span> <br />
           <span className='whitespace-pre-wrap'>
+            8-7-2024<br />
             - Added custom body length<br />
             - Added chipbreaker<br />
             - Added settings page<br />
@@ -66,6 +68,7 @@ export default async function Home() {
         <div className='mb-4'>
           <span className='font-bold'>[0.1.0]</span> <br />
           <span className='whitespace-pre-wrap'>
+            5-30-2024<br />
             - Initial release
           </span>
         </div>
