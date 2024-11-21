@@ -43,7 +43,6 @@ export default function EditSeriesInputsTable(
                         {
                             seriesInputs.map((e: SeriesInput, i: number) => {
                                 const type = watch(`series_input.${e.index}.type`, '');
-
                                 let nameInput: React.ReactNode;
                                 if (type === 'cst') {
                                     nameInput =
@@ -58,7 +57,6 @@ export default function EditSeriesInputsTable(
                                     nameInput =
                                         <td className="border border-slate-400">
                                             <input
-                                                
                                                 className="bg-base-100 p-1 w-full h-full opacity-5 text-base-100/0 pointer-events-none"
                                                 type="text"
                                                 {...register(`series_input.${e.index}.name`, { required: true })}
@@ -73,8 +71,12 @@ export default function EditSeriesInputsTable(
                                             >
                                                 {
                                                     type === 'var' ?
-                                                        toolTypeInputs.decimalInputs.map(e => <option key={e.property_name} value={e.property_name}>{e.client_name}</option>) :
-                                                        toolTypeInputs.toggleInputs.map(e => <option key={e.property_name} value={e.property_name}>{e.client_name}</option>)
+                                                        toolTypeInputs.decimalInputs.map(e =>
+                                                            <option key={e.property_name} value={e.property_name}>{e.tool_input_categories?.name === null ? '' : `${e.tool_input_categories?.display_title}: `}{e.client_name}</option>
+                                                        ) :
+                                                        toolTypeInputs.toggleInputs.map(e =>
+                                                            <option key={e.property_name} value={e.property_name}>{e.tool_input_categories?.name === null ? '' : `${e.tool_input_categories?.display_title}: `}{e.client_name}</option>
+                                                        )
                                                 }
                                                 <option value="" disabled hidden>Choose input</option>
                                             </select>
