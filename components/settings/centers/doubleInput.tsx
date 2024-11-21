@@ -38,7 +38,7 @@ export default function DoubleInput({
                     <input
                         {...register(`${name}_tolerance`, { onChange: () => setValue(`${name}_lower`, undefined) })}
                         type="checkbox"
-                        className="toggle toggle-primary my-0 mr-2 z-50 absolute right-0"
+                        className="toggle toggle-primary my-0 mr-2 z-50 absolute right-0 bg-base-300"
                     />
                 </div>
             </div>
