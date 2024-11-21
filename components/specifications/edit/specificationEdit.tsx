@@ -301,7 +301,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                             Do you want to copy this specification?
                         </div>
                         <div className="flex flex-row justify-between items-center flex-grow w-full">
-                            <button className="rounded-none btn w-[50%] btn-primary" onClick={() => router.push(`/specifications/new?r=${referenceSpecification}`)} type="button">Yes</button>
+                            <a className="rounded-none btn w-[50%] btn-primary" href={`/specifications/new?r=${referenceSpecification}`}>Yes</a>
                             <button className="rounded-none btn w-[50%] btn-accent" onClick={() => setCopyWindowOpen(false)} type="button">No</button>
                         </div>
                     </div>
