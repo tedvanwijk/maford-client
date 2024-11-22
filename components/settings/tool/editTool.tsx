@@ -33,7 +33,8 @@ export default function EditTool() {
     const [applyButton, setApplyButton] = useState(<>Save changes</>);
     const [applyCopyButton, setApplyCopyButton] = useState(<>Save as copy</>);
     const [deleteButton, setDeleteButton] = useState(<>Delete series</>);
-    const [catalogButton, setCatalogButton] = useState(<>Import</>)
+    const [catalogButton, setCatalogButton] = useState(<>Import</>);
+    const [catalogIndices, setCatalogIndices] = useState([]);
     const formMethods = useForm({ mode: 'onChange' });
 
     useEffect(() => {
@@ -48,6 +49,19 @@ export default function EditTool() {
             .then(res => setToolTypes(res));
     }, []);
 
+
+    // the default value for the catalog index has to happen in useEffect, as the catalog index dropdown options are only available after re-render
+    // we use a different array for catalog indices, so we can give catalogIndices as dependency. When seriesInputs is updated for adding or removing rows, it doesn't
+    // trigger this useEffect, this would result in resetting catalog indices every time the user adds or removes a row
+    useEffect(() => {
+        for (let i = 0; i < catalogIndices.length; i++) {
+            const catalogIndex = catalogIndices[i];
+            if (catalogIndex === null) continue;
+            const formName = `series_input.${i}.catalog_index`;
+            formMethods.setValue(formName, catalogIndex);
+        }
+    }, [selectedSeries, formMethods, catalogIndices]);
+
     function changeToolType(toolType: ToolType) {
         // user has changed tool type, so load the tool series corresponding to that type
         fetch(
@@ -59,11 +73,13 @@ export default function EditTool() {
         )
             .then(res => res.json())
             .then(res => {
-                let seriesOptions = res;
-                seriesOptions.push({ name: 'Add new', series_id: -1 })
+                res.push({ name: 'Add new', series_id: -1 })
                 setSelectedToolType(toolType);
                 setSeries(res);
                 setSelectedSeries({ series_id: -2 });
+                setOldSeriesInputLength(0);
+                setSeriesInputs([]);
+                setCatalogIndices([]);
             });
 
         fetch(
@@ -75,16 +91,24 @@ export default function EditTool() {
         )
             .then(res => res.json())
             .then(res => setToolTypeInputs(res));
-        formMethods.reset();
+        // formMethods.reset();
     }
 
     function changeSeries(series: Series, disableButtonUpdate = false, resetForm = false) {
-        if (resetForm) formMethods.reset();
         if (series.series_id === -1) {
             setNewMode(true);
             if (!disableButtonUpdate) setApplyButton(<>Create</>);
             setSelectedSeries(series);
+            setOldSeriesInputLength(0);
             setSeriesInputs([]);
+            setCatalogIndices([]);
+            formMethods.setValue('name', undefined);
+            formMethods.setValue('flute_count', undefined);
+            formMethods.setValue('helix_angle', undefined);
+            formMethods.setValue('tool_series_file_name', undefined);
+            formMethods.setValue('tool_series_input_range', undefined);
+            formMethods.setValue('tool_series_output_range', undefined);
+            formMethods.setValue('straight_flute', undefined);
             return;
         }
         setNewMode(false);
@@ -100,6 +124,7 @@ export default function EditTool() {
             .then(res => {
                 setSelectedSeries(series);
                 setSeriesInputs(res);
+                setCatalogIndices(res.map((e: SeriesInput) => e.catalog_index));
                 setOldSeriesInputLength(res.length);
                 return { seriesInputs: res, series }
             })
@@ -116,7 +141,7 @@ export default function EditTool() {
         formMethods.setValue('straight_flute', series.straight_flute);
 
         type seriesInputColumnType = keyof SeriesInput;
-        const seriesInputColumns: seriesInputColumnType[] = ['type', 'name', 'value', 'catalog_index'];
+        const seriesInputColumns: seriesInputColumnType[] = ['type', 'name', 'value'];
         for (let i = 0; i < seriesInputs.length; i++) {
             const input = seriesInputs[i];
             for (let column = 0; column < seriesInputColumns.length; column++) {
@@ -304,6 +329,7 @@ export default function EditTool() {
                 } else {
                     setSelectedSeries({ series_id: -2 });
                     setSeriesInputs([]);
+                    setCatalogIndices([]);
                     formMethods.reset();
                 }
                 return res.json();

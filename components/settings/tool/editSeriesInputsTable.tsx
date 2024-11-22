@@ -21,10 +21,9 @@ export default function EditSeriesInputsTable(
     }
 ) {
     const { register, watch, setValue } = useFormContext();
-    if (!enabled) return <></>
-    else return (
+    return (
         <>
-            <div className='flex-grow flex-col justify-start items-start w-full'>
+            <div className={`flex-grow flex-col justify-start items-start w-full ${enabled ? '' : ''}`}>
                 <div className='label font-bold'>
                     Excel File Inputs
                 </div>
@@ -64,7 +63,7 @@ export default function EditSeriesInputsTable(
                                         </td>
                                 } else {
                                     nameInput =
-                                        <td>
+                                        <td className="border border-slate-400">
                                             <select
                                                 className="bg-base-100 p-1 w-full h-full border-none"
                                                 {...register(`series_input.${e.index}.name`, { required: true })}
