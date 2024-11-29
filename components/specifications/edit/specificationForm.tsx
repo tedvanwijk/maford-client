@@ -1,6 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 
 import { ToolInput, ToolInputRule } from "@/app/types";
+import { useEffect } from 'react';
 
 export default function SpecificationForm(
     {
@@ -9,17 +10,35 @@ export default function SpecificationForm(
         upperCenterDropdown,
         lowerCenterDropdown,
         type = 'General',
-        submitMode
+        submitMode,
+        validateRules
     }: {
         inputs: ToolInput[],
         toolSeriesInput: React.ReactNode,
         upperCenterDropdown: React.ReactNode
         lowerCenterDropdown: React.ReactNode
         type?: string,
-        submitMode: boolean
+        submitMode: boolean,
+        validateRules: Function
     }
 ) {
-    const { register, watch } = useFormContext();
+    const { register, watch, getValues } = useFormContext();
+
+    useEffect(() => {
+        // after initial render, loop through all inputs and validate. If not valid, set value to undefined
+        const formData = getValues();
+        for (let i = 0; i < inputs.length; i++) {
+            const input = inputs[i];
+            let rules = input.tool_input_rules as ToolInputRule[];
+            
+            if (rules.length > 0) {
+                let registerId = input.property_name;
+                if (type !== 'General') registerId = `${type}.${registerId}`;
+                validateRules(rules, formData, true, registerId);
+            }
+        }
+    }, []);
+
     function generateGroup(inputs: ToolInput[]) {
         const formData = watch();
         let groupElements: React.ReactNode[] = [];
@@ -43,71 +62,7 @@ export default function SpecificationForm(
             let rules = input.tool_input_rules as ToolInputRule[];
             let disabled = false;
             let additionalClasses = '';
-            if (rules.length > 0) {
-                // there are rules for this input
-                disabled = true;
-                additionalClasses = 'opacity-30';
-                for (const rule of rules) {
-                    let dependencyValue1 = formData[rule.tool_dependency_inputs_1.property_name];
-                    if (rule.tool_dependency_inputs_1.tool_input_categories?.name !== null && rule.tool_dependency_inputs_1.tool_input_categories?.name !== undefined && formData[rule.tool_dependency_inputs_1.tool_input_categories.name] !== undefined)
-                        dependencyValue1 = formData[rule.tool_dependency_inputs_1.tool_input_categories.name][rule.tool_dependency_inputs_1.property_name];
-
-                    let dependencyValue2;
-                    if (rule.tool_input_dependency_id_2 !== null) {
-                        dependencyValue2 = formData[rule.tool_dependency_inputs_2.property_name];
-                        if (rule.tool_dependency_inputs_2.tool_input_categories?.name !== null && rule.tool_dependency_inputs_2.tool_input_categories?.name !== undefined && formData[rule.tool_dependency_inputs_2.tool_input_categories.name] !== undefined)
-                            dependencyValue2 = formData[rule.tool_dependency_inputs_2.tool_input_categories.name][rule.tool_dependency_inputs_2.property_name];
-                    }
-                    if (dependencyValue1 === '' || dependencyValue2 === '') continue;
-
-                    if (!isNaN(dependencyValue2)) dependencyValue2 = Number(dependencyValue2);
-                    if (!isNaN(dependencyValue1)) dependencyValue1 = Number(dependencyValue1);
-                    let check = false;
-
-                    switch (rule.rule_type) {
-                        case 'enabled':
-                            check = dependencyValue1;
-                            break;
-                        case 'disabled':
-                            check = !dependencyValue1;
-                            break;
-                        case 'greater_than':
-                            if (rule.tool_input_dependency_id_2 === null) check = dependencyValue1 > rule.check_value;
-                            else check = dependencyValue1 > dependencyValue2;
-                            break;
-                        case 'less_than':
-                            if (rule.tool_input_dependency_id_2 === null) check = dependencyValue1 < rule.check_value;
-                            else check = dependencyValue1 < dependencyValue2;
-                            break;
-                        case 'equal':
-                            if (rule.tool_input_dependency_id_2 === null) {
-                                if (isNaN(+rule.check_value)) check = dependencyValue1 === rule.check_value;
-                                else check = dependencyValue1 === parseFloat(rule.check_value);
-                            }
-                            else check = dependencyValue1 === dependencyValue2;
-                            break;
-                        case 'not_equal':
-                            if (rule.tool_input_dependency_id_2 === null) {
-                                if (isNaN(+rule.check_value)) check = dependencyValue1 !== rule.check_value;
-                                else check = dependencyValue1 !== parseFloat(rule.check_value);
-                            }
-                            else check = dependencyValue1 !== dependencyValue2;
-                            break;
-                    }
-
-                    disabled = !check;
-                    additionalClasses = check ? '' : 'opacity-20 pointer-events-none';
-
-                    if (check && rule.disable) {
-                        // if the current rule being check has disabled = true, it takes priority and cancels the loop if the rule is validated
-                        disabled = true;
-                        additionalClasses = 'opacity-20 pointer-events-none';
-                        break;
-                    }
-
-                    if (!rule.disable && !disabled) break; // since we have sorted the array so the disabled rules are first, once a rule is not of type disabled and it has been validated, we can break out of the loop
-                }
-            }
+            if (rules.length > 0) [disabled, additionalClasses] = validateRules(rules, formData);
 
             // if not submitting, don't actually disable inputs so the values can still be retrieved
             // this way, if a rule depends on an initially disabled input, it will still evaluate correctly

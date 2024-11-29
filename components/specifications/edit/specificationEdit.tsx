@@ -7,7 +7,7 @@ import { apiUrl } from "@/lib/api";
 import SpecificationStep from "@/components/specifications/edit/specificationStep";
 import SpecificationForm from "@/components/specifications/edit/specificationForm";
 import StepForm from "@/components/specifications/edit/stepForm";
-import { InputCategory, ToolType, Series, Step, DefaultValue, SeriesInput, CenterInfo, CenterType } from "@/app/types";
+import { InputCategory, ToolType, Series, Step, DefaultValue, CenterInfo, CenterType, ToolInputRule } from "@/app/types";
 import ToolSeriesInput from "@/components/specifications/edit/toolSeriesInput";
 import CenterDropdown from "./centerDropdown";
 
@@ -43,6 +43,72 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         }
     }, [formMethods]);
 
+    const validateRules = useCallback((rules: ToolInputRule[], formData: any): [boolean, string] => {
+        let disabled = true;
+        let additionalClasses = '';
+        for (const rule of rules) {
+            let dependencyValue1 = formData[rule.tool_dependency_inputs_1.property_name];
+            if (rule.tool_dependency_inputs_1.tool_input_categories?.name !== null && rule.tool_dependency_inputs_1.tool_input_categories?.name !== undefined && formData[rule.tool_dependency_inputs_1.tool_input_categories.name] !== undefined)
+                dependencyValue1 = formData[rule.tool_dependency_inputs_1.tool_input_categories.name][rule.tool_dependency_inputs_1.property_name];
+
+            let dependencyValue2;
+            if (rule.tool_input_dependency_id_2 !== null) {
+                dependencyValue2 = formData[rule.tool_dependency_inputs_2.property_name];
+                if (rule.tool_dependency_inputs_2.tool_input_categories?.name !== null && rule.tool_dependency_inputs_2.tool_input_categories?.name !== undefined && formData[rule.tool_dependency_inputs_2.tool_input_categories.name] !== undefined)
+                    dependencyValue2 = formData[rule.tool_dependency_inputs_2.tool_input_categories.name][rule.tool_dependency_inputs_2.property_name];
+            }
+            if (dependencyValue1 === '' || dependencyValue2 === '') continue;
+
+            if (!isNaN(dependencyValue2)) dependencyValue2 = Number(dependencyValue2);
+            if (!isNaN(dependencyValue1)) dependencyValue1 = Number(dependencyValue1);
+            let check = false;
+
+            switch (rule.rule_type) {
+                case 'enabled':
+                    check = dependencyValue1;
+                    break;
+                case 'disabled':
+                    check = !dependencyValue1;
+                    break;
+                case 'greater_than':
+                    if (rule.tool_input_dependency_id_2 === null) check = dependencyValue1 > rule.check_value;
+                    else check = dependencyValue1 > dependencyValue2;
+                    break;
+                case 'less_than':
+                    if (rule.tool_input_dependency_id_2 === null) check = dependencyValue1 < rule.check_value;
+                    else check = dependencyValue1 < dependencyValue2;
+                    break;
+                case 'equal':
+                    if (rule.tool_input_dependency_id_2 === null) {
+                        if (isNaN(+rule.check_value)) check = dependencyValue1 === rule.check_value;
+                        else check = dependencyValue1 === parseFloat(rule.check_value);
+                    }
+                    else check = dependencyValue1 === dependencyValue2;
+                    break;
+                case 'not_equal':
+                    if (rule.tool_input_dependency_id_2 === null) {
+                        if (isNaN(+rule.check_value)) check = dependencyValue1 !== rule.check_value;
+                        else check = dependencyValue1 !== parseFloat(rule.check_value);
+                    }
+                    else check = dependencyValue1 !== dependencyValue2;
+                    break;
+            }
+
+            disabled = !check;
+            additionalClasses = check ? '' : 'opacity-20 pointer-events-none';
+
+            if (check && rule.disable) {
+                // if the current rule being check has disabled = true, it takes priority and cancels the loop if the rule is validated
+                disabled = true;
+                additionalClasses = 'opacity-20 pointer-events-none';
+                break;
+            }
+
+            if (!rule.disable && !disabled) break; // since we have sorted the array so the disabled rules are first, once a rule is not of type disabled and it has been validated, we can break out of the loop
+        }
+        return [disabled, additionalClasses]
+    }, []);
+
     useEffect(() => {
         setUserId(localStorage.getItem('user_id'));
 
@@ -76,10 +142,11 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
             setInputCategories(res.toolCategories);
 
             if (data.StepTool) copySteps(data.Steps);
-            enterValues(data);
             setToolType(data.ToolType);
             setSelectedSeries(data.ToolSeries);
             enterDefaultValues(defaultValues);
+            enterValues(data);
+            removeDisabledValues(res.toolCategories);
         }
 
         async function copyTool() {
@@ -111,10 +178,31 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                 .then(res => res.json());
             setInputCategories(res.toolCategories);
             if (data.StepTool) copySteps(data.Steps);
-            enterValues(data);
             copyCenters(data.Center);
             setToolType(data.ToolType);
             setSelectedSeries(data.ToolSeries);
+            enterValues(data);
+            removeDisabledValues(res.toolCategories);
+        }
+
+        function removeDisabledValues(categories: InputCategory[]) {
+            const formData = formMethods.getValues();
+            for (let cat = 0; cat < categories.length; cat++) {
+                const category: InputCategory = categories[cat];
+                const type = category.name || 'General';
+                const inputs = category.tool_inputs;
+                for (let i = 0; i < inputs.length; i++) {
+                    const input = inputs[i];
+                    let rules = input.tool_input_rules as ToolInputRule[];
+
+                    if (rules.length > 0) {
+                        let registerId = input.property_name;
+                        if (type !== 'General') registerId = `${type}.${registerId}`;
+                        const [disabled, _] = validateRules(rules, formData);
+                        if (disabled) formMethods.setValue(registerId, undefined);
+                    }
+                }
+            }
         }
 
         function enterValues(values: any, category = '') {
@@ -176,7 +264,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         )
             .then(res => res.json())
             .then(res => setCenters(res));
-    }, [referenceSpecification, formMethods, enterDefaultValues, userId]);
+    }, [referenceSpecification, formMethods, enterDefaultValues, userId, validateRules]);
 
     function changeStepCount(increase: boolean) {
         if (!increase && stepCount === 0) return;
@@ -366,6 +454,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                                             lowerCenterDropdown={lowerCenterDropdown}
                                             type={e.name || 'General'}
                                             submitMode={saveWindowOpen}
+                                            validateRules={validateRules}
                                         />
                                     </SpecificationStep>
                                 )
