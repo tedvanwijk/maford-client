@@ -116,10 +116,10 @@ export default async function Specifications(
         <div className="flex flex-col justify-between">
             <div className="flex flex-row justify-between items-center mb-4">
                 <div className="flex flex-row justify-start items-center">
-                    <h1 className="text-xl font-bold">{(searchParams.u === 'null' || searchParams.u === '-1') ? 'All' : `Your`} specifications</h1>
+                    <h1 className="text-xl font-bold">{(searchParams.u === 'null' || searchParams.u === '-1' || searchParams.u === 'undefined') ? 'All' : `Your`} specifications</h1>
                     {
                         searchParams.r === 'null' ?
-                            '' : (searchParams.u === 'null' || searchParams.u === '-1') ?
+                            '' : (searchParams.u === 'null' || searchParams.u === '-1' || searchParams.u === 'undefined') ?
                                 <Link href={`/specifications/${0}?u=${searchParams.r}&r=${searchParams.r}&s=${searchParams.s}`} className="btn ml-4">View your specifications</Link> :
                                 <Link href={`/specifications/${0}?u=null&r=${searchParams.r}&s=${searchParams.s}`} className="btn ml-4">View all specifications</Link>
                     }
