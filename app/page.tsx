@@ -31,6 +31,20 @@ export default async function Home() {
       </div>
       <h1 className='my-2'>Version History</h1>
       <div className='w-full bg-secondary bg-opacity-50 rounded-md p-2 h-full overflow-auto flex flex-col'>
+	  <div className='mb-4'>
+          <span className='font-bold'>[0.3.1]</span> <br />
+          <span className='whitespace-pre-wrap'>
+            11-29-2024<br />
+            - Fixed Solidworks file staying opened preventing new specs from being created<br />
+			- Added server status to homepage<br />
+			- Updated framework version<br />
+			- Added copy dialog on specification detail page click<br />
+			- Added copy and delete function for all settings sections<br />
+			- Added version deploy date to homepage<br />
+			- Several visual improvements<br />
+			- Several bug fixes
+          </span>
+        </div>
         <div className='mb-4'>
           <span className='font-bold'>[0.3.0]</span> <br />
           <span className='whitespace-pre-wrap'>
