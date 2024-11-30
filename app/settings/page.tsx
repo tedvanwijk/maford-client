@@ -3,6 +3,11 @@ import EditTool from "@/components/settings/tool/editTool";
 import General from "@/components/settings/general";
 import Users from "@/components/settings/users";
 import Centers from "@/components/settings/centers/centers";
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Settings'
+}
 
 export default function Settings() {
     return(

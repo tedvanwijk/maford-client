@@ -2,6 +2,14 @@ import { AlertCircle } from "react-feather";
 import { Suspense } from "react";
 import { join } from 'path';
 import SpecificationEdit from "@/components/specifications/edit/specificationEdit";
+import type { Metadata } from 'next';
+
+export async function generateMetadata(
+    { searchParams }:
+        { searchParams: { r: string } }
+): Promise<Metadata> {
+    return { title: `Specification Details - ${searchParams.r}` }
+}
 
 export default async function SpecificationDetails(
     { searchParams }:

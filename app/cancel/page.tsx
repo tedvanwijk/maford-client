@@ -1,4 +1,9 @@
 import { redirect, RedirectType } from 'next/navigation'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Redirecting - Please wait'
+}
 
 export default async function Cancel(
     { searchParams }:

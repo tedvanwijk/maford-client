@@ -1,6 +1,21 @@
 import SearchButton from "@/components/catalog/searchButton";
 import Link from "next/link";
 import { CatalogTool } from "@/app/types";
+import type { Metadata } from 'next'
+
+export async function generateMetadata(
+    {
+        params, searchParams
+    }:
+        {
+            params: { page: string },
+            searchParams: { s: string }
+        }
+): Promise<Metadata> {
+    let title = `Catalog tools - Page ${(parseInt(params.page) + 1).toString()}`;;
+    if (searchParams.s !== '') title += ` - Search: ${searchParams.s}`;
+    return { title }
+}
 
 export default async function Catalog(
     {

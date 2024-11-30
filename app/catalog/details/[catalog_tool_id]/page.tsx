@@ -1,4 +1,21 @@
-// import { ToolInput } from "@/app/types";
+import type { Metadata } from 'next';
+
+export async function generateMetadata(
+    { params }:
+        { params: { catalog_tool_id: string } }
+): Promise<Metadata> {
+    const tool = await fetch(
+        `${process.env.API_URL}/catalog/${params.catalog_tool_id}`,
+        {
+            method: "GET",
+            cache: "no-cache"
+        }
+    ).then(res => res.json());
+
+    return {
+        title: `Catalog Details - ${tool.tool_number}`
+    }
+}
 
 export default async function CatalogToolDetails(
     { params }:
@@ -53,11 +70,11 @@ export default async function CatalogToolDetails(
             <div className="flex flex-row justify-start items-center">
                 <h1 className="font-bold text-xl mr-2">{"Catalog tool: " + tool.tool_number}</h1>
             </div>
-                <h1 className="font-bold text-lg">Catalog data</h1>
-                <div className="flex flex-row items-start hero bg-base-200 rounded-xl p-4 mb-4">
-                    {createSummary()}
-                </div>
-                <a className="btn btn-primary mr-4" href={`/specifications/new?r=c_${params.catalog_tool_id}`}>Copy</a>
+            <h1 className="font-bold text-lg">Catalog data</h1>
+            <div className="flex flex-row items-start hero bg-base-200 rounded-xl p-4 mb-4">
+                {createSummary()}
+            </div>
+            <a className="btn btn-primary mr-4" href={`/specifications/new?r=c_${params.catalog_tool_id}`}>Copy</a>
         </>
     )
 }

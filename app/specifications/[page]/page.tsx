@@ -3,6 +3,24 @@ import Link from "next/link";
 import { Specification } from "@/app/types";
 import SearchButton from '@/components/specifications/searchButton';
 import { AlertCircle } from "react-feather";
+import type { Metadata } from 'next'
+
+export async function generateMetadata(
+    {
+        params, searchParams
+    }:
+        {
+            params: { page: string },
+            searchParams: { u: string, r: string, s: string }
+        }
+): Promise<Metadata> {
+    let title;
+    if (searchParams.u === 'null') title = `All specifications - Page ${(parseInt(params.page) + 1).toString()}`;
+    else title = `Your specifications - Page ${(parseInt(params.page) + 1).toString()}`;
+
+    if (searchParams.s !== '') title += ` - Search: ${searchParams.s}`;
+    return { title }
+}
 
 export default async function Specifications(
     {

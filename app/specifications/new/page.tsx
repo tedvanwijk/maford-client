@@ -1,5 +1,10 @@
 import SpecificationEdit from "@/components/specifications/edit/specificationEdit";
 import { Suspense } from "react";
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'New Specification'
+}
 
 export default function New() {
     return (

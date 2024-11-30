@@ -1,3 +1,9 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Tool Generator - Home'
+}
+
 export default async function Home() {
   const status = await fetch(
     `${process.env.API_URL}/status`,
