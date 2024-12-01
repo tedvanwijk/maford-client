@@ -15,7 +15,6 @@ export default function EditCatalog({
     button: React.ReactNode,
     enabled: boolean
 }) {
-    let catalogUpdated: Date = new Date(series.catalog_updated);
     if (series.helix_angle === undefined) return <></>;
     if (!enabled) return <></>;
     return (
@@ -33,7 +32,15 @@ export default function EditCatalog({
                         series.catalog_updated === null ?
                             'Latest catalog tool import: Never' :
                             <>
-                            Latest import: {catalogUpdated.toDateString()} {catalogUpdated.toLocaleTimeString()}<br />Number of tools: {series._count.catalog_tools}
+                                Latest import: {
+                                    new Date(series.catalog_updated).toLocaleString([], {
+                                        year: 'numeric',
+                                        month: '2-digit',
+                                        day: '2-digit',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })
+                                }<br />Number of tools: {series._count.catalog_tools}
                             </>
                     }
                 </div>
