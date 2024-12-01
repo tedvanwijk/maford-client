@@ -14,6 +14,7 @@ import { User } from "@/app/types";
 function Navbar({ children }: { children: React.ReactNode }) {
     const [userId, setUserId] = useState<string | undefined>(undefined);
     const [users, setUsers] = useState<User[]>([]);
+    const [user, setUser] = useState<User>();
 
     const router = useRouter();
     const pathName = usePathname();
@@ -31,6 +32,15 @@ function Navbar({ children }: { children: React.ReactNode }) {
             }
         ).then(res => res.json())
             .then(res => setUsers(res));
+
+        fetch(
+            `${apiUrl}/users/${user_id}`,
+            {
+                method: 'GET',
+                cache: 'no-cache'
+            }
+        ).then(res => res.json())
+            .then(res => setUser(res));
     }, []);
 
     const pages: {
@@ -95,16 +105,29 @@ function Navbar({ children }: { children: React.ReactNode }) {
                         className="w-64" />
                     <h1 className="my-5 px-4 text-center font-bold text-xl">M.A. Ford Tool Generator</h1>
                     <ul className="menu text-center w-full p-0">
-                        {pages.map((e: any) =>
-                            e.name === 'Specifications' ?
-                                <SpecificationLink key={e.name} userId={userId} /> :
-                                <li className="w-full font-bold stroke-2 my-1" key={e.name}>
-                                    <Link href={e.href} className="flex flex-row justify-between w-full text-lg m-0">
-                                        <h1>{e.name}</h1>
-                                        {e.icon}
-                                    </Link>
-                                </li>
-                        )}
+                        {pages.map((e: any) => {
+                            switch (e.name) {
+                                case 'Specifications':
+                                    return <SpecificationLink key={e.name} userId={userId} />
+                                case 'Settings':
+                                    if (user?.admin) return (
+                                        <li className="w-full font-bold stroke-2 my-1" key={e.name}>
+                                            <Link href={e.href} className="flex flex-row justify-between w-full text-lg m-0">
+                                                <h1>{e.name}</h1>
+                                                {e.icon}
+                                            </Link>
+                                        </li>
+                                    );
+                                    break;
+                                default:
+                                    return <li className="w-full font-bold stroke-2 my-1" key={e.name}>
+                                        <Link href={e.href} className="flex flex-row justify-between w-full text-lg m-0">
+                                            <h1>{e.name}</h1>
+                                            {e.icon}
+                                        </Link>
+                                    </li>
+                            }
+                        })}
                     </ul>
                 </div>
                 <div className="w-full flex flex-row px-4">

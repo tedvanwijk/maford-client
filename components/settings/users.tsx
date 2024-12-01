@@ -7,10 +7,11 @@ import { User } from '@/app/types';
 
 export default function Users() {
     const [name, setName] = useState('');
+    const [admin, setAdmin] = useState(false);
     const [userId, setUserId] = useState(-2);
     const [newMode, setNewMode] = useState(false);
     const [removeButton, setRemoveButton] = useState(<>Delete</>);
-    const [applyButton, setApplyButton] = useState(<>Change name</>);
+    const [applyButton, setApplyButton] = useState(<>Apply changes</>);
 
     const [users, setUsers] = useState<User[]>([]);
 
@@ -30,13 +31,15 @@ export default function Users() {
         if (u === undefined) {
             setNewMode(true);
             setName('');
+            setAdmin(false);
             setUserId(-1);
             if (!disableButtonUpdate) setApplyButton(<>Create user</>)
         } else {
             setNewMode(false);
             setName(u.name);
+            setAdmin(u.admin);
             setUserId(u.user_id);
-            if (!disableButtonUpdate) setApplyButton(<>Change name</>)
+            if (!disableButtonUpdate) setApplyButton(<>Apply changes</>)
         }
     }
 
@@ -52,16 +55,16 @@ export default function Users() {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ name })
+                    body: JSON.stringify({ name, admin })
                 }
             )
                 .then(res => {
                     if (res.status === 201) {
                         setApplyButton(<>Created<Check /></>);
-                        setTimeout(() => setApplyButton(<>Apply</>), 3000);
+                        setTimeout(() => setApplyButton(<>Apply changes</>), 3000);
                     } else {
                         setApplyButton(<>Failed</>);
-                        setTimeout(() => setApplyButton(<>Apply</>), 3000);
+                        setTimeout(() => setApplyButton(<>Apply changes</>), 3000);
                     }
                     return res.json();
                 })
@@ -75,16 +78,16 @@ export default function Users() {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ name })
+                    body: JSON.stringify({ name, admin })
                 }
             )
                 .then(res => {
                     if (res.status === 200) {
-                        setApplyButton(<>Changed<Check /></>);
-                        setTimeout(() => setApplyButton(<>Change name</>), 3000);
+                        setApplyButton(<>Applied<Check /></>);
+                        setTimeout(() => setApplyButton(<>Apply changes</>), 3000);
                     } else {
                         setApplyButton(<>Failed</>);
-                        setTimeout(() => setApplyButton(<>Change name</>), 3000);
+                        setTimeout(() => setApplyButton(<>Apply changes</>), 3000);
                     }
                     return res.json();
                 })
@@ -131,6 +134,7 @@ export default function Users() {
                 setUsers(res);
                 setUserId(-2);
                 setName('');
+                setAdmin(false);
             });
     }
 
@@ -150,18 +154,31 @@ export default function Users() {
                     <option value={-2} disabled hidden>Choose user</option>
                 </select>
             </div>
-            <label className={`form-control w-[200px] transition-opacity mb-4`} key="name">
-                <div className="label">
-                    <span>Name</span>
-                </div>
-                <input
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    type="text"
-                    placeholder="Enter value"
-                    className="input input-bordered w-full"
-                />
-            </label>
+            <div className="flex flex-row w-full justify-start items-center">
+                <label className={`form-control w-[200px] transition-opacity mb-4 mr-4`} key="name">
+                    <div className="label">
+                        <span>Name</span>
+                    </div>
+                    <input
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                        type="text"
+                        placeholder="Enter value"
+                        className="input input-bordered w-full"
+                    />
+                </label>
+                <label className={`form-control w-[200px] transition-opacity mb-4`} key="name">
+                    <div className="label">
+                        <span>Admin</span>
+                    </div>
+                    <input
+                        checked={admin}
+                        onChange={e => setAdmin(e.target.checked)}
+                        type="checkbox"
+                        className="toggle toggle-primary my-auto bg-base-300"
+                    />
+                </label>
+            </div>
             <div className="flex flex-row justify-start items-center w-full">
                 <button type="submit" disabled={userId === -2} className="btn btn-primary mr-4">{applyButton}</button>
                 <button type="button" disabled={userId === -2 || newMode} className="btn bg-base-100" onClick={() => remove()}>{removeButton}</button>
