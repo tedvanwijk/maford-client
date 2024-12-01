@@ -54,7 +54,8 @@ export interface Specification {
     },
     tools: {
         name: string
-    }
+    },
+    date_created: Date
 }
 
 export interface User {

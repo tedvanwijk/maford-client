@@ -154,6 +154,7 @@ export default async function Specifications(
                         <th></th>
                         <th>User</th>
                         <th>Tool</th>
+                        <th>Created</th>
                         <th>Name</th>
                         <th>Status</th>
                     </tr>
@@ -178,7 +179,7 @@ export default async function Specifications(
                             }
                             return (
                                 <tr key={e.specification_id} className="hover relative" title={e.versions.active ? "Click row to view details" : "Click row to view details. Warning: This specification was created with an older version, some features might not work as expected"}>
-                                    <td className="w-[15%]">
+                                    <td className="w-[10%]">
                                         <Link href={`/specifications/details?r=${e.specification_id}`} className="absolute bottom-0 left-0 top-0 right-0" />
                                         <div className="flex flex-row justify-start items-center">
                                             {e.specification_id}
@@ -188,7 +189,16 @@ export default async function Specifications(
                                     </td>
                                     <td className="w-[20%]">{e.users.name}</td>
                                     <td className="w-[10%]">{e.tools.name}</td>
-                                    <td className="w-[30%]">{e.name}</td>
+                                    <td className="w-[10%]">{
+                                        e.date_created !== null ? new Date(e.date_created).toLocaleString([], {
+                                            year: 'numeric',
+                                            month: '2-digit',
+                                            day: '2-digit',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        }) : ''
+                                    }</td>
+                                    <td className="w-[40%]">{e.name}</td>
                                     <td className="w-[10%]">
                                         <div className={`badge ${badgeClasses}`}>
                                             {e.status}
