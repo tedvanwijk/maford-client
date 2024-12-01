@@ -178,7 +178,7 @@ export default async function Specifications(
                             }
                             return (
                                 <tr key={e.specification_id} className="hover relative" title={e.versions.active ? "Click row to view details" : "Click row to view details. Warning: This specification was created with an older version, some features might not work as expected"}>
-                                    <td>
+                                    <td className="w-[15%]">
                                         <Link href={`/specifications/details?r=${e.specification_id}`} className="absolute bottom-0 left-0 top-0 right-0" />
                                         <div className="flex flex-row justify-start items-center">
                                             {e.specification_id}
@@ -186,10 +186,10 @@ export default async function Specifications(
                                         </div>
 
                                     </td>
-                                    <td>{e.users.name}</td>
-                                    <td>{e.tools.name}</td>
-                                    <td>{e.name}</td>
-                                    <td>
+                                    <td className="w-[20%]">{e.users.name}</td>
+                                    <td className="w-[10%]">{e.tools.name}</td>
+                                    <td className="w-[30%]">{e.name}</td>
+                                    <td className="w-[10%]">
                                         <div className={`badge ${badgeClasses}`}>
                                             {e.status}
                                         </div>
