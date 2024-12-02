@@ -78,7 +78,8 @@ export interface Series {
     tools?: ToolType,
     catalog_updated: Date,
     _count?: any,
-    straight_flute: boolean
+    straight_flute: boolean,
+    active: boolean
 }
 
 export interface SeriesInput {

@@ -1,4 +1,4 @@
-import { SeriesInput, Series } from "@/app/types";
+import { Series } from "@/app/types";
 
 export default function ToolSeriesInput(
     {
@@ -21,7 +21,7 @@ export default function ToolSeriesInput(
             <select value={selectedSeries} className="input input-bordered mr-4" onChange={e => changeSeries(parseInt(e.target.value))}>
                 {
                     series.map((e: Series) =>
-                        <option key={e.series_id} value={e.series_id}>
+                        <option key={e.series_id} value={e.series_id} disabled={!e.active} hidden={!e.active}>
                             {e.name}
                         </option>
                     )

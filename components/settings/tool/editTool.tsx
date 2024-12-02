@@ -65,7 +65,7 @@ export default function EditTool() {
     function changeToolType(toolType: ToolType) {
         // user has changed tool type, so load the tool series corresponding to that type
         fetch(
-            `${apiUrl}/series/tool_id/${toolType.tool_id}`,
+            `${apiUrl}/series/tool_id/${toolType.tool_id}?active=true`,
             {
                 method: 'GET',
                 cache: 'no-cache'
@@ -292,7 +292,7 @@ export default function EditTool() {
 
         // after a series has been added or changed, re-fetch the series so the new or altered series shows up in the dropdown
         await fetch(
-            `${apiUrl}/series/tool_id/${selectedToolType.tool_id}`,
+            `${apiUrl}/series/tool_id/${selectedToolType.tool_id}?active=true`,
             {
                 method: 'GET',
                 cache: 'no-cache'
@@ -336,7 +336,7 @@ export default function EditTool() {
             });
 
         await fetch(
-            `${apiUrl}/series/tool_id/${selectedToolType.tool_id}`,
+            `${apiUrl}/series/tool_id/${selectedToolType.tool_id}?active=true`,
             {
                 method: 'GET',
                 cache: 'no-cache'
