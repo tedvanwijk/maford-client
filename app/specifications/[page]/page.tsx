@@ -189,8 +189,8 @@ export default async function Specifications(
                                     </td>
                                     <td className="w-[20%]">{e.users.name}</td>
                                     <td className="w-[10%]">{e.tools.name}</td>
-                                    <td className="w-[10%]">{
-                                        e.date_created !== null ? new Date(e.date_created).toLocaleString([], {
+                                    <td className="w-[15%]">{
+                                        e.date_created !== null ? new Date(e.date_created).toLocaleString('en-US', {
                                             year: 'numeric',
                                             month: '2-digit',
                                             day: '2-digit',
@@ -198,7 +198,7 @@ export default async function Specifications(
                                             minute: '2-digit'
                                         }) : ''
                                     }</td>
-                                    <td className="w-[40%]">{e.name}</td>
+                                    <td className="w-[35%]">{e.name}</td>
                                     <td className="w-[10%]">
                                         <div className={`badge ${badgeClasses}`}>
                                             {e.status}

@@ -33,7 +33,7 @@ export default function EditCatalog({
                             'Latest catalog tool import: Never' :
                             <>
                                 Latest import: {
-                                    new Date(series.catalog_updated).toLocaleString([], {
+                                    new Date(series.catalog_updated).toLocaleString('en-US', {
                                         year: 'numeric',
                                         month: '2-digit',
                                         day: '2-digit',
