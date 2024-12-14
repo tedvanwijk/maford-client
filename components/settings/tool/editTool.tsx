@@ -217,10 +217,7 @@ export default function EditTool() {
         if (formData.series_input === undefined) formData.series_input = [];
         else formData.series_input.length = seriesInputs.length;
 
-        if (formData.straight_flute) {
-            formData.flute_count = 2;
-            formData.helix_angle = 40;
-        }
+        if (formData.straight_flute) formData.helix_angle = 40;
 
         if (copy) {
             formData.name += ' - Copy';
