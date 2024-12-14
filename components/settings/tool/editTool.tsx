@@ -39,7 +39,7 @@ export default function EditTool() {
 
     useEffect(() => {
         fetch(
-            `${apiUrl}/tools`,
+            `${apiUrl}/tools?editable=true`,
             {
                 method: 'GET',
                 cache: 'no-cache'
