@@ -51,7 +51,7 @@ export default function EditToolForm(
                             </div>
                         </label>
                         <input
-                            {...register('flute_count', { required: true, disabled: (!enabled || straightFlute) })}
+                            {...register('flute_count', { required: true, disabled: (!enabled) })}
                             type="number"
                             placeholder="Enter value"
                             className="input input-bordered w-full"
