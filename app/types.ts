@@ -79,7 +79,8 @@ export interface Series {
     catalog_updated: Date,
     _count?: any,
     straight_flute: boolean,
-    active: boolean
+    active: boolean,
+    left_hand_spiral: boolean
 }
 
 export interface SeriesInput {

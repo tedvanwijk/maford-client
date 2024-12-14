@@ -109,6 +109,7 @@ export default function EditTool() {
             formMethods.setValue('tool_series_input_range', undefined);
             formMethods.setValue('tool_series_output_range', undefined);
             formMethods.setValue('straight_flute', undefined);
+            formMethods.setValue('left_hand_spiral', undefined);
             return;
         }
         setNewMode(false);
@@ -139,6 +140,7 @@ export default function EditTool() {
         formMethods.setValue('tool_series_input_range', series.tool_series_input_range);
         formMethods.setValue('tool_series_output_range', series.tool_series_output_range);
         formMethods.setValue('straight_flute', series.straight_flute);
+        formMethods.setValue('left_hand_spiral', series.left_hand_spiral);
 
         type seriesInputColumnType = keyof SeriesInput;
         const seriesInputColumns: seriesInputColumnType[] = ['type', 'name', 'value'];

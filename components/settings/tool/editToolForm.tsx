@@ -58,7 +58,7 @@ export default function EditToolForm(
                         />
                     </div>
                     {
-                        toolType.name === 'Drill' ?
+                        (toolType.name === 'Drill' || toolType.name === 'Reamer') ?
                             <div className="flex flex-col mb-1">
                                 <label className="form-control transition-opacity">
                                     <div className="label">
@@ -104,6 +104,23 @@ export default function EditToolForm(
                             className="input input-bordered w-full"
                         />
                     </div>
+                    {
+                        (toolType.name === 'Drill' || toolType.name === 'Reamer') ?
+                            <div className="flex flex-col mb-1">
+                                <label className="form-control transition-opacity">
+                                    <div className="label">
+                                        <span>Left hand spiral</span>
+                                    </div>
+                                </label>
+                                <input
+                                    {...register('left_hand_spiral', { disabled: !enabled })}
+                                    placeholder="Enter value"
+                                    type="checkbox"
+                                    className="toggle toggle-primary my-auto"
+                                />
+                            </div> :
+                            ''
+                    }
                 </div>
 
                 <div className="flex flex-col mb-4 mr-4">
