@@ -30,7 +30,7 @@ export default function SpecificationForm(
         for (let i = 0; i < inputs.length; i++) {
             const input = inputs[i];
             let rules = input.tool_input_rules as ToolInputRule[];
-            
+
             if (rules.length > 0) {
                 let registerId = input.property_name;
                 if (type !== 'General') registerId = `${type}.${registerId}`;
@@ -44,6 +44,14 @@ export default function SpecificationForm(
         let groupElements: React.ReactNode[] = [];
         for (let i = 0; i < inputs.length; i++) {
             const input = inputs[i];
+
+            let coolantAngleInput = false;
+            let coolantAlongFluting;
+            if (input.property_name === 'CoolantPatternAngle') {
+                coolantAngleInput = true;
+                coolantAlongFluting = watch('Coolant.CoolantPatternAlongFluting');
+            }
+
             if (input.property_name === 'ToolSeries') {
                 groupElements.push(toolSeriesInput);
                 continue
@@ -146,7 +154,12 @@ export default function SpecificationForm(
             const element =
                 <label className={`form-control w-[200px] ${additionalClasses} transition-opacity`} key={input.tool_input_id}>
                     <div className="label">
-                        <span>{input.client_name}</span>
+                        <span>
+                            {
+                                coolantAngleInput ?
+                                    (coolantAlongFluting ? 'Flutes to skip' : 'Rotation') : input.client_name
+                            }
+                        </span>
                     </div>
                     {inputElement}
                 </label>
