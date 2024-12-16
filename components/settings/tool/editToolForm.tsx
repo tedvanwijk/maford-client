@@ -24,6 +24,7 @@ export default function EditToolForm(
 ) {
     const { register, watch } = useFormContext();
     const straightFlute = watch('straight_flute', false);
+    const leftHandSpiral = watch('left_hand_spiral', false);
     return (
         <div className='flex flex-col justify-start items-start'>
             <div className='font-bold'>
@@ -57,24 +58,6 @@ export default function EditToolForm(
                             className="input input-bordered w-full"
                         />
                     </div>
-                    {
-                        (toolType.name === 'Drill' || toolType.name === 'Reamer') ?
-                            <div className="flex flex-col mb-1">
-                                <label className="form-control transition-opacity">
-                                    <div className="label">
-                                        <span>Straight Flute</span>
-                                    </div>
-                                </label>
-                                <input
-                                    {...register('straight_flute', { disabled: !enabled })}
-                                    placeholder="Enter value"
-                                    type="checkbox"
-                                    className="toggle toggle-primary my-auto"
-                                />
-                            </div> :
-                            ''
-                    }
-
                 </div>
 
                 <div className="flex flex-col mb-4 mr-4">
@@ -104,27 +87,9 @@ export default function EditToolForm(
                             className="input input-bordered w-full"
                         />
                     </div>
-                    {
-                        (toolType.name === 'Drill' || toolType.name === 'Reamer') ?
-                            <div className="flex flex-col mb-1">
-                                <label className="form-control transition-opacity">
-                                    <div className="label">
-                                        <span>Left hand spiral</span>
-                                    </div>
-                                </label>
-                                <input
-                                    {...register('left_hand_spiral', { disabled: !enabled })}
-                                    placeholder="Enter value"
-                                    type="checkbox"
-                                    className="toggle toggle-primary my-auto"
-                                />
-                            </div> :
-                            ''
-                    }
                 </div>
 
                 <div className="flex flex-col mb-4 mr-4">
-
                     <div className="flex flex-col mb-1">
                         <label className="form-control transition-opacity">
                             <div className="label">
@@ -152,6 +117,44 @@ export default function EditToolForm(
                         />
                     </div>
                 </div>
+
+                <div className="flex flex-col mb-4 mr-4">
+                    <div className="flex flex-col mb-1">
+                        <label className="form-control transition-opacity">
+                            <div className="label">
+                                <span>Left hand spiral</span>
+                            </div>
+                        </label>
+                        <div className='h-12 flex justify-start'>
+                            <input
+                                {...register('left_hand_spiral', { disabled: (!enabled || straightFlute) })}
+                                placeholder="Enter value"
+                                type="checkbox"
+                                className="toggle toggle-primary my-auto"
+                            />
+                        </div>
+                    </div>
+                    {
+                        (toolType.name === 'Drill' || toolType.name === 'Reamer') ?
+                            <div className="flex flex-col mb-1">
+                                <label className="form-control transition-opacity">
+                                    <div className="label">
+                                        <span>Straight Flute</span>
+                                    </div>
+                                </label>
+                                <div className='h-12 flex justify-start'>
+                                    <input
+                                        {...register('straight_flute', { disabled: (!enabled || leftHandSpiral) })}
+                                        placeholder="Enter value"
+                                        type="checkbox"
+                                        className="toggle toggle-primary my-auto"
+                                    />
+                                </div>
+                            </div> :
+                            ''
+                    }
+                </div>
+
             </div>
             <EditSeriesInputsTable
                 seriesInputs={seriesInputs}
