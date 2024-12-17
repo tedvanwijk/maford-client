@@ -218,7 +218,6 @@ export default function EditTool() {
         else formData.series_input.length = seriesInputs.length;
 
         if (formData.straight_flute) {
-            formData.helix_angle = 40;
             formData.left_hand_spiral = false;
         }
 
