@@ -308,12 +308,16 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
     }
 
     async function changeToolType(e: ToolType) {
+        let switchingFromBlank = false;
         if (e.tool_id === toolType) return
         else if (toolType === -1) {
             formMethods.reset();
         }
-        else if (toolType !== 2) {
+        else if (toolType === 2) {
             // if toolType = 2, user is switching from blank. So retain form values and don't show confirm window
+            switchingFromBlank = true;
+        }
+        else {
             const answer = window.confirm('Changing the tool type will reset all input parameters to their default values. Are you sure?');
             if (!answer) return;
             formMethods.reset();
@@ -342,7 +346,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
             .then(res => res.json())
             .then(res => setSeries(res));
         setToolType(e.tool_id);
-        enterDefaultValues(defaultValues, true);
+        enterDefaultValues(defaultValues, switchingFromBlank);
     }
 
     const seriesInput = <ToolSeriesInput
