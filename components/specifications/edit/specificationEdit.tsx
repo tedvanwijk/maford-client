@@ -28,7 +28,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
     const searchParams = useSearchParams();
     const referenceSpecification = searchParams.get('r');
 
-    const enterDefaultValues = useCallback((defaultValues: DefaultValue[]) => {
+    const enterDefaultValues = useCallback((defaultValues: DefaultValue[], setCoolant = false) => {
         for (let i = 0; i < defaultValues.length; i++) {
             const defaultValue = defaultValues[i];
             let value;
@@ -40,6 +40,8 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                 value = defaultValue.value;
             }
             formMethods.setValue(defaultValues[i].tool_inputs?.property_name as string, value);
+
+            if (setCoolant) formMethods.setValue('Coolant.CoolantHole', true);
         }
     }, [formMethods]);
 
@@ -307,11 +309,16 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
 
     async function changeToolType(e: ToolType) {
         if (e.tool_id === toolType) return
-        else if (toolType !== -1) {
+        else if (toolType === -1) {
+            formMethods.reset();
+        }
+        else if (toolType !== 2) {
+            // if toolType = 2, user is switching from blank. So retain form values and don't show confirm window
             const answer = window.confirm('Changing the tool type will reset all input parameters to their default values. Are you sure?');
             if (!answer) return;
+            formMethods.reset();
         };
-        formMethods.reset();
+
         setSelectedSeries(-1);
         const defaultValues = await fetch(
             `${apiUrl}/tool/${e.tool_id}/inputs`,
@@ -335,7 +342,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
             .then(res => res.json())
             .then(res => setSeries(res));
         setToolType(e.tool_id);
-        enterDefaultValues(defaultValues);
+        enterDefaultValues(defaultValues, true);
     }
 
     const seriesInput = <ToolSeriesInput
