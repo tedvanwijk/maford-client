@@ -39,4 +39,4 @@ yarn-error.log*
 next-env.d.ts
 
 # spec images
-/app/public/specs/
+/public/specs/*
