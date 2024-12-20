@@ -35,7 +35,7 @@ export default function SpecificationForm(
                 validateRules(rules, formData, true, registerId);
             }
         }
-    }, []);
+    }, [getValues, inputs, type, validateRules]);
 
     function generateGroup(inputs: ToolInput[]) {
         const formData = watch();

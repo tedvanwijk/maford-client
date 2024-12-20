@@ -46,6 +46,39 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         }
     }, [formMethods]);
 
+    const changeSeries = useCallback(async (seriesId: number) => {
+        setSelectedSeries(seriesId);
+        if (seriesId === -1) {
+            formMethods.setValue('flute_count', undefined);
+            formMethods.setValue('helix_angle', undefined);
+            formMethods.setValue('straight_flute', undefined);
+            formMethods.setValue('left_hand_spiral', undefined);
+            return;
+        }
+
+        const seriesData: Series = await fetch(
+            `${apiUrl}/series/${seriesId}`,
+            {
+                method: 'GET',
+                cache: 'no-cache'
+            }
+        )
+            .then(res => res.json());
+
+        formMethods.setValue('flute_count', seriesData.flute_count);
+        formMethods.setValue('helix_angle', seriesData.helix_angle);
+        formMethods.setValue('straight_flute', seriesData.straight_flute);
+        formMethods.setValue('left_hand_spiral', seriesData.left_hand_spiral);
+    }, [formMethods]);
+
+    const copySeriesParams = useCallback((body: any) => {
+        setSelectedSeries(body.ToolSeries);
+        formMethods.setValue('flute_count', body.flute_count);
+        formMethods.setValue('helix_angle', body.helix_angle);
+        formMethods.setValue('straight_flute', body.straight_flute);
+        formMethods.setValue('left_hand_spiral', body.left_hand_spiral);
+    }, [formMethods]);
+
     const validateRules = useCallback((rules: ToolInputRule[], formData: any): [boolean, string] => {
         let disabled = true;
         let additionalClasses = '';
@@ -267,7 +300,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         )
             .then(res => res.json())
             .then(res => setCenters(res));
-    }, [referenceSpecification, formMethods, enterDefaultValues, userId, validateRules]);
+    }, [referenceSpecification, formMethods, enterDefaultValues, userId, validateRules, changeSeries, copySeriesParams]);
 
     function changeStepCount(increase: boolean) {
         if (!increase && stepCount === 0) return;
@@ -360,39 +393,6 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
             .then(res => setSeries(res));
         setToolType(e.tool_id);
         enterDefaultValues(defaultValues, switchingFromBlank);
-    }
-
-    async function changeSeries(seriesId: number) {
-        setSelectedSeries(seriesId);
-        if (seriesId === -1) {
-            formMethods.setValue('flute_count', undefined);
-            formMethods.setValue('helix_angle', undefined);
-            formMethods.setValue('straight_flute', undefined);
-            formMethods.setValue('left_hand_spiral', undefined);
-            return;
-        }
-
-        const seriesData: Series = await fetch(
-            `${apiUrl}/series/${seriesId}`,
-            {
-                method: 'GET',
-                cache: 'no-cache'
-            }
-        )
-            .then(res => res.json());
-
-        formMethods.setValue('flute_count', seriesData.flute_count);
-        formMethods.setValue('helix_angle', seriesData.helix_angle);
-        formMethods.setValue('straight_flute', seriesData.straight_flute);
-        formMethods.setValue('left_hand_spiral', seriesData.left_hand_spiral);
-    }
-
-    function copySeriesParams(body: any) {
-        setSelectedSeries(body.ToolSeries);
-        formMethods.setValue('flute_count', body.flute_count);
-        formMethods.setValue('helix_angle', body.helix_angle);
-        formMethods.setValue('straight_flute', body.straight_flute);
-        formMethods.setValue('left_hand_spiral', body.left_hand_spiral);
     }
 
     const seriesInput = <ToolSeriesInput
