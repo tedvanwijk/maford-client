@@ -3,11 +3,6 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { apiUrl } from "@/lib/api";
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'Report Issue'
-}
 
 function Report() {
     const searchParams = useSearchParams();
@@ -51,6 +46,7 @@ function Report() {
 
     return (
         <>
+            <title>Report Issue</title>
             <h1 className="text-lg font-bold">Report Issue</h1>
             {
                 referenceSpecification === null ?
