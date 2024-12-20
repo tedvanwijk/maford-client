@@ -182,7 +182,7 @@ export default async function Specifications(
                             return (
                                 <tr
                                     key={e.specification_id}
-                                    className="hover relative h-[50px] hover:py-3 transition-all"
+                                    className="hover relative h-[50px]"
                                     title={e.versions.active ? "Click row to view details" : "Click row to view details. Warning: This specification was created with an older version, some features might not work as expected"}
                                 >
                                     <td className="w-[5%]">
@@ -205,9 +205,9 @@ export default async function Specifications(
                                         }) : ''
                                     }</td>
                                     <td className="w-[15%]">{e.name}</td>
-                                    <td className="hidden h-[50px] 2xl:block w-full overflow-hidden p-0">
-                                        <div className="flex justify-center items-center w-full h-full overflow-hidden">
-                                            <Image src={`/specs/${e.specification_id}.png`} alt="" width={1503} height={930} className="h-auto w-full aspect-auto" />
+                                    <td className="hidden h-[50px] 2xl:block w-full overflow-hidden p-2">
+                                        <div className="flex justify-start items-center w-full h-full overflow-hidden">
+                                            <Image src={`/specs/${e.specification_id}.png`} alt="" width={1503} height={930} className="h-full w-auto aspect-auto" />
                                         </div>
                                     </td>
                                     <td className="w-[10%]">

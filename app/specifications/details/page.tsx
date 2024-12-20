@@ -60,7 +60,7 @@ export default async function SpecificationDetails(
 
     return (
         <>
-            <div className="flex flex-row justify-between items-center w-full mb-4">
+            <div className="flex flex-row justify-between items-center w-full">
                 <div className="flex flex-col justify-between items-start">
                     <div className="flex flex-row justify-start items-center">
                         <h1 className="font-bold text-xl mr-2">{"Specification " + spec.specification_id}{spec.name ? `: ${spec.name}` : ''}  </h1>
@@ -89,7 +89,9 @@ export default async function SpecificationDetails(
             }
             {error}
 
-            <Image src={`/specs/${searchParams.r}.png`} alt="" width={1503} height={930} className="w-full aspect-auto max-h-[120px] object-cover m-0" />
+            <div className="w-full flex justify-center items-center">
+                <Image src={`/specs/${searchParams.r}.png`} alt="" width={1503} height={930} className="aspect-auto max-h-[100px] h-full w-auto object-cover my-2" />
+            </div>
 
             <Suspense>
                 <SpecificationEdit viewOnly={true} />
