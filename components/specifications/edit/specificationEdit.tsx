@@ -10,6 +10,7 @@ import StepForm from "@/components/specifications/edit/stepForm";
 import { InputCategory, ToolType, Series, Step, DefaultValue, CenterInfo, CenterType, ToolInputRule } from "@/app/types";
 import ToolSeriesInput from "@/components/specifications/edit/toolSeriesInput";
 import CenterDropdown from "./centerDropdown";
+import SeriesEdit from "./seriesEdit";
 
 function New({ viewOnly = false }: { viewOnly: boolean }) {
     const [tools, setTools]: [ToolType[], Function] = useState([]);
@@ -145,7 +146,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
 
             if (data.StepTool) copySteps(data.Steps);
             setToolType(data.ToolType);
-            setSelectedSeries(data.ToolSeries);
+            changeSeries(data.ToolSeries);
             enterDefaultValues(defaultValues);
             enterValues(data);
             removeDisabledValues(res.toolCategories);
@@ -182,7 +183,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
             if (data.StepTool) copySteps(data.Steps);
             copyCenters(data.Center);
             setToolType(data.ToolType);
-            setSelectedSeries(data.ToolSeries);
+            copySeriesParams(data);
             enterValues(data);
             removeDisabledValues(res.toolCategories);
         }
@@ -278,6 +279,9 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         // hard copy form data
         let formDataCopy = { ...formMethods.getValues() }
 
+        if (formDataCopy.flute_count === '') return window.alert('Please select a series or specify flute count');
+        if (formDataCopy.helix_angle === '') return window.alert('Please select a series or specify helix angle');
+
         // add variables to formData obj that are not in the form
         formDataCopy.ToolSeries = selectedSeries;
         formDataCopy.ToolType = toolType;
@@ -286,6 +290,15 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
 
         // when removing steps, the Steps property does not change length, so we need to cut it down to the amount of steps we have stored
         if (formDataCopy.StepTool) formDataCopy.Steps.length = stepCount;
+
+        // straight flute is always present, set it to false for ems
+        if (toolType === 0) formDataCopy.straight_flute = false;
+
+        // for blanks, set both params to false
+        if (toolType === 2) {
+            formDataCopy.straight_flute = false;
+            formDataCopy.left_hand_spiral = false;
+        }
 
         await fetch(
             `${apiUrl}/specifications/new`,
@@ -323,7 +336,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
             formMethods.reset();
         };
 
-        setSelectedSeries(-1);
+        changeSeries(-1);
         const defaultValues = await fetch(
             `${apiUrl}/tool/${e.tool_id}/inputs`,
             {
@@ -349,10 +362,43 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         enterDefaultValues(defaultValues, switchingFromBlank);
     }
 
+    async function changeSeries(seriesId: number) {
+        setSelectedSeries(seriesId);
+        if (seriesId === -1) {
+            formMethods.setValue('flute_count', undefined);
+            formMethods.setValue('helix_angle', undefined);
+            formMethods.setValue('straight_flute', undefined);
+            formMethods.setValue('left_hand_spiral', undefined);
+            return;
+        }
+
+        const seriesData: Series = await fetch(
+            `${apiUrl}/series/${seriesId}`,
+            {
+                method: 'GET',
+                cache: 'no-cache'
+            }
+        )
+            .then(res => res.json());
+
+        formMethods.setValue('flute_count', seriesData.flute_count);
+        formMethods.setValue('helix_angle', seriesData.helix_angle);
+        formMethods.setValue('straight_flute', seriesData.straight_flute);
+        formMethods.setValue('left_hand_spiral', seriesData.left_hand_spiral);
+    }
+
+    function copySeriesParams(body: any) {
+        setSelectedSeries(body.ToolSeries);
+        formMethods.setValue('flute_count', body.flute_count);
+        formMethods.setValue('helix_angle', body.helix_angle);
+        formMethods.setValue('straight_flute', body.straight_flute);
+        formMethods.setValue('left_hand_spiral', body.left_hand_spiral);
+    }
+
     const seriesInput = <ToolSeriesInput
         key={-1}
         selectedSeries={selectedSeries}
-        changeSeries={setSelectedSeries}
+        changeSeries={changeSeries}
         series={series}
     />
 
@@ -448,6 +494,26 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                                         <StepForm stepCount={stepCount} changeStepCount={changeStepCount} viewOnly={viewOnly} />
                                     </SpecificationStep>
                                 )
+
+                                if (e.name === 'Fluting') return (
+                                    <SpecificationStep
+                                        defaultChecked={viewOnly ? true : (i === 0 ? true : false)}
+                                        stepNumber={i + 1}
+                                        header={e.display_title}
+                                        enabled={true}
+                                        key={i + 1}
+                                        forceOpen={false}
+                                        arrowEnabled={!viewOnly}
+                                    >
+                                        <SeriesEdit
+                                            toolSeriesInput={seriesInput}
+                                            toolType={tools.find(e => e.tool_id === toolType) as ToolType}
+                                            selectedSeries={selectedSeries}
+                                            submitMode={saveWindowOpen}
+                                        />
+                                    </SpecificationStep>
+                                )
+
                                 return (
                                     <SpecificationStep
                                         defaultChecked={viewOnly ? true : (i === 0 ? true : false)}
@@ -460,7 +526,6 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                                     >
                                         <SpecificationForm
                                             inputs={e.tool_inputs}
-                                            toolSeriesInput={seriesInput}
                                             upperCenterDropdown={upperCenterDropdown}
                                             lowerCenterDropdown={lowerCenterDropdown}
                                             type={e.name || 'General'}

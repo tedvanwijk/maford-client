@@ -6,7 +6,6 @@ import { useEffect } from 'react';
 export default function SpecificationForm(
     {
         inputs,
-        toolSeriesInput,
         upperCenterDropdown,
         lowerCenterDropdown,
         type = 'General',
@@ -14,7 +13,6 @@ export default function SpecificationForm(
         validateRules
     }: {
         inputs: ToolInput[],
-        toolSeriesInput: React.ReactNode,
         upperCenterDropdown: React.ReactNode
         lowerCenterDropdown: React.ReactNode
         type?: string,
@@ -50,11 +48,6 @@ export default function SpecificationForm(
             if (input.property_name === 'CoolantPatternAngle') {
                 coolantAngleInput = true;
                 coolantAlongFluting = watch('Coolant.CoolantPatternAlongFluting');
-            }
-
-            if (input.property_name === 'ToolSeries') {
-                groupElements.push(toolSeriesInput);
-                continue
             }
 
             if (input.property_name === 'UpperCenterType') {

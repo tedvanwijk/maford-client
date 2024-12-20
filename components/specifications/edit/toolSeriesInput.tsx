@@ -13,21 +13,27 @@ export default function ToolSeriesInput(
         }
 ) {
     return (
-        <label className={`form-control w-[200px] transition-opacity`}>
+        <label className={`form-control transition-opacity`}>
             <div className="label">
                 <span>Series</span>
             </div>
 
-            <select value={selectedSeries} className="input input-bordered mr-4" onChange={e => changeSeries(parseInt(e.target.value))}>
+            <div className="flex flex-row items-center">
+                <select value={selectedSeries} className="input input-bordered mr-4 w-[200px]" onChange={e => changeSeries(parseInt(e.target.value))}>
+                    <option value={-1}>None</option>
+                    {
+                        series.map((e: Series) =>
+                            <option key={e.series_id} value={e.series_id} disabled={!e.active} hidden={!e.active}>
+                                {e.name}
+                            </option>
+                        )
+                    }
+                </select>
                 {
-                    series.map((e: Series) =>
-                        <option key={e.series_id} value={e.series_id} disabled={!e.active} hidden={!e.active}>
-                            {e.name}
-                        </option>
-                    )
+                    selectedSeries === -1 ? 'Warning: if no series is selected, no tolerance data will be imported' : ''
                 }
-                <option value={-1} disabled hidden>Select Tool Series</option>
-            </select>
+            </div>
+
         </label>
     )
 }
