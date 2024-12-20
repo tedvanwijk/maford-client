@@ -49,6 +49,9 @@ export default async function Home() {
             - Added tool thumbnails<br />
             - Added ability to edit series parameters on new specification page<br />
             - Added option to create a specification without a series<br />
+            - Added spec creation date to table<br />
+            - Removed settings link for non-admin accounts<br />
+            - Modified series to deletion to instead deactivate so older specs show correctly
             - Fixed step dimensions not inserting<br />
             - Several bug fixes<br />
             - Several visual improvements
