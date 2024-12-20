@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { join } from 'path';
 import SpecificationEdit from "@/components/specifications/edit/specificationEdit";
 import type { Metadata } from 'next';
+import Image from "next/image";
 
 export async function generateMetadata(
     { searchParams }:
@@ -87,6 +88,9 @@ export default async function SpecificationDetails(
                     <h1 className="flex flex-row justify-start items-center my-2"> <AlertCircle className="mr-2" />This specification was created using an older version. Some of the information below might be incorrect and copying might not work as expected.</h1>
             }
             {error}
+
+            <Image src={`/specs/${searchParams.r}.png`} alt="" width={1503} height={930} className="w-full aspect-auto max-h-[120px] object-cover m-0" />
+
             <Suspense>
                 <SpecificationEdit viewOnly={true} />
             </Suspense>

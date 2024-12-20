@@ -4,6 +4,7 @@ import { Specification } from "@/app/types";
 import SearchButton from '@/components/specifications/searchButton';
 import { AlertCircle } from "react-feather";
 import type { Metadata } from 'next'
+import Image from "next/image";
 
 export async function generateMetadata(
     {
@@ -156,6 +157,7 @@ export default async function Specifications(
                         <th>Tool</th>
                         <th>Created</th>
                         <th>Name</th>
+                        <th className="hidden 2xl:block"></th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -178,8 +180,12 @@ export default async function Specifications(
                                     break;
                             }
                             return (
-                                <tr key={e.specification_id} className="hover relative" title={e.versions.active ? "Click row to view details" : "Click row to view details. Warning: This specification was created with an older version, some features might not work as expected"}>
-                                    <td className="w-[10%]">
+                                <tr
+                                    key={e.specification_id}
+                                    className="hover relative h-[50px] hover:py-3 transition-all"
+                                    title={e.versions.active ? "Click row to view details" : "Click row to view details. Warning: This specification was created with an older version, some features might not work as expected"}
+                                >
+                                    <td className="w-[5%]">
                                         <Link href={`/specifications/details?r=${e.specification_id}`} className="absolute bottom-0 left-0 top-0 right-0" />
                                         <div className="flex flex-row justify-start items-center">
                                             {e.specification_id}
@@ -187,7 +193,7 @@ export default async function Specifications(
                                         </div>
 
                                     </td>
-                                    <td className="w-[20%]">{e.users.name}</td>
+                                    <td className="w-[15%]">{e.users.name}</td>
                                     <td className="w-[10%]">{e.tools.name}</td>
                                     <td className="w-[15%]">{
                                         e.date_created !== null ? new Date(e.date_created).toLocaleString('en-US', {
@@ -198,7 +204,12 @@ export default async function Specifications(
                                             minute: '2-digit'
                                         }) : ''
                                     }</td>
-                                    <td className="w-[35%]">{e.name}</td>
+                                    <td className="w-[15%]">{e.name}</td>
+                                    <td className="hidden h-[50px] 2xl:block w-full overflow-hidden p-0">
+                                        <div className="flex justify-center items-center w-full h-full overflow-hidden">
+                                            <Image src={`/specs/${e.specification_id}.png`} alt="" width={1503} height={930} className="h-auto w-full aspect-auto" />
+                                        </div>
+                                    </td>
                                     <td className="w-[10%]">
                                         <div className={`badge ${badgeClasses}`}>
                                             {e.status}
