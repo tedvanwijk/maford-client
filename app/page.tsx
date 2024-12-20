@@ -37,18 +37,35 @@ export default async function Home() {
       </div>
       <h1 className='my-2'>Version History</h1>
       <div className='w-full bg-secondary bg-opacity-50 rounded-md p-2 h-full overflow-auto flex flex-col'>
-	  <div className='mb-4'>
+        <div className='mb-4'>
+          <span className='font-bold'>[0.5.0]</span> <br />
+          <span className='whitespace-pre-wrap'>
+            12-20-2024<br />
+            - Added reamer tool type<br />
+            - Added center detail view and dimensioning<br />
+            - Added left-handed helixes<br />
+            - Added ability to create tools from blanks (copy blank -&gt; select other tool type)<br />
+            - Added web client titles and icon<br />
+            - Added tool thumbnails<br />
+            - Added ability to edit series parameters on new specification page<br />
+            - Added option to create a specification without a series<br />
+            - Fixed step dimensions not inserting<br />
+            - Several bug fixes<br />
+            - Several visual improvements
+          </span>
+        </div>
+        <div className='mb-4'>
           <span className='font-bold'>[0.3.1]</span> <br />
           <span className='whitespace-pre-wrap'>
             11-29-2024<br />
             - Fixed Solidworks file staying opened preventing new specs from being created<br />
-			- Added server status to homepage<br />
-			- Updated framework version<br />
-			- Added copy dialog on specification detail page click<br />
-			- Added copy and delete function for all settings sections<br />
-			- Added version deploy date to homepage<br />
-			- Several visual improvements<br />
-			- Several bug fixes
+            - Added server status to homepage<br />
+            - Updated framework version<br />
+            - Added copy dialog on specification detail page click<br />
+            - Added copy and delete function for all settings sections<br />
+            - Added version deploy date to homepage<br />
+            - Several visual improvements<br />
+            - Several bug fixes
           </span>
         </div>
         <div className='mb-4'>
