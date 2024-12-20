@@ -38,7 +38,7 @@ export default async function Home() {
       <h1 className='my-2'>Version History</h1>
       <div className='w-full bg-secondary bg-opacity-50 rounded-md p-2 h-full overflow-auto flex flex-col'>
         <div className='mb-4'>
-          <span className='font-bold'>[0.5.0]</span> <br />
+          <span className='font-bold'>[0.4.0]</span> <br />
           <span className='whitespace-pre-wrap'>
             12-20-2024<br />
             - Added reamer tool type<br />
