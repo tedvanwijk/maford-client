@@ -207,7 +207,7 @@ export default async function Specifications(
                                     <td className="w-[15%]">{e.name}</td>
                                     <td className="hidden h-[50px] 2xl:block w-full overflow-hidden p-2">
                                         <div className="flex justify-start items-center w-full h-full overflow-hidden">
-                                            <Image src={`/specs/${e.specification_id}.png`} alt="" width={1503} height={930} className="h-full w-auto aspect-auto" />
+                                            <img src={`/api/image?spec=${e.specification_id}`} alt="" className="h-full w-auto aspect-auto" />
                                         </div>
                                     </td>
                                     <td className="w-[10%]">

@@ -90,7 +90,7 @@ export default async function SpecificationDetails(
             {error}
 
             <div className="w-full flex justify-center items-center">
-                <Image src={`/specs/${searchParams.r}.png`} alt="" width={1503} height={930} className="aspect-auto max-h-[100px] h-full w-auto object-cover my-2" />
+                <img src={`/api/image?spec=${searchParams.r}`} alt="" width={1503} height={930} className="aspect-auto max-h-[100px] h-full w-auto object-cover my-2" />
             </div>
 
             <Suspense>
