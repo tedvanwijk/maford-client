@@ -5,11 +5,13 @@ export default function ToolSeriesInput(
         selectedSeries,
         changeSeries,
         series,
+        seriesEdited
     }:
         {
             selectedSeries: number,
             changeSeries: Function,
             series: Series[],
+            seriesEdited: boolean
         }
 ) {
     return (
@@ -30,7 +32,11 @@ export default function ToolSeriesInput(
                     }
                 </select>
                 {
-                    selectedSeries === -1 ? 'Warning: if no series is selected, no tolerance data will be imported' : ''
+                    selectedSeries === -1 ?
+                        'Warning: if no series is selected, no tolerance data will be imported' :
+                        seriesEdited ?
+                            <button onClick={() => changeSeries(selectedSeries)} type="button" className="btn btn-primary">Reset fluting parameters</button>
+                            : ''
                 }
             </div>
 

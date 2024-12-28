@@ -24,6 +24,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
     const [stepCount, setStepCount] = useState(0);
     const [centers, setCenters] = useState<CenterType[]>([]);
     const [userId, setUserId] = useState<null | string>();
+    const [seriesEdited, setSeriesEdited] = useState(false);
     const formMethods = useForm({ mode: 'onChange' });
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -48,6 +49,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
 
     const changeSeries = useCallback(async (seriesId: number) => {
         setSelectedSeries(seriesId);
+        setSeriesEdited(false);
         if (seriesId === -1) {
             formMethods.setValue('flute_count', undefined);
             formMethods.setValue('helix_angle', undefined);
@@ -69,6 +71,24 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         formMethods.setValue('helix_angle', seriesData.helix_angle);
         formMethods.setValue('straight_flute', seriesData.straight_flute);
         formMethods.setValue('left_hand_spiral', seriesData.left_hand_spiral);
+    }, [formMethods]);
+
+    const checkIfSeriesEdited = useCallback((selectedSeries: Series) => {
+        if (selectedSeries === undefined) return;
+        const inputIds: (keyof Series)[] = ['flute_count', 'helix_angle', 'left_hand_spiral', 'straight_flute'];
+        let values = formMethods.getValues(inputIds);
+        let seriesEdited = false;
+        for (let i = 0; i < inputIds.length; i++) {
+            let value = values[i];
+
+            if (!isNaN(parseInt(value))) value = parseInt(value);
+
+            if (value !== selectedSeries[inputIds[i]]) {
+                seriesEdited = true;
+                break;
+            }
+        }
+        setSeriesEdited(seriesEdited);
     }, [formMethods]);
 
     const copySeriesParams = useCallback((body: any) => {
@@ -195,16 +215,18 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
             )
                 .then(res => res.json())
                 .then(res => res.data);
-            await fetch(
+
+            const fetchedSeries = await fetch(
                 `${apiUrl}/series/tool_id/${data.ToolType}`,
                 {
                     method: 'GET',
                     cache: 'no-cache'
                 }
             )
-                .then(res => res.json())
-                .then(res => setSeries(res));
-            const res = await fetch(
+                .then(res => res.json());
+            setSeries(fetchedSeries);
+
+            const inputs = await fetch(
                 `${apiUrl}/tool/${data.ToolType}/inputs`,
                 {
                     method: 'GET',
@@ -212,13 +234,14 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                 }
             )
                 .then(res => res.json());
-            setInputCategories(res.toolCategories);
+            setInputCategories(inputs.toolCategories);
             if (data.StepTool) copySteps(data.Steps);
             copyCenters(data.Center);
             setToolType(data.ToolType);
             copySeriesParams(data);
             enterValues(data);
-            removeDisabledValues(res.toolCategories);
+            removeDisabledValues(inputs.toolCategories);
+            checkIfSeriesEdited(fetchedSeries.find((e: Series) => e.series_id === data.ToolSeries) as Series);
         }
 
         function removeDisabledValues(categories: InputCategory[]) {
@@ -300,7 +323,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         )
             .then(res => res.json())
             .then(res => setCenters(res));
-    }, [referenceSpecification, formMethods, enterDefaultValues, userId, validateRules, changeSeries, copySeriesParams]);
+    }, [referenceSpecification, formMethods, enterDefaultValues, userId, validateRules, changeSeries, copySeriesParams, checkIfSeriesEdited]);
 
     function changeStepCount(increase: boolean) {
         if (!increase && stepCount === 0) return;
@@ -400,6 +423,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         selectedSeries={selectedSeries}
         changeSeries={changeSeries}
         series={series}
+        seriesEdited={seriesEdited}
     />
 
     const upperCenterDropdown = <CenterDropdown type="Upper" centers={centers} key="Upper" />
@@ -508,8 +532,9 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                                         <SeriesEdit
                                             toolSeriesInput={seriesInput}
                                             toolType={tools.find(e => e.tool_id === toolType) as ToolType}
-                                            selectedSeries={selectedSeries}
+                                            selectedSeries={series.find(e => e.series_id === selectedSeries) as Series}
                                             submitMode={saveWindowOpen}
+                                            checkIfSeriesEdited={checkIfSeriesEdited}
                                         />
                                     </SpecificationStep>
                                 )

@@ -1,4 +1,5 @@
-import { ToolType } from "@/app/types";
+import { Series, ToolType } from "@/app/types";
+import { useCallback, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 
 export default function SeriesEdit(
@@ -7,14 +8,16 @@ export default function SeriesEdit(
         toolType,
         selectedSeries,
         submitMode,
+        checkIfSeriesEdited
     }: {
         toolSeriesInput: React.ReactNode,
         toolType: ToolType,
-        selectedSeries: number,
+        selectedSeries: Series,
         submitMode: boolean,
+        checkIfSeriesEdited: Function
     }
 ) {
-    const { register, watch } = useFormContext();
+    const { register, watch, getValues } = useFormContext();
     const straightFlute = watch('straight_flute', false);
     const leftHandSpiral = watch('left_hand_spiral', false);
 
@@ -35,7 +38,7 @@ export default function SeriesEdit(
                             </div>
                         </label>
                         <input
-                            {...register('flute_count', { required: true })}
+                            {...register('flute_count', { required: true, onChange: () => checkIfSeriesEdited(selectedSeries) })}
                             type="number"
                             placeholder="Enter value"
                             className="input input-bordered w-full"
@@ -48,10 +51,11 @@ export default function SeriesEdit(
                             </div>
                         </label>
                         <input
-                            {...register('helix_angle', { required: true, disabled: straightFlute })}
+                            {...register('helix_angle', { required: true, onChange: () => checkIfSeriesEdited(selectedSeries) })}
                             type="number"
                             placeholder="Enter value"
-                            className="input input-bordered w-full"
+                            className={`input input-bordered w-full ${straightFlute ? 'opacity-20 pointer-events-none' : ''}`}
+                            tabIndex={straightFlute ? -1 : 0}
                         />
                     </div>
                 </div>
@@ -65,10 +69,11 @@ export default function SeriesEdit(
                         </label>
                         <div className='h-12 flex justify-start'>
                             <input
-                                {...register('left_hand_spiral', { disabled: straightFlute })}
+                                {...register('left_hand_spiral', { onChange: () => checkIfSeriesEdited(selectedSeries) })}
                                 placeholder="Enter value"
                                 type="checkbox"
-                                className="toggle toggle-primary my-auto"
+                                className={`toggle toggle-primary my-auto ${straightFlute ? 'opacity-20 pointer-events-none' : ''}`}
+                                tabIndex={straightFlute ? -1 : 0}
                             />
                         </div>
                     </div>
@@ -82,10 +87,11 @@ export default function SeriesEdit(
                                 </label>
                                 <div className='h-12 flex justify-start'>
                                     <input
-                                        {...register('straight_flute', { disabled: leftHandSpiral })}
+                                        {...register('straight_flute', { onChange: () => checkIfSeriesEdited(selectedSeries) })}
                                         placeholder="Enter value"
                                         type="checkbox"
-                                        className="toggle toggle-primary my-auto"
+                                        className={`toggle toggle-primary my-auto ${leftHandSpiral ? 'opacity-20 pointer-events-none' : ''}`}
+                                        tabIndex={leftHandSpiral ? -1 : 0}
                                     />
                                 </div>
                             </div> :
