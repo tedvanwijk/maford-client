@@ -21,7 +21,7 @@ export default function ToolSeriesInput(
             </div>
 
             <div className="flex flex-row items-center">
-                <select value={selectedSeries} className="input input-bordered mr-4 w-[200px]" onChange={e => changeSeries(parseInt(e.target.value))}>
+                <select value={selectedSeries} className="input input-bordered mr-4 w-[200px] appearance-auto" onChange={e => changeSeries(parseInt(e.target.value))}>
                     <option value={-1}>None</option>
                     {
                         series.map((e: Series) =>

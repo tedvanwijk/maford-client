@@ -15,7 +15,7 @@ export default function CenterDropdown({
                 <span>{type === 'Upper' ? 'Upper Center' : 'Lower Center'}</span>
             </div>
 
-            <select className="input input-bordered mr-4" {...register(`Center.${type}CenterType`)}>
+            <select className="input input-bordered mr-4 appearance-auto" {...register(`Center.${type}CenterType`)}>
                 <option value={'-1'} key="-1">No Center</option>
                 {
                     centers.map((e: CenterType) =>

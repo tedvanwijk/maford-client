@@ -213,7 +213,7 @@ export default function Centers() {
         >
             <FormProvider {...formMethods}>
                 <div className="flex flex-row justify-start items-start mb-2">
-                    <select value={selectedCenterType?.center_type_id} onChange={e => changeCenterType(centerTypes.filter((ee: CenterType) => ee.center_type_id === parseInt(e.target.value))[0])} className="input input-bordered mr-4">
+                    <select value={selectedCenterType?.center_type_id} onChange={e => changeCenterType(centerTypes.filter((ee: CenterType) => ee.center_type_id === parseInt(e.target.value))[0])} className="input input-bordered mr-4 appearance-auto">
                         {
                             centerTypes.map((e: CenterType) => (
                                 <option value={e.center_type_id} key={e.center_type_id}>{e.name}</option>

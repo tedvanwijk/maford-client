@@ -144,7 +144,7 @@ export default function Users() {
             submit();
         }} className="flex flex-col justify-start items-start w-full">
             <div className="flex flex-col mb-1">
-                <select value={userId} onChange={e => changeUser(users.find(ee => ee.user_id === parseInt(e.target.value)) as User)} className="input input-bordered w-full">
+                <select value={userId} onChange={e => changeUser(users.find(ee => ee.user_id === parseInt(e.target.value)) as User)} className="input input-bordered w-full appearance-auto">
                     {
                         users.map(e => (
                             <option value={e.user_id} key={e.user_id}>{e.name}</option>

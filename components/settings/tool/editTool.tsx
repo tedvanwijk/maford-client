@@ -363,7 +363,7 @@ export default function EditTool() {
             }} className="flex flex-col">
                 <div className="flex flex-row justify-start items-start mb-2">
 
-                    <select value={selectedToolType.tool_id} onChange={e => changeToolType(toolTypes.filter((ee: ToolType) => ee.tool_id === parseInt(e.target.value))[0])} className="input input-bordered mr-4">
+                    <select value={selectedToolType.tool_id} onChange={e => changeToolType(toolTypes.filter((ee: ToolType) => ee.tool_id === parseInt(e.target.value))[0])} className="input input-bordered mr-4 appearance-auto">
                         {
                             toolTypes.map((e: ToolType) => (
                                 <option value={e.tool_id} key={e.tool_id}>{e.name}</option>
@@ -375,7 +375,7 @@ export default function EditTool() {
                     <select
                         value={selectedSeries.series_id}
                         onChange={e => changeSeries(series.filter((ee: Series) => ee.series_id === parseInt(e.target.value))[0], false, true)}
-                        className="input input-bordered mr-4"
+                        className="input input-bordered mr-4 appearance-auto"
                         disabled={selectedToolType.tool_id === -1}
                     >
                         {

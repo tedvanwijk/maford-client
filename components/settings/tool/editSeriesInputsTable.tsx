@@ -65,7 +65,7 @@ export default function EditSeriesInputsTable(
                                     nameInput =
                                         <td className="border border-slate-400">
                                             <select
-                                                className="bg-base-100 p-1 w-full h-full border-none"
+                                                className="bg-base-100 p-1 w-full h-full border-none appearance-auto"
                                                 {...register(`series_input.${e.index}.name`, { required: true })}
                                             >
                                                 {
@@ -88,7 +88,7 @@ export default function EditSeriesInputsTable(
                                         <td className='font-bold'>{e.index + 1}</td>
                                         <td className="border border-slate-400 w-3">
                                             <select
-                                                className="bg-base-100 p-1 w-full h-full"
+                                                className="bg-base-100 p-1 w-full h-full appearance-auto"
                                                 {...register(`series_input.${e.index}.catalog_index`, { required: true })}
                                             >
                                                 {
@@ -102,7 +102,7 @@ export default function EditSeriesInputsTable(
                                         </td>
                                         <td className="border border-slate-400">
                                             <select
-                                                className="bg-base-100 p-1 w-full h-full"
+                                                className="bg-base-100 p-1 w-full h-full appearance-auto"
                                                 {...register(`series_input.${e.index}.type`, {
                                                     required: true, onChange: (ee) => {
                                                         if (ee.target.value === 'unit') setValue(`series_input.${e.index}.name`, 'Unit')

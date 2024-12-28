@@ -28,7 +28,7 @@ export default function StepForm({
                     <td className='font-bold'>{i + 1}</td>
                     <td className="border border-slate-400">
                         <select
-                            className="bg-base-100 p-1 w-full h-full border border-slate-400"
+                            className="bg-base-100 p-1 w-full h-full border border-slate-400 appearance-auto"
                             {...register(`Steps.${i}.Type`, { disabled: !stepTool })}
                         >
                             <option value="angle">Angle</option>
