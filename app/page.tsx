@@ -44,8 +44,11 @@ export default async function Home() {
             - Added corner radius and ballnose options for reamer<br />
             - Added option to choose between approval or manufacturing drawing types<br />
             - Added button to reset fluting parameters when manually changed on form<br />
+            - Improved reamer washout for helical fluting<br />
+            - Improved tool type specific coolant lateral location in fluting<br />
             - Changed output file names<br />
             - Fixed issue where coolant laterals where on wrong side of tool in some cases<br />
+            - Fixed client error for missing thumbnails<br />
             - Small specification form changes
           </span>
         </div>
