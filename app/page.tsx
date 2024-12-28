@@ -37,6 +37,18 @@ export default async function Home() {
       </div>
       <h1 className='my-2'>Version History</h1>
       <div className='w-full bg-secondary bg-opacity-50 rounded-md p-2 h-full overflow-auto flex flex-col'>
+      <div className='mb-4'>
+          <span className='font-bold'>[0.4.1]</span> <br />
+          <span className='whitespace-pre-wrap'>
+            12-28-2024<br />
+            - Added corner radius and ballnose options for reamer<br />
+            - Added option to choose between approval or manufacturing drawing types<br />
+            - Added button to reset fluting parameters when manually changed on form<br />
+            - Changed output file names<br />
+            - Fixed issue where coolant laterals where on wrong side of tool in some cases<br />
+            - Small specification form changes
+          </span>
+        </div>
         <div className='mb-4'>
           <span className='font-bold'>[0.4.0]</span> <br />
           <span className='whitespace-pre-wrap'>
@@ -51,7 +63,7 @@ export default async function Home() {
             - Added option to create a specification without a series<br />
             - Added spec creation date to table<br />
             - Removed settings link for non-admin accounts<br />
-            - Modified series to deletion to instead deactivate so older specs show correctly
+            - Modified series to deletion to instead deactivate so older specs show correctly<br />
             - Fixed step dimensions not inserting<br />
             - Several bug fixes<br />
             - Several visual improvements
