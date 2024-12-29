@@ -24,7 +24,10 @@ export interface ToolInput {
     required?: boolean,
     options: string[],
     tool_input_categories?: InputCategory,
-    tool_input_rules?: ToolInputRule[]
+    tool_input_rules?: ToolInputRule[],
+    min_value?: number,
+    max_value?: number,
+    step_value?: number
 }
 
 export interface ToolInputRule {

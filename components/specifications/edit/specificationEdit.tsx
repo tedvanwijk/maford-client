@@ -573,7 +573,14 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
 
                                 >
                                     <div className="p-0 flex flex-col items-center">
-                                        <button onClick={() => setSaveWindowOpen(true)} type="submit" className="rounded-none btn w-full btn-primary">Create</button>
+                                        <button onClick={async () => {
+                                            await formMethods.trigger();
+                                            if (!formMethods.formState.isValid) {
+                                                window.alert('Some of the inputs on the form are invalid');
+                                                return;
+                                            }
+                                            setSaveWindowOpen(true);
+                                        }} type="submit" className="rounded-none btn w-full btn-primary">Create</button>
                                     </div>
                                 </SpecificationStep> : ''
                         }

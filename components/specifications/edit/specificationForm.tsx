@@ -1,4 +1,5 @@
 import { useFormContext } from 'react-hook-form';
+import { ErrorMessage } from '@hookform/error-message';
 
 import { ToolInput, ToolInputRule } from "@/app/types";
 import { useEffect } from 'react';
@@ -20,7 +21,7 @@ export default function SpecificationForm(
         validateRules: Function
     }
 ) {
-    const { register, watch, getValues } = useFormContext();
+    const { register, watch, getValues, formState } = useFormContext();
 
     useEffect(() => {
         // after initial render, loop through all inputs and validate. If not valid, set value to undefined
@@ -39,6 +40,7 @@ export default function SpecificationForm(
 
     function generateGroup(inputs: ToolInput[]) {
         const formData = watch();
+        const errors = formState.errors;
         let groupElements: React.ReactNode[] = [];
         for (let i = 0; i < inputs.length; i++) {
             const input = inputs[i];
@@ -70,48 +72,63 @@ export default function SpecificationForm(
             // disable the inputs using opacity and pointer events in this situation
             // when submitting, actually disable inputs so that the retrieved values for disabled
             // inputs are undefined
+            let realDisabled = disabled;
             const tabIndex = disabled ? -1 : 0;
             if (!submitMode) disabled = false;
 
             let inputElement: React.ReactNode;
             let registerId = input.property_name;
             if (type !== 'General') registerId = `${type}.${registerId}`;
+
+            const stepInDb = input.step_value !== null;
+            const minValInDb = input.min_value !== null;
+            const maxValInDb = input.max_value !== null;
+            let registerOptions: any = {
+                disabled,
+                required: (!realDisabled && input.required && input.type !== 'toggle' && input.type !== 'radio') ? 'Required' : false
+            };
+            if (minValInDb) registerOptions.min = {
+                value: input.min_value,
+                message: 'Value too low'
+            };
+            if (maxValInDb) registerOptions.max = {
+                value: input.max_value,
+                message: 'Value too high'
+            };
+
             switch (input.type) {
                 case 'decimal':
                     inputElement = <input
-                        {...register(registerId, { disabled })}
+                        {...register(registerId, registerOptions)}
                         type="number"
                         placeholder="Enter value"
-                        step="any"
-                        // disabled={disabled}
+                        step={stepInDb ? input.step_value : "any"}
                         className="input input-bordered w-full"
                         lang="en-US"
                         tabIndex={tabIndex}
                     />
-                    additionalClasses += ' h-[88px]';
+                    additionalClasses += ' min-h-[88px]';
                     break;
                 case 'int':
                     inputElement = <input
-                        {...register(registerId, { disabled })}
+                        {...register(registerId, registerOptions)}
                         type="number"
                         placeholder="Enter value"
                         step="1"
-                        // disabled={disabled}
                         className="input input-bordered w-full"
                         lang="en-US"
                         tabIndex={tabIndex}
                     />
-                    additionalClasses += ' h-[88px]';
+                    additionalClasses += ' min-h-[88px]';
                     break;
                 case 'toggle':
                     inputElement = <input
                         {...register(registerId, { disabled })}
                         type="checkbox"
-                        // disabled={disabled}
                         className="toggle toggle-primary my-auto bg-base-300"
                         tabIndex={tabIndex}
                     />
-                    additionalClasses += ' h-[88px]';
+                    additionalClasses += ' min-h-[88px]';
                     break;
                 case 'radio':
                     inputElement = input.options.map(e => {
@@ -136,16 +153,16 @@ export default function SpecificationForm(
                     inputElement = <input
                         {...register(registerId, { disabled })}
                         type="text"
+                        required={!realDisabled && input.required}
                         placeholder="Enter value"
-                        // disabled={disabled}
                         className="input input-bordered w-full"
                         tabIndex={tabIndex}
                     />
-                    additionalClasses += ' h-[88px]';
+                    additionalClasses += ' min-h-[88px]';
                     break;
             }
             const element =
-                <label className={`form-control w-[200px] ${additionalClasses} transition-opacity`} key={input.tool_input_id}>
+                <label className={`form-control w-[200px] ${additionalClasses} transition-opacity flex flex-col`} key={input.tool_input_id}>
                     <div className="label">
                         <span>
                             {
@@ -155,6 +172,9 @@ export default function SpecificationForm(
                         </span>
                     </div>
                     {inputElement}
+                    <div className='w-full flex flex-row justify-start text-red-800'>
+                        <ErrorMessage errors={errors} name={registerId} as="p" />
+                    </div>
                 </label>
             groupElements.push(element);
         }

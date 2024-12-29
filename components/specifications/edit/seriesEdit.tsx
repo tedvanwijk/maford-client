@@ -1,5 +1,5 @@
 import { Series, ToolType } from "@/app/types";
-import { useCallback, useEffect } from "react";
+import { ErrorMessage } from '@hookform/error-message';
 import { useFormContext } from "react-hook-form";
 
 export default function SeriesEdit(
@@ -17,11 +17,13 @@ export default function SeriesEdit(
         checkIfSeriesEdited: Function
     }
 ) {
-    const { register, watch, getValues } = useFormContext();
+    const { register, watch, formState } = useFormContext();
     const straightFlute = watch('straight_flute', false);
     const leftHandSpiral = watch('left_hand_spiral', false);
 
     if (toolType === null || toolType === undefined) return <div></div>
+
+    const errors = formState.errors;
 
     return (
         <div className="w-full p-4 flex flex-col justify-start flex-wrap">
@@ -38,11 +40,14 @@ export default function SeriesEdit(
                             </div>
                         </label>
                         <input
-                            {...register('flute_count', { required: true, onChange: () => checkIfSeriesEdited(selectedSeries) })}
+                            {...register('flute_count', { required: 'Required', onChange: () => checkIfSeriesEdited(selectedSeries) })}
                             type="number"
                             placeholder="Enter value"
                             className="input input-bordered w-full"
                         />
+                        <div className='w-full flex flex-row justify-start text-red-800'>
+                            <ErrorMessage errors={errors} name="flute_count" as="p" />
+                        </div>
                     </div>
                     <div className="flex flex-col mb-1 w-[200px]">
                         <label className="form-control transition-opacity">
@@ -51,12 +56,15 @@ export default function SeriesEdit(
                             </div>
                         </label>
                         <input
-                            {...register('helix_angle', { required: true, onChange: () => checkIfSeriesEdited(selectedSeries) })}
+                            {...register('helix_angle', { required: !straightFlute ? 'Required' : '', onChange: () => checkIfSeriesEdited(selectedSeries) })}
                             type="number"
                             placeholder="Enter value"
                             className={`input input-bordered w-full ${straightFlute ? 'opacity-20 pointer-events-none' : ''}`}
                             tabIndex={straightFlute ? -1 : 0}
                         />
+                        <div className='w-full flex flex-row justify-start text-red-800'>
+                            <ErrorMessage errors={errors} name="helix_angle" as="p" />
+                        </div>
                     </div>
                 </div>
 
@@ -85,7 +93,7 @@ export default function SeriesEdit(
                                         <span>Straight Flute</span>
                                     </div>
                                 </label>
-                                <div className='h-12 flex justify-start'>
+                                <div className='h-12 flex'>
                                     <input
                                         {...register('straight_flute', { onChange: () => checkIfSeriesEdited(selectedSeries) })}
                                         placeholder="Enter value"
