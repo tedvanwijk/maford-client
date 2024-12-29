@@ -49,6 +49,7 @@ export default async function Home() {
             - Changed output file names<br />
             - Fixed issue where coolant laterals where on wrong side of tool in some cases<br />
             - Fixed client error for missing thumbnails<br />
+            - Fixed missing arrows on dropdown inputs<br />
             - Fixed fluting not generating for small diameter tools in some cases<br />
             - Small specification form changes
           </span>
