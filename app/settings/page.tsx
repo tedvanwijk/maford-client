@@ -17,7 +17,7 @@ export default function Settings() {
             <SettingSection header="Paths">
                 <General />
             </SettingSection>
-            <SettingSection header="Files Exported">
+            <SettingSection header="File Types">
                 <FileTypes />
             </SettingSection>
             <SettingSection header="Tool Series">
