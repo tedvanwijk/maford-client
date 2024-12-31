@@ -85,7 +85,7 @@ export default function SpecificationForm(
             const maxValInDb = input.max_value !== null;
             let registerOptions: any = {
                 disabled,
-                required: (!realDisabled && input.required && input.type !== 'toggle' && input.type !== 'radio') ? 'Required' : false
+                required: (!realDisabled && input.type !== 'toggle' && input.type !== 'radio') ? 'Required' : false
             };
             if (minValInDb) registerOptions.min = {
                 value: input.min_value,
@@ -153,7 +153,6 @@ export default function SpecificationForm(
                     inputElement = <input
                         {...register(registerId, { disabled })}
                         type="text"
-                        required={!realDisabled && input.required}
                         placeholder="Enter value"
                         className="input input-bordered w-full"
                         tabIndex={tabIndex}
