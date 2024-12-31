@@ -29,7 +29,7 @@ export default function General() {
         }
 
         fetch(
-            `${apiUrl}/custom_params`,
+            `${apiUrl}/custom_params?types=DimensionPath,ExecutablePath,MasterPath,OutputPath,ToolSeriesPath`,
             {
                 method: 'GET',
                 cache: 'no-cache'
