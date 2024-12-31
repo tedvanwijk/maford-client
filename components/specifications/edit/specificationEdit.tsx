@@ -11,6 +11,7 @@ import { InputCategory, ToolType, Series, Step, DefaultValue, CenterInfo, Center
 import ToolSeriesInput from "@/components/specifications/edit/toolSeriesInput";
 import CenterDropdown from "./centerDropdown";
 import SeriesEdit from "./seriesEdit";
+import { AlertCircle } from "react-feather";
 
 function New({ viewOnly = false }: { viewOnly: boolean }) {
     const [tools, setTools]: [ToolType[], Function] = useState([]);
@@ -18,6 +19,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
     const [inputCategories, setInputCategories] = useState([]);
     const [saveWindowOpen, setSaveWindowOpen] = useState(false);
     const [copyWindowOpen, setCopyWindowOpen] = useState(false);
+    const [saveWindowWarning, setSaveWindowWarning] = useState(<></>);
     const [specName, setSpecName] = useState('');
     const [selectedSeries, setSelectedSeries] = useState(-1);
     const [series, setSeries]: [Series[], Function] = useState([]);
@@ -335,9 +337,6 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         // hard copy form data
         let formDataCopy = { ...formMethods.getValues() }
 
-        if (formDataCopy.flute_count === '') return window.alert('Please select a series or specify flute count');
-        if (formDataCopy.helix_angle === '') return window.alert('Please select a series or specify helix angle');
-
         // add variables to formData obj that are not in the form
         formDataCopy.ToolSeries = selectedSeries;
         formDataCopy.ToolType = toolType;
@@ -443,7 +442,8 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                         e.preventDefault();
                         saveSpecification();
                     }}>
-                        <div className="w-full h-full p-6">
+                        <div className="w-full h-full p-6 flex flex-col">
+                            {saveWindowWarning}
                             <h1 className="text-lg mb-4">Name your specification</h1>
                             <input
                                 type="text"
@@ -576,9 +576,13 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                                         <button onClick={async () => {
                                             await formMethods.trigger();
                                             if (!formMethods.formState.isValid) {
-                                                window.alert('Some of the inputs on the form are invalid');
-                                                return;
-                                            }
+                                                setSaveWindowWarning(
+                                                    <div className="mb-2 flex flex-row justify-start items-center">
+                                                        <AlertCircle className="mr-2 w-1/6" />
+                                                        The form is incomplete. It is recommended to complete the form, not doing so might result in an incorrect model and/or drawing.
+                                                    </div>
+                                                );
+                                            } else setSaveWindowWarning(<></>);
                                             setSaveWindowOpen(true);
                                         }} type="submit" className="rounded-none btn w-full btn-primary">Create</button>
                                     </div>
