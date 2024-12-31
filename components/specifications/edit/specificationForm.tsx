@@ -80,7 +80,6 @@ export default function SpecificationForm(
             let registerId = input.property_name;
             if (type !== 'General') registerId = `${type}.${registerId}`;
 
-            const stepInDb = input.step_value !== null;
             const minValInDb = input.min_value !== null;
             const maxValInDb = input.max_value !== null;
             let registerOptions: any = {
@@ -102,7 +101,7 @@ export default function SpecificationForm(
                         {...register(registerId, registerOptions)}
                         type="number"
                         placeholder="Enter value"
-                        step={stepInDb ? input.step_value : "any"}
+                        step="any"
                         className="input input-bordered w-full"
                         lang="en-US"
                         tabIndex={tabIndex}
