@@ -21,20 +21,9 @@ export default function StepForm({
         let stepFormItems = [];
         for (let i = 0; i < stepCount; i++) {
             const type = watch(`Steps.${i}.Type`, '');
-            const radiusDisabled = type !== 'radius';
             stepFormItems.push(
                 <tr key={i}>
-
                     <td className='font-bold'>{i + 1}</td>
-                    <td className="border border-slate-400">
-                        <select
-                            className="bg-base-100 p-1 w-full h-full border border-slate-400 appearance-auto"
-                            {...register(`Steps.${i}.Type`, { disabled: !stepTool })}
-                        >
-                            <option value="angle">Angle</option>
-                            <option value="radius">Radius</option>
-                        </select>
-                    </td>
                     <td className="border border-slate-400">
                         <input
                             className={`${stepTool ? '' : 'opacity-5'} bg-base-100 p-1 w-full h-full`}
@@ -61,18 +50,18 @@ export default function StepForm({
                     </td>
                     <td className="border border-slate-400">
                         <input
-                            className={`${(!stepTool || radiusDisabled) ? 'opacity-5' : ''} bg-base-100 p-1 w-full h-full`}
+                            className={`${!stepTool ? 'opacity-5' : ''} bg-base-100 p-1 w-full h-full`}
                             type="number"
                             step="any"
-                            {...register(`Steps.${i}.RTop`, { disabled: (!stepTool || radiusDisabled) })}
+                            {...register(`Steps.${i}.RTop`, { disabled: !stepTool })}
                         />
                     </td>
                     <td className="border border-slate-400">
                         <input
-                            className={`${(!stepTool || radiusDisabled) ? 'opacity-5' : ''} bg-base-100 p-1 w-full h-full`}
+                            className={`${!stepTool ? 'opacity-5' : ''} bg-base-100 p-1 w-full h-full`}
                             type="number"
                             step="any"
-                            {...register(`Steps.${i}.RBottom`, { disabled: (!stepTool || radiusDisabled) })}
+                            {...register(`Steps.${i}.RBottom`, { disabled: !stepTool })}
                         />
                     </td>
                 </tr>
@@ -84,7 +73,6 @@ export default function StepForm({
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Type</th>
                         <th>Length</th>
                         <th>Diameter</th>
                         <th>Angle</th>
