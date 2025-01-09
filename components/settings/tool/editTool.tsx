@@ -91,7 +91,8 @@ export default function EditTool() {
         )
             .then(res => res.json())
             .then(res => setToolTypeInputs(res));
-        // formMethods.reset();
+        // Drills only support 2-fluted tools
+        if (toolType.name === 'Drill') formMethods.setValue('flute_count', 2);
     }
 
     function changeSeries(series: Series, disableButtonUpdate = false, resetForm = false) {

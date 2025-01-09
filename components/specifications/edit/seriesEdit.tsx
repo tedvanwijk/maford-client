@@ -40,7 +40,24 @@ export default function SeriesEdit(
                             </div>
                         </label>
                         <input
-                            {...register('flute_count', { required: 'Required', onChange: () => checkIfSeriesEdited(selectedSeries) })}
+                            {...register('flute_count', {
+                                required: 'Required',
+                                onChange: () => checkIfSeriesEdited(selectedSeries),
+                                min: (toolType.name === 'Drill' ? {
+                                    value: 2,
+                                    message: 'Only 2-fluted drills supported'
+                                } : {
+                                    value: 1,
+                                    message: 'Value too low'
+                                }),
+                                max: (toolType.name === 'Drill' ? {
+                                    value: 2,
+                                    message: 'Only 2-fluted drills supported'
+                                } : {
+                                    value: 'any',
+                                    message: 'Value too high'
+                                })
+                            })}
                             type="number"
                             placeholder="Enter value"
                             className="input input-bordered w-full"
@@ -56,7 +73,18 @@ export default function SeriesEdit(
                             </div>
                         </label>
                         <input
-                            {...register('helix_angle', { required: !straightFlute ? 'Required' : '', onChange: () => checkIfSeriesEdited(selectedSeries) })}
+                            {...register('helix_angle', {
+                                required: !straightFlute ? 'Required' : '',
+                                onChange: () => checkIfSeriesEdited(selectedSeries),
+                                min: {
+                                    value: 0,
+                                    message: 'Value too low'
+                                },
+                                max: {
+                                    value: 90,
+                                    message: 'Value too high'
+                                }
+                            })}
                             type="number"
                             placeholder="Enter value"
                             className={`input input-bordered w-full ${straightFlute ? 'opacity-20 pointer-events-none' : ''}`}

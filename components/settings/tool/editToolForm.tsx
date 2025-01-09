@@ -52,10 +52,14 @@ export default function EditToolForm(
                             </div>
                         </label>
                         <input
-                            {...register('flute_count', { required: true, disabled: (!enabled) })}
+                            {...register('flute_count', {
+                                required: true,
+                                disabled: !enabled
+                            })}
                             type="number"
                             placeholder="Enter value"
-                            className="input input-bordered w-full"
+                            className={`input input-bordered w-full ${toolType.name === 'Drill' ? 'opacity-20 pointer-events-none' : ''}`}
+                            tabIndex={toolType.name === 'Drill' ? -1 : 0}
                         />
                     </div>
                 </div>
