@@ -417,6 +417,26 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
         enterDefaultValues(defaultValues, switchingFromBlank);
     }
 
+    function goToError() {
+        const error = formMethods.formState.errors[Object.keys(formMethods.formState.errors)[0]] as any;
+        const id = error.ref.id;
+
+        const stepNumber = parseInt(id.split('|')[0]);
+
+        const categoryCheckbox = document.querySelector(`input[id="${stepNumber}"`) as any;
+        if (!categoryCheckbox.checked) categoryCheckbox.click();
+
+        const inputElement = document.getElementById(id);
+
+        setSaveWindowOpen(false);
+
+        inputElement?.scrollIntoView({
+            block: 'center',
+            inline: 'nearest',
+            behavior: 'smooth'
+        });
+    }
+
     const seriesInput = <ToolSeriesInput
         key={-1}
         selectedSeries={selectedSeries}
@@ -556,6 +576,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                                             type={e.name || 'General'}
                                             submitMode={saveWindowOpen}
                                             validateRules={validateRules}
+                                            stepNumber={i + 1}
                                         />
                                     </SpecificationStep>
                                 )
@@ -577,9 +598,11 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                                             await formMethods.trigger();
                                             if (!formMethods.formState.isValid) {
                                                 setSaveWindowWarning(
-                                                    <div className="mb-2 flex flex-row justify-start items-center">
+                                                    <div className="flex flex-row justify-start items-center">
                                                         <AlertCircle className="mr-2 w-1/6" />
-                                                        The form is incomplete. It is recommended to complete the form, not doing so might result in an incorrect model and/or drawing.
+                                                        <span>
+                                                            The form is incomplete. It is recommended to complete the form, not doing so might result in an incorrect model and/or drawing. <button type="button" onClick={() => goToError()} className="underline">Go to error</button>
+                                                        </span>
                                                     </div>
                                                 );
                                             } else setSaveWindowWarning(<></>);

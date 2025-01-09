@@ -11,14 +11,16 @@ export default function SpecificationForm(
         lowerCenterDropdown,
         type = 'General',
         submitMode,
-        validateRules
+        validateRules,
+        stepNumber
     }: {
         inputs: ToolInput[],
         upperCenterDropdown: React.ReactNode
         lowerCenterDropdown: React.ReactNode
         type?: string,
         submitMode: boolean,
-        validateRules: Function
+        validateRules: Function,
+        stepNumber: number
     }
 ) {
     const { register, watch, getValues, formState } = useFormContext();
@@ -95,6 +97,8 @@ export default function SpecificationForm(
                 message: 'Value too high'
             };
 
+            const id = `${stepNumber}|${input.tool_input_id}`;
+
             switch (input.type) {
                 case 'decimal':
                     inputElement = <input
@@ -105,6 +109,7 @@ export default function SpecificationForm(
                         className="input input-bordered w-full"
                         lang="en-US"
                         tabIndex={tabIndex}
+                        id={id}
                     />
                     additionalClasses += ' min-h-[88px]';
                     break;
@@ -117,6 +122,7 @@ export default function SpecificationForm(
                         className="input input-bordered w-full"
                         lang="en-US"
                         tabIndex={tabIndex}
+                        id={id}
                     />
                     additionalClasses += ' min-h-[88px]';
                     break;
@@ -126,6 +132,7 @@ export default function SpecificationForm(
                         type="checkbox"
                         className="toggle toggle-primary my-auto bg-base-300"
                         tabIndex={tabIndex}
+                        id={id}
                     />
                     additionalClasses += ' min-h-[88px]';
                     break;
@@ -140,8 +147,9 @@ export default function SpecificationForm(
                                     value={e}
                                     className="radio checked:bg-primary h-full bg-base-100"
                                     defaultChecked={e === input.options[0]}
-                                    id={e}
+                                    // id={e}
                                     tabIndex={tabIndex}
+                                    id={id}
                                 />
                                 <label className="ml-2" htmlFor={e}>{e}</label>
                             </div>
@@ -155,6 +163,7 @@ export default function SpecificationForm(
                         placeholder="Enter value"
                         className="input input-bordered w-full"
                         tabIndex={tabIndex}
+                        id={id}
                     />
                     additionalClasses += ' min-h-[88px]';
                     break;

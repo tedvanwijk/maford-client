@@ -24,7 +24,7 @@ export default function SpecificationStep(
     const [open, setOpen] = useState(defaultChecked);
     return (
         <div className={`collapse ${enabled ? '' : 'opacity-50'} ${forceOpen ? 'collapse-open' : ''} bg-base-200 mb-3`}>
-            <input checked={open} onChange={e => setOpen(e.target.checked)} type="checkbox" className={enabled ? '' : '!cursor-default'} disabled={!enabled} />
+            <input checked={open} id={stepNumber.toString()} onChange={e => setOpen(e.target.checked)} type="checkbox" className={enabled ? '' : '!cursor-default'} disabled={!enabled} />
             <div className="collapse-title text-xl font-bold flex flex-row justify-between w-full items-center">
                 <div className="flex flex-row justify-start items-center">
                     <div className={`mr-3 bg-base-300 rounded-full relative h-10 w-10 text-center align-middle leading-10`}>
