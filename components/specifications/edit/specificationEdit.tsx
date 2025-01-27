@@ -601,7 +601,7 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                                                     <div className="flex flex-row justify-start items-center">
                                                         <AlertCircle className="mr-2 w-1/6" />
                                                         <span>
-                                                            The form is incomplete. It is recommended to complete the form, not doing so might result in an incorrect model and/or drawing. <button type="button" onClick={() => goToError()} className="underline">Go to error</button>
+                                                            The form is incomplete. Not completing the form might result in an incorrect model and/or drawing. <button type="button" onClick={() => goToError()} className="underline">Go to error</button>
                                                         </span>
                                                     </div>
                                                 );
