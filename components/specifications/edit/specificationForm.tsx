@@ -2,8 +2,9 @@ import { useFormContext } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 
 import { ToolInput, ToolInputRule } from "@/app/types";
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import FileTypes from './fileTypes';
+import CustomDrawingTypeInput from './customDrawingTypeInput';
 
 export default function SpecificationForm(
     {
@@ -156,6 +157,10 @@ export default function SpecificationForm(
                             </div>
                         )
                     })
+
+                    if (input.property_name === 'DrawingType') {
+                        (inputElement as any).push(<CustomDrawingTypeInput key="Custom" />)
+                    }
                     break;
                 case 'text':
                     inputElement = <input
