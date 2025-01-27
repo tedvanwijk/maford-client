@@ -3,6 +3,7 @@ import { ErrorMessage } from '@hookform/error-message';
 
 import { ToolInput, ToolInputRule } from "@/app/types";
 import { useEffect } from 'react';
+import FileTypes from './fileTypes';
 
 export default function SpecificationForm(
     {
@@ -203,6 +204,7 @@ export default function SpecificationForm(
         // <form className="p-4 grid grid-cols-3 grid-flow-col">
         <div className="w-full p-4 flex flex-row justify-start flex-wrap">
             {...formElements}
+            {type === 'Prp' ? <FileTypes register={register} /> : ''}
         </div>
     )
 }

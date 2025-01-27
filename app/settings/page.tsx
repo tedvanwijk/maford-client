@@ -3,7 +3,7 @@ import EditTool from "@/components/settings/tool/editTool";
 import General from "@/components/settings/general";
 import Users from "@/components/settings/users";
 import Centers from "@/components/settings/centers/centers";
-import FileTypes from "@/components/settings/fileTypes";
+// import FileTypes from "@/components/settings/fileTypes";
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -17,9 +17,9 @@ export default function Settings() {
             <SettingSection header="Paths">
                 <General />
             </SettingSection>
-            <SettingSection header="File Types">
+            {/* <SettingSection header="File Types">
                 <FileTypes />
-            </SettingSection>
+            </SettingSection> */}
             <SettingSection header="Tool Series">
                 <EditTool />
             </SettingSection>
