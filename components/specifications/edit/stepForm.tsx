@@ -20,7 +20,7 @@ export default function StepForm({
     function createStepTable() {
         let stepFormItems = [];
         for (let i = 0; i < stepCount; i++) {
-            const type = watch(`Steps.${i}.Type`, '');
+            const midpointDisabled = watch(`Steps.${i}.RTop`, '') === '';
             stepFormItems.push(
                 <tr key={i}>
                     <td className='font-bold'>{i + 1}</td>
@@ -64,6 +64,14 @@ export default function StepForm({
                             {...register(`Steps.${i}.RBottom`, { disabled: !stepTool })}
                         />
                     </td>
+                    <td className="flex items-center justify-center">
+                        <input
+                            className={`${!stepTool || midpointDisabled ? 'opacity-30 pointer-events-none' : ''} toggle toggle-primary my-auto bg-base-300`}
+                            type="checkbox"
+                            step="any"
+                            {...register(`Steps.${i}.Midpoint`, { disabled: !stepTool && midpointDisabled })}
+                        />
+                    </td>
                 </tr>
             )
         }
@@ -78,6 +86,7 @@ export default function StepForm({
                         <th>Angle</th>
                         <th>R top</th>
                         <th>R bottom</th>
+                        <th>To countersink tangency</th>
                     </tr>
                 </thead>
                 <tbody>
