@@ -40,3 +40,6 @@ next-env.d.ts
 
 # spec images
 /public/specs/*
+
+# drawingtypes
+/public/drawingtypes/*
