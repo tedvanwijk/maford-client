@@ -41,6 +41,8 @@ function Navbar({ children }: { children: React.ReactNode }) {
             }
         ).then(res => res.json())
             .then(res => setUser(res));
+
+        if (pathName === '/settings' && !user?.admin) return router.push('/');
     }, []);
 
     const pages: {
