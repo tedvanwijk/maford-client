@@ -73,11 +73,11 @@ function Navbar({ children }: { children: React.ReactNode }) {
                 href: '/report',
                 icon: <AlertTriangle />
             },
-            {
-                name: 'Settings',
-                href: '/settings',
-                icon: <Settings />
-            }
+            // {
+            //     name: 'Settings',
+            //     href: '/settings',
+            //     icon: <Settings />
+            // }
         ]
 
     function changeUser(userId: number) {
