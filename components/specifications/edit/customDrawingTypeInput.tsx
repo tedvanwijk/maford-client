@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { useFormContext } from 'react-hook-form';
-import { apiUrl } from "@/lib/api";
 
 export default function CustomDrawingTypeInput() {
     const { register, getValues, setValue, watch } = useFormContext();
