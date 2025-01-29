@@ -42,7 +42,7 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
             .then(res => {
                 if (pathName === '/settings' && !res.admin) return router.push('/');
             });
-    }, []);
+    }, [pathName, router]);
 
     const pages: {
         name: string,
