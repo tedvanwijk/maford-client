@@ -6,12 +6,13 @@ import UserDropdown from "./userDropdown";
 import SpecificationLink from './navbar/specificationLink';
 import Image from 'next/image'
 import image from '@/public/ma-ford-logo.png';
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { apiUrl } from "@/lib/api";
 import { User } from "@/app/types";
+import Loading from "@/app/loading";
 
-export default function Navbar({ children }: { children: React.ReactNode }) {
+function Navbar({ children }: { children: React.ReactNode }) {
     const [userId, setUserId] = useState<string | undefined>(undefined);
     const [users, setUsers] = useState<User[]>([]);
 
@@ -122,5 +123,15 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
                 </div>
             </div>
         </div>
+    )
+}
+
+export default function Page({children}: {children: React.ReactNode}) {
+    return(
+        <Suspense fallback={<Loading />}>
+            <Navbar>
+                {children}
+            </Navbar>
+        </Suspense>
     )
 }
