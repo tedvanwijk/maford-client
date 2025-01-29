@@ -49,7 +49,7 @@ export default async function Specifications(
                 const active = parseInt(params.page) === e;
                 return (
                     <Link
-                        className={`min-w-[3rem] btn mx-1 ${active ? 'bg-primary text-base-100' : ''}`}
+                        className={`min-w-[3rem] btn mx-1 ${active && 'bg-primary text-base-100'}`}
                         href={`/specifications/${e}?u=${searchParams.u}&r=${searchParams.r}&s=${searchParams.s}`}
                         key={e}
                     >
@@ -78,7 +78,7 @@ export default async function Specifications(
             const active = currentPage === i;
             pageElements.push(
                 <Link
-                    className={`min-w-[3rem] btn mx-1 ${active ? 'bg-primary text-base-100' : ''}`}
+                    className={`min-w-[3rem] btn mx-1 ${active && 'bg-primary text-base-100'}`}
                     href={`/specifications/${i}?u=${searchParams.u}&r=${searchParams.r}&s=${searchParams.s}`}
                     key={i}
                 >
@@ -189,20 +189,20 @@ export default async function Specifications(
                                         <Link href={`/specifications/details?r=${e.specification_id}`} className="absolute bottom-0 left-0 top-0 right-0" />
                                         <div className="flex flex-row justify-start items-center">
                                             {e.specification_id}
-                                            {e.versions.active ? '' : <AlertCircle className="ml-2" />}
+                                            {!e.versions.active && <AlertCircle className="ml-2" />}
                                         </div>
 
                                     </td>
                                     <td className="w-[15%]">{e.users.name}</td>
                                     <td className="w-[10%]">{e.tools.name}</td>
                                     <td className="w-[15%]">{
-                                        e.date_created !== null ? new Date(e.date_created).toLocaleString('en-US', {
+                                        e.date_created !== null && new Date(e.date_created).toLocaleString('en-US', {
                                             year: 'numeric',
                                             month: '2-digit',
                                             day: '2-digit',
                                             hour: '2-digit',
                                             minute: '2-digit'
-                                        }) : ''
+                                        })
                                     }</td>
                                     <td className="w-[15%]">{e.name}</td>
                                     <td className="hidden h-[50px] 2xl:block w-full overflow-hidden p-2">

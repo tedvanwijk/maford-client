@@ -58,7 +58,7 @@ export default function EditToolForm(
                             })}
                             type="number"
                             placeholder="Enter value"
-                            className={`input input-bordered w-full ${toolType.name === 'Drill' ? 'opacity-20 pointer-events-none' : ''}`}
+                            className={`input input-bordered w-full ${toolType.name === 'Drill' && 'opacity-20 pointer-events-none'}`}
                             tabIndex={toolType.name === 'Drill' ? -1 : 0}
                         />
                     </div>
@@ -139,7 +139,7 @@ export default function EditToolForm(
                         </div>
                     </div>
                     {
-                        (toolType.name === 'Drill' || toolType.name === 'Reamer') ?
+                        (toolType.name === 'Drill' || toolType.name === 'Reamer') &&
                             <div className="flex flex-col mb-1">
                                 <label className="form-control transition-opacity">
                                     <div className="label">
@@ -154,8 +154,7 @@ export default function EditToolForm(
                                         className="toggle toggle-primary my-auto"
                                     />
                                 </div>
-                            </div> :
-                            ''
+                            </div>
                     }
                 </div>
 

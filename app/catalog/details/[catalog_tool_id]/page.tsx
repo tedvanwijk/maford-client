@@ -45,7 +45,7 @@ export default async function CatalogToolDetails(
             )
 
             valueColumn.push(
-                <p>{`${(value as string).toString()}${isMetric ? 'mm' : ''}` || '\u200B'}</p>
+                <p>{`${(value as string).toString()}${isMetric && 'mm'}` || '\u200B'}</p>
             )
 
             convertedColumn.push(

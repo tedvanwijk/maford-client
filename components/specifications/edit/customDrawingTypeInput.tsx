@@ -51,7 +51,7 @@ export default function CustomDrawingTypeInput() {
                 <label className="ml-2" htmlFor="Custom">{watch('Prp.DrawingType') === 'Custom' ? watch('Prp.DrawingTypeFilename') : 'Custom'}</label>
                 <input type="file" id="file" name="file" accept=".slddrt" ref={inputFileElement} className='hidden' onChange={handleFileChange} />
             </div>
-            <label className={`form-control w-[200px] transition-opacity flex flex-col ${watch('Prp.DrawingType') !== 'Custom' ? 'hidden' : ''}`}>
+            <label className={`form-control w-[200px] transition-opacity flex flex-col ${watch('Prp.DrawingType') !== 'Custom' && 'hidden'}`}>
                 <div className="label">
                     <span>Tolerance table on drawing</span>
                 </div>

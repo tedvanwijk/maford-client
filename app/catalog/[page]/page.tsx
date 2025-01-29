@@ -44,7 +44,7 @@ export default async function Catalog(
                 const active = parseInt(params.page) === e;
                 return (
                     <Link
-                        className={`min-w-[3rem] btn mx-1 ${active ? 'bg-primary text-base-100' : ''}`}
+                        className={`min-w-[3rem] btn mx-1 ${active && 'bg-primary text-base-100'}`}
                         href={`/catalog/${e}?s=${searchParams.s}`}
                         key={e}
                     >

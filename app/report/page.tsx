@@ -83,7 +83,7 @@ export default function Report() {
                         <div className="flex flex-row w-full">
                             <div>
                                 For specification {referenceSpecification}
-                                <div className={`badge ${badgeClasses} ml-2`}>{spec ? spec.status : ''}</div>
+                                <div className={`badge ${badgeClasses} ml-2`}>{spec && spec.status}</div>
                             </div>
                         </div> :
                         ''

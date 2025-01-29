@@ -28,7 +28,7 @@ export default function StepForm({
                     <td className='font-bold'>{i + 1}</td>
                     <td className="border border-slate-400">
                         <input
-                            className={`${stepTool ? '' : 'opacity-5'} bg-base-100 p-1 w-full h-full`}
+                            className={`${!stepTool && 'opacity-5'} bg-base-100 p-1 w-full h-full`}
                             type="number"
                             step="any"
                             {...register(`Steps.${i}.Length`, { disabled: !stepTool })}
@@ -36,7 +36,7 @@ export default function StepForm({
                     </td>
                     <td className="border border-slate-400">
                         <input
-                            className={`${stepTool ? '' : 'opacity-5'} bg-base-100 p-1 w-full h-full`}
+                            className={`${!stepTool && 'opacity-5'} bg-base-100 p-1 w-full h-full`}
                             type="number"
                             step="any"
                             {...register(`Steps.${i}.Diameter`, { disabled: !stepTool })}
@@ -44,7 +44,7 @@ export default function StepForm({
                     </td>
                     <td className="border border-slate-400">
                         <input
-                            className={`${stepTool ? '' : 'opacity-5'} bg-base-100 p-1 w-full h-full`}
+                            className={`${!stepTool && 'opacity-5'} bg-base-100 p-1 w-full h-full`}
                             type="number"
                             step="any"
                             {...register(`Steps.${i}.Angle`, { disabled: !stepTool })}
@@ -52,7 +52,7 @@ export default function StepForm({
                     </td>
                     <td className="border border-slate-400">
                         <input
-                            className={`${!stepTool ? 'opacity-5' : ''} bg-base-100 p-1 w-full h-full`}
+                            className={`${!stepTool && 'opacity-5'} bg-base-100 p-1 w-full h-full`}
                             type="number"
                             step="any"
                             {...register(`Steps.${i}.RTop`, { disabled: !stepTool })}
@@ -60,7 +60,7 @@ export default function StepForm({
                     </td>
                     <td className="border border-slate-400">
                         <input
-                            className={`${!stepTool ? 'opacity-5' : ''} bg-base-100 p-1 w-full h-full`}
+                            className={`${!stepTool && 'opacity-5'} bg-base-100 p-1 w-full h-full`}
                             type="number"
                             step="any"
                             {...register(`Steps.${i}.RBottom`, { disabled: !stepTool })}
@@ -70,7 +70,7 @@ export default function StepForm({
                         toolType.name === 'Drill' && (
                             <td className="text-center">
                                 <input
-                                    className={`${!stepTool ? 'opacity-30 pointer-events-none' : ''} toggle toggle-primary my-auto bg-base-300`}
+                                    className={`${!stepTool && 'opacity-30 pointer-events-none'} toggle toggle-primary my-auto bg-base-300`}
                                     type="checkbox"
                                     step="any"
                                     {...register(`Steps.${i}.LOFFromPoint`, { disabled: !stepTool })}
@@ -80,7 +80,7 @@ export default function StepForm({
                     }
                     <td className="text-center">
                         <input
-                            className={`${!stepTool || midpointDisabled ? 'opacity-30 pointer-events-none' : ''} toggle toggle-primary my-auto bg-base-300`}
+                            className={`${(!stepTool || midpointDisabled) && 'opacity-30 pointer-events-none'} toggle toggle-primary my-auto bg-base-300`}
                             type="checkbox"
                             step="any"
                             {...register(`Steps.${i}.Midpoint`, { disabled: !stepTool && midpointDisabled })}
@@ -129,11 +129,11 @@ export default function StepForm({
                 }
                 <div className="flex flex-row justify-start w-full items-center my-4">
                     {
-                        !viewOnly ?
+                        !viewOnly &&
                             <>
                                 <button type="button" disabled={!stepTool} className="btn btn-primary mr-4" onClick={() => changeStepCount(true)}><Plus />Add step</button>
                                 <button type="button" disabled={!stepTool} className="btn bg-base-100 mr-4" onClick={() => changeStepCount(false)}><X />Remove step</button>
-                            </> : ''
+                            </>
                     }
                 </div>
 

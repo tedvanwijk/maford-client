@@ -464,7 +464,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
 
     return (
         <>
-            <dialog className={`modal ${saveWindowOpen ? 'modal-open' : ''}`} id="modal">
+            <dialog className={`modal ${saveWindowOpen && 'modal-open'}`} id="modal">
                 <div className="modal-box p-0">
                     <form onSubmit={e => {
                         e.preventDefault();
@@ -491,7 +491,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                 </form>
             </dialog>
 
-            <dialog className={`modal ${copyWindowOpen ? 'modal-open' : ''}`} id="modal">
+            <dialog className={`modal ${copyWindowOpen && 'modal-open'}`} id="modal">
                 <div className="modal-box p-0">
                     <div className="w-full h-full flex flex-col justify-start items-center">
                         <div className="p-6">
@@ -508,12 +508,12 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                 </form>
             </dialog>
 
-            <div className={`flex flex-col justify-start items-start w-full ${viewOnly ? 'cursor-pointer' : ''}`} onClick={() => {
+            <div className={`flex flex-col justify-start items-start w-full ${viewOnly && 'cursor-pointer'}`} onClick={() => {
                 if (!viewOnly) return;
                 setCopyWindowOpen(true);
             }}>
                 <FormProvider {...formMethods}>
-                    <form className={`${viewOnly ? 'pointer-events-none' : ''} w-full`}
+                    <form className={`${viewOnly && 'pointer-events-none'} w-full`}
                         onSubmit={e => e.preventDefault()}
                     >
                         <SpecificationStep defaultChecked={false} enabled={true} stepNumber={0} header="Choose Tool Type" forceOpen={true} arrowEnabled={false}>
@@ -523,7 +523,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                                         <button
                                             type="button"
                                             key={i}
-                                            className={`btn grow rounded-none first:rounded-bl-xl last:rounded-br-xl ${e.tool_id === toolType ? 'btn-primary' : ''}`}
+                                            className={`btn grow rounded-none first:rounded-bl-xl last:rounded-br-xl ${e.tool_id === toolType && 'btn-primary'}`}
                                             onClick={() => changeToolType(e)}>
                                             {e.name}
                                         </button>
@@ -535,7 +535,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                             inputCategories.map((e: InputCategory, i) => {
                                 if (e.name === 'Step') return (
                                     <SpecificationStep
-                                        defaultChecked={viewOnly ? true : (i === 0 ? true : false)}
+                                        defaultChecked={viewOnly ? true : (i === 0)}
                                         stepNumber={i + 1}
                                         header={e.display_title}
                                         enabled={true}
@@ -554,7 +554,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
 
                                 if (e.name === 'Fluting') return (
                                     <SpecificationStep
-                                        defaultChecked={viewOnly ? true : (i === 0 ? true : false)}
+                                        defaultChecked={viewOnly ? true : (i === 0)}
                                         stepNumber={i + 1}
                                         header={e.display_title}
                                         enabled={true}
@@ -574,7 +574,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
 
                                 return (
                                     <SpecificationStep
-                                        defaultChecked={viewOnly ? true : (i === 0 ? true : false)}
+                                        defaultChecked={viewOnly ? true : (i === 0)}
                                         stepNumber={i + 1}
                                         header={e.display_title}
                                         enabled={true}
@@ -596,7 +596,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                             })
                         }
                         {
-                            (toolType !== -1 && !viewOnly) ?
+                            (toolType !== -1 && !viewOnly) &&
                                 <SpecificationStep
                                     stepNumber={inputCategories.length + 1}
                                     header="Create Specification"
@@ -604,7 +604,6 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                                     forceOpen={true}
                                     defaultChecked={viewOnly}
                                     arrowEnabled={false}
-
                                 >
                                     <div className="p-0 flex flex-col items-center">
                                         <button onClick={async () => {
@@ -622,7 +621,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                                             setSaveWindowOpen(true);
                                         }} type="submit" className="rounded-none btn w-full btn-primary">Create</button>
                                     </div>
-                                </SpecificationStep> : ''
+                                </SpecificationStep>
                         }
                     </form>
                 </FormProvider>

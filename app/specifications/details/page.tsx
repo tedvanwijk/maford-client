@@ -62,7 +62,7 @@ export default async function SpecificationDetails(
             <div className="flex flex-row justify-between items-center w-full">
                 <div className="flex flex-col justify-between items-start">
                     <div className="flex flex-row justify-start items-center">
-                        <h1 className="font-bold text-xl mr-2">{"Specification " + spec.specification_id}{spec.name ? `: ${spec.name}` : ''}  </h1>
+                        <h1 className="font-bold text-xl mr-2">{"Specification " + spec.specification_id}{spec.name && `: ${spec.name}`}  </h1>
                         <div className={`badge ${badgeClasses}`}>{spec.status}</div>
                     </div>
                     {

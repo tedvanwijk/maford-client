@@ -74,7 +74,7 @@ export default function SeriesEdit(
                         </label>
                         <input
                             {...register('helix_angle', {
-                                required: !straightFlute ? 'Required' : '',
+                                required: !straightFlute && 'Required',
                                 onChange: () => checkIfSeriesEdited(selectedSeries),
                                 min: {
                                     value: 0,
@@ -87,7 +87,7 @@ export default function SeriesEdit(
                             })}
                             type="number"
                             placeholder="Enter value"
-                            className={`input input-bordered w-full ${straightFlute ? 'opacity-20 pointer-events-none' : ''}`}
+                            className={`input input-bordered w-full ${straightFlute && 'opacity-20 pointer-events-none'}`}
                             tabIndex={straightFlute ? -1 : 0}
                         />
                         <div className='w-full flex flex-row justify-start text-red-800'>
@@ -108,13 +108,13 @@ export default function SeriesEdit(
                                 {...register('left_hand_spiral', { onChange: () => checkIfSeriesEdited(selectedSeries) })}
                                 placeholder="Enter value"
                                 type="checkbox"
-                                className={`toggle toggle-primary my-auto ${straightFlute ? 'opacity-20 pointer-events-none' : ''}`}
+                                className={`toggle toggle-primary my-auto ${straightFlute && 'opacity-20 pointer-events-none'}`}
                                 tabIndex={straightFlute ? -1 : 0}
                             />
                         </div>
                     </div>
                     {
-                        (toolType.name === 'Drill' || toolType.name === 'Reamer') ?
+                        (toolType.name === 'Drill' || toolType.name === 'Reamer') &&
                             <div className="flex flex-col mb-1 w-[200px]">
                                 <label className="form-control transition-opacity">
                                     <div className="label">
@@ -126,12 +126,11 @@ export default function SeriesEdit(
                                         {...register('straight_flute', { onChange: () => checkIfSeriesEdited(selectedSeries) })}
                                         placeholder="Enter value"
                                         type="checkbox"
-                                        className={`toggle toggle-primary my-auto ${leftHandSpiral ? 'opacity-20 pointer-events-none' : ''}`}
+                                        className={`toggle toggle-primary my-auto ${leftHandSpiral && 'opacity-20 pointer-events-none'}`}
                                         tabIndex={leftHandSpiral ? -1 : 0}
                                     />
                                 </div>
-                            </div> :
-                            ''
+                            </div>
                     }
                 </div>
             </div>
