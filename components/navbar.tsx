@@ -14,7 +14,6 @@ import { User } from "@/app/types";
 function Navbar({ children }: { children: React.ReactNode }) {
     const [userId, setUserId] = useState<string | undefined>(undefined);
     const [users, setUsers] = useState<User[]>([]);
-    const [user, setUser] = useState<User>();
 
     const router = useRouter();
     const pathName = usePathname();
@@ -40,9 +39,9 @@ function Navbar({ children }: { children: React.ReactNode }) {
                 cache: 'no-cache'
             }
         ).then(res => res.json())
-            .then(res => setUser(res));
-
-        if (pathName === '/settings' && !user?.admin) return router.push('/');
+            .then(res => {
+                if (pathName === '/settings' && !res.admin) return router.push('/');
+            });
     }, []);
 
     const pages: {
@@ -74,12 +73,7 @@ function Navbar({ children }: { children: React.ReactNode }) {
                 name: 'Report Issue',
                 href: '/report',
                 icon: <AlertTriangle />
-            },
-            // {
-            //     name: 'Settings',
-            //     href: '/settings',
-            //     icon: <Settings />
-            // }
+            }
         ]
 
     function changeUser(userId: number) {
@@ -111,16 +105,6 @@ function Navbar({ children }: { children: React.ReactNode }) {
                             switch (e.name) {
                                 case 'Specifications':
                                     return <SpecificationLink key={e.name} userId={userId} />
-                                case 'Settings':
-                                    if (user?.admin) return (
-                                        <li className="w-full font-bold stroke-2 my-1" key={e.name}>
-                                            <Link href={e.href} className="flex flex-row justify-between w-full text-lg m-0">
-                                                <h1>{e.name}</h1>
-                                                {e.icon}
-                                            </Link>
-                                        </li>
-                                    );
-                                    break;
                                 default:
                                     return <li className="w-full font-bold stroke-2 my-1" key={e.name}>
                                         <Link href={e.href} className="flex flex-row justify-between w-full text-lg m-0">
