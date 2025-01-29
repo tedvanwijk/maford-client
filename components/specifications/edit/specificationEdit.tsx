@@ -268,6 +268,9 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
         }
 
         function enterValues(values: any, category = '') {
+            // For catalog tools, the tool number input is in the prp section, so we try to set it
+            if (values._tool !== undefined) formMethods.setValue('Prp.PartNumber', values._tool);
+
             for (const [key, value] of Object.entries(values)) {
                 let id = key;
                 // if category is not empty, it is a subset (e.g. prp.blablabla)
