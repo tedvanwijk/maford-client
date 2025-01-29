@@ -111,6 +111,8 @@ export default function StepForm({
         );
     }
 
+    if (toolType === undefined) return <></>
+
     return (
         <div className="w-full p-4 flex flex-col justify-start items-start">
             <label className={`form-control w-[200px] transition-opacity mb-4`} key={0}>
