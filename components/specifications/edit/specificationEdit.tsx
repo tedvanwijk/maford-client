@@ -27,6 +27,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
     const [centers, setCenters] = useState<CenterType[]>([]);
     const [userId, setUserId] = useState<null | string>();
     const [seriesEdited, setSeriesEdited] = useState(false);
+    const [loading, setLoading] = useState(true);
     const formMethods = useForm({ mode: 'onChange' });
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -301,30 +302,35 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
             else formMethods.setValue('Center.UpperCenterType', '-1');
         }
 
-        fetch(
-            `${apiUrl}/tools`,
-            {
-                method: "GET",
-                cache: "no-cache"
-            }
-        )
-            .then(res => res.json())
-            .then(res => setTools(res))
-            .then(() => {
-                if (referenceSpecification !== null) {
-                    if (referenceSpecification[0] === 'c') copyCatalogTool();
-                    else copyTool();
+        async function initialize() {
+            await fetch(
+                `${apiUrl}/tools`,
+                {
+                    method: "GET",
+                    cache: "no-cache"
                 }
-            });
-        fetch(
-            `${apiUrl}/centers?nameOnly=true`,
-            {
-                method: "GET",
-                cache: "no-cache"
-            }
-        )
-            .then(res => res.json())
-            .then(res => setCenters(res));
+            )
+                .then(res => res.json())
+                .then(res => setTools(res))
+                .then(() => {
+                    if (referenceSpecification !== null) {
+                        if (referenceSpecification[0] === 'c') copyCatalogTool();
+                        else copyTool();
+                    }
+                });
+            await fetch(
+                `${apiUrl}/centers?nameOnly=true`,
+                {
+                    method: "GET",
+                    cache: "no-cache"
+                }
+            )
+                .then(res => res.json())
+                .then(res => setCenters(res));
+            setLoading(false);
+        }
+
+        initialize();
     }, [referenceSpecification, formMethods, enterDefaultValues, userId, validateRules, changeSeries, copySeriesParams, checkIfSeriesEdited]);
 
     function changeStepCount(increase: boolean) {
@@ -447,6 +453,8 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
 
     const upperCenterDropdown = <CenterDropdown type="Upper" centers={centers} key="Upper" />
     const lowerCenterDropdown = <CenterDropdown type="Lower" centers={centers} key="Lower" />
+
+    if (loading) return <>Loading...</>
 
     if ((userId === null || userId === undefined) && !viewOnly) return (
         <>
