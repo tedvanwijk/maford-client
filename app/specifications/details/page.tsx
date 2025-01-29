@@ -1,5 +1,4 @@
 import { AlertCircle } from "react-feather";
-import { Suspense } from "react";
 import { join } from 'path';
 import SpecificationEdit from "@/components/specifications/edit/specificationEdit";
 import type { Metadata } from 'next';
@@ -93,9 +92,7 @@ export default async function SpecificationDetails(
                 <img src={`/api/image?spec=${searchParams.r}`} alt="" width={1503} height={930} className="aspect-auto max-h-[100px] h-full w-auto object-cover my-2" />
             </div>
 
-            <Suspense>
-                <SpecificationEdit viewOnly={true} />
-            </Suspense>
+            <SpecificationEdit viewOnly={true} />
         </>
     )
 }

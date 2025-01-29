@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { apiUrl } from "@/lib/api";
 
-function Report() {
+export default function Report() {
     const searchParams = useSearchParams();
     const referenceSpecification = searchParams.get('r');
     const router = useRouter();
@@ -117,13 +117,5 @@ function Report() {
                 <button type="submit" className="btn btn-primary mt-4 w-fit">Submit</button>
             </form>
         </>
-    )
-}
-
-export default function Page() {
-    return (
-        <Suspense>
-            <Report />
-        </Suspense>
     )
 }

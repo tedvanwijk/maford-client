@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback, Suspense } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, FormProvider } from 'react-hook-form';
 import { apiUrl } from "@/lib/api";
@@ -13,7 +13,7 @@ import CenterDropdown from "./centerDropdown";
 import SeriesEdit from "./seriesEdit";
 import { AlertCircle } from "react-feather";
 
-function New({ viewOnly = false }: { viewOnly: boolean }) {
+export default function New({ viewOnly = false }: { viewOnly: boolean }) {
     const [tools, setTools]: [ToolType[], Function] = useState([]);
     const [toolType, setToolType] = useState(-1);
     const [inputCategories, setInputCategories] = useState([]);
@@ -615,13 +615,5 @@ function New({ viewOnly = false }: { viewOnly: boolean }) {
                 </FormProvider>
             </div>
         </>
-    )
-}
-
-export default function Page({ viewOnly = false }: { viewOnly: boolean }) {
-    return (
-        <Suspense>
-            <New viewOnly={viewOnly} />
-        </Suspense>
     )
 }
