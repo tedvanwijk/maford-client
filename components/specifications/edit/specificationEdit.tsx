@@ -543,7 +543,12 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                                         forceOpen={false}
                                         arrowEnabled={!viewOnly}
                                     >
-                                        <StepForm stepCount={stepCount} changeStepCount={changeStepCount} viewOnly={viewOnly} />
+                                        <StepForm
+                                            stepCount={stepCount}
+                                            changeStepCount={changeStepCount}
+                                            viewOnly={viewOnly}
+                                            toolType={tools.find(e => e.tool_id === toolType) as ToolType}
+                                        />
                                     </SpecificationStep>
                                 )
 
