@@ -66,14 +66,6 @@ export default function StepForm({
                             {...register(`Steps.${i}.RBottom`, { disabled: !stepTool })}
                         />
                     </td>
-                    <td className="text-center">
-                        <input
-                            className={`${!stepTool || midpointDisabled ? 'opacity-30 pointer-events-none' : ''} toggle toggle-primary my-auto bg-base-300`}
-                            type="checkbox"
-                            step="any"
-                            {...register(`Steps.${i}.Midpoint`, { disabled: !stepTool && midpointDisabled })}
-                        />
-                    </td>
                     {
                         toolType.name === 'Drill' && (
                             <td className="text-center">
@@ -86,6 +78,14 @@ export default function StepForm({
                             </td>
                         )
                     }
+                    <td className="text-center">
+                        <input
+                            className={`${!stepTool || midpointDisabled ? 'opacity-30 pointer-events-none' : ''} toggle toggle-primary my-auto bg-base-300`}
+                            type="checkbox"
+                            step="any"
+                            {...register(`Steps.${i}.Midpoint`, { disabled: !stepTool && midpointDisabled })}
+                        />
+                    </td>
                 </tr>
             )
         }
@@ -100,8 +100,8 @@ export default function StepForm({
                         <th>Angle</th>
                         <th>R top</th>
                         <th>R bottom</th>
-                        <th className="w-32">To countersink tangency</th>
-                        {toolType.name === 'Drill' && <th className="w-32">LOF from point</th>}
+                        {toolType.name === 'Drill' && <th className="w-32">From point</th>}
+                        <th className="w-32">To tangency</th>
                     </tr>
                 </thead>
                 <tbody>
