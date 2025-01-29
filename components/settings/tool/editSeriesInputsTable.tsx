@@ -23,7 +23,7 @@ export default function EditSeriesInputsTable(
     const { register, watch, setValue } = useFormContext();
     return (
         <>
-            <div className={`flex-grow flex-col justify-start items-start w-full ${enabled ? '' : ''}`}>
+            <div className="flex-grow flex-col justify-start items-start w-full">
                 <div className='label font-bold'>
                     Excel File Inputs
                 </div>
