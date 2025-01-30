@@ -104,7 +104,7 @@ export default function SpecificationForm(
             switch (input.type) {
                 case 'decimal':
                     inputElement = <input
-                        {...register(registerId, registerOptions)}
+                        {...register(registerId, {...registerOptions, valueAsNumber: true})}
                         type="number"
                         placeholder="Enter value"
                         step="any"
@@ -117,7 +117,7 @@ export default function SpecificationForm(
                     break;
                 case 'int':
                     inputElement = <input
-                        {...register(registerId, registerOptions)}
+                        {...register(registerId, {...registerOptions, valueAsNumber: true})}
                         type="number"
                         placeholder="Enter value"
                         step="1"

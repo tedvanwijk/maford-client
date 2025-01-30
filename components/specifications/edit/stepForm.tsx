@@ -31,7 +31,7 @@ export default function StepForm({
                             className={`${!stepTool && 'opacity-5'} bg-base-100 p-1 w-full h-full`}
                             type="number"
                             step="any"
-                            {...register(`Steps.${i}.Length`, { disabled: !stepTool })}
+                            {...register(`Steps.${i}.Length`, { disabled: !stepTool, valueAsNumber: true })}
                         />
                     </td>
                     <td className="border border-slate-400">
@@ -39,7 +39,7 @@ export default function StepForm({
                             className={`${!stepTool && 'opacity-5'} bg-base-100 p-1 w-full h-full`}
                             type="number"
                             step="any"
-                            {...register(`Steps.${i}.Diameter`, { disabled: !stepTool })}
+                            {...register(`Steps.${i}.Diameter`, { disabled: !stepTool, valueAsNumber: true })}
                         />
                     </td>
                     <td className="border border-slate-400">
@@ -47,7 +47,7 @@ export default function StepForm({
                             className={`${!stepTool && 'opacity-5'} bg-base-100 p-1 w-full h-full`}
                             type="number"
                             step="any"
-                            {...register(`Steps.${i}.Angle`, { disabled: !stepTool })}
+                            {...register(`Steps.${i}.Angle`, { disabled: !stepTool, valueAsNumber: true })}
                         />
                     </td>
                     <td className="border border-slate-400">
@@ -55,7 +55,7 @@ export default function StepForm({
                             className={`${!stepTool && 'opacity-5'} bg-base-100 p-1 w-full h-full`}
                             type="number"
                             step="any"
-                            {...register(`Steps.${i}.RTop`, { disabled: !stepTool })}
+                            {...register(`Steps.${i}.RTop`, { disabled: !stepTool, valueAsNumber: true })}
                         />
                     </td>
                     <td className="border border-slate-400">
@@ -63,7 +63,7 @@ export default function StepForm({
                             className={`${!stepTool && 'opacity-5'} bg-base-100 p-1 w-full h-full`}
                             type="number"
                             step="any"
-                            {...register(`Steps.${i}.RBottom`, { disabled: !stepTool })}
+                            {...register(`Steps.${i}.RBottom`, { disabled: !stepTool, valueAsNumber: true })}
                         />
                     </td>
                     {
