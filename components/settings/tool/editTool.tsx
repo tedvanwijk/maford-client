@@ -226,12 +226,9 @@ export default function EditTool() {
             formData.straight_flute = false;
         }
 
-        if (copy) {
-            formData.name += ' - Copy';
-        }
-
         let changedSeries: Series;
         if (newMode || copy) {
+            if ((selectedSeries as Series).name === formData.name) formData.name += ' - Copy';
             changedSeries = await fetch(
                 `${apiUrl}/series/${selectedToolType.tool_id}/new`,
                 {
