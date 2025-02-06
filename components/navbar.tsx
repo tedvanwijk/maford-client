@@ -1,6 +1,6 @@
 'use client'
 
-import { Home, List, PlusCircle, Settings, AlertTriangle, ShoppingCart } from "react-feather";
+import { Home, List, PlusCircle, Book, AlertTriangle, ShoppingCart } from "react-feather";
 import Link from "next/link";
 import UserDropdown from "./userDropdown";
 import SpecificationLink from './navbar/specificationLink';
@@ -74,6 +74,11 @@ function Navbar({ children }: { children: React.ReactNode }) {
                 name: 'Report Issue',
                 href: '/report',
                 icon: <AlertTriangle />
+            },
+            {
+                name: 'Documentation',
+                href: '/docs',
+                icon: <Book />
             }
         ]
 
