@@ -165,6 +165,7 @@ export default function Users() {
                         type="text"
                         placeholder="Enter value"
                         className="input input-bordered w-full"
+                        disabled={userId === -2}
                     />
                 </label>
                 <label className={`form-control w-[200px] transition-opacity mb-4`} key="name">
@@ -176,6 +177,7 @@ export default function Users() {
                         onChange={e => setAdmin(e.target.checked)}
                         type="checkbox"
                         className="toggle toggle-primary my-auto bg-base-300"
+                        disabled={userId === -2}
                     />
                 </label>
             </div>
