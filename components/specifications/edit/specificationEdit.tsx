@@ -15,7 +15,6 @@ import { AlertCircle } from "react-feather";
 
 export default function New({ viewOnly = false }: { viewOnly: boolean }) {
     const [tools, setTools]: [ToolType[], Function] = useState([]);
-    const [toolType, setToolType] = useState(-1);
     const [inputCategories, setInputCategories] = useState([]);
     const [saveWindowOpen, setSaveWindowOpen] = useState(false);
     const [copyWindowOpen, setCopyWindowOpen] = useState(false);
@@ -201,7 +200,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
             setInputCategories(res.toolCategories);
 
             if (data.StepTool) copySteps(data.Steps);
-            setToolType(data.ToolType);
+            formMethods.setValue('ToolType', data.ToolType);
             changeSeries(data.ToolSeries);
             enterDefaultValues(defaultValues);
             enterValues(data);
@@ -240,7 +239,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
             setInputCategories(inputs.toolCategories);
             if (data.StepTool) copySteps(data.Steps);
             copyCenters(data.Center);
-            setToolType(data.ToolType);
+            formMethods.setValue('ToolType', data.ToolType);
             copySeriesParams(data);
             enterValues(data);
             removeDisabledValues(inputs.toolCategories);
@@ -306,6 +305,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
         }
 
         async function initialize() {
+            formMethods.setValue('ToolType', -1);
             await fetch(
                 `${apiUrl}/tools`,
                 {
@@ -348,7 +348,6 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
 
         // add variables to formData obj that are not in the form
         formDataCopy.ToolSeries = selectedSeries;
-        formDataCopy.ToolType = toolType;
         formDataCopy.specName = specName;
         formDataCopy.user_id = parseInt(userId as string);
 
@@ -356,10 +355,10 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
         if (formDataCopy.StepTool) formDataCopy.Steps.length = stepCount;
 
         // straight flute is always present, set it to false for ems
-        if (toolType === 0) formDataCopy.straight_flute = false;
+        if (formDataCopy.ToolType === 0) formDataCopy.straight_flute = false;
 
         // for blanks, set both params to false
-        if (toolType === 2) {
+        if (formDataCopy.ToolType === 2) {
             formDataCopy.straight_flute = false;
             formDataCopy.left_hand_spiral = false;
         }
@@ -386,11 +385,11 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
 
     async function changeToolType(e: ToolType) {
         let switchingFromBlank = false;
-        if (e.tool_id === toolType) return
-        else if (toolType === -1) {
+        if (e.tool_id === formMethods.getValues('ToolType')) return
+        else if (formMethods.getValues('ToolType') === -1) {
             formMethods.reset();
         }
-        else if (toolType === 2) {
+        else if (formMethods.getValues('ToolType') === 2) {
             // if toolType = 2, user is switching from blank. So retain form values and don't show confirm window
             switchingFromBlank = true;
         }
@@ -422,7 +421,8 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
         )
             .then(res => res.json())
             .then(res => setSeries(res));
-        setToolType(e.tool_id);
+        // setToolType(e.tool_id);
+        formMethods.setValue('ToolType', e.tool_id);
         enterDefaultValues(defaultValues, switchingFromBlank);
     }
 
@@ -526,7 +526,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                                         <button
                                             type="button"
                                             key={i}
-                                            className={`btn grow rounded-none first:rounded-bl-xl last:rounded-br-xl ${e.tool_id === toolType && 'btn-primary'}`}
+                                            className={`btn grow rounded-none first:rounded-bl-xl last:rounded-br-xl ${e.tool_id === formMethods.getValues('ToolType') && 'btn-primary'}`}
                                             onClick={() => changeToolType(e)}>
                                             {e.name}
                                         </button>
@@ -550,7 +550,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                                             stepCount={stepCount}
                                             changeStepCount={changeStepCount}
                                             viewOnly={viewOnly}
-                                            toolType={tools.find(e => e.tool_id === toolType) as ToolType}
+                                            toolType={tools.find(e => e.tool_id === formMethods.getValues('ToolType')) as ToolType}
                                         />
                                     </SpecificationStep>
                                 )
@@ -567,7 +567,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                                     >
                                         <SeriesEdit
                                             toolSeriesInput={seriesInput}
-                                            toolType={tools.find(e => e.tool_id === toolType) as ToolType}
+                                            toolType={tools.find(e => e.tool_id === formMethods.getValues('ToolType')) as ToolType}
                                             selectedSeries={series.find(e => e.series_id === selectedSeries) as Series}
                                             submitMode={saveWindowOpen}
                                             checkIfSeriesEdited={checkIfSeriesEdited}
@@ -593,14 +593,14 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                                             submitMode={saveWindowOpen}
                                             validateRules={validateRules}
                                             stepNumber={i + 1}
-                                            toolType={toolType}
+                                            toolType={formMethods.getValues('ToolType')}
                                         />
                                     </SpecificationStep>
                                 )
                             })
                         }
                         {
-                            (toolType !== -1 && !viewOnly) &&
+                            (formMethods.getValues('ToolType') !== -1 && !viewOnly) &&
                             <SpecificationStep
                                 stepNumber={inputCategories.length + 1}
                                 header="Create Specification"
