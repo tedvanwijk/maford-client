@@ -593,6 +593,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                                             submitMode={saveWindowOpen}
                                             validateRules={validateRules}
                                             stepNumber={i + 1}
+                                            toolType={toolType}
                                         />
                                     </SpecificationStep>
                                 )
@@ -600,31 +601,31 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                         }
                         {
                             (toolType !== -1 && !viewOnly) &&
-                                <SpecificationStep
-                                    stepNumber={inputCategories.length + 1}
-                                    header="Create Specification"
-                                    enabled={true}
-                                    forceOpen={true}
-                                    defaultChecked={viewOnly}
-                                    arrowEnabled={false}
-                                >
-                                    <div className="p-0 flex flex-col items-center">
-                                        <button onClick={async () => {
-                                            await formMethods.trigger();
-                                            if (!formMethods.formState.isValid) {
-                                                setSaveWindowWarning(
-                                                    <div className="flex flex-row justify-start items-center">
-                                                        <AlertCircle className="mr-2 w-1/6" />
-                                                        <span>
-                                                            The form is incomplete. Not completing the form might result in an incorrect model and/or drawing. <button type="button" onClick={() => goToError()} className="underline">Go to error</button>
-                                                        </span>
-                                                    </div>
-                                                );
-                                            } else setSaveWindowWarning(<></>);
-                                            setSaveWindowOpen(true);
-                                        }} type="submit" className="rounded-none btn w-full btn-primary">Create</button>
-                                    </div>
-                                </SpecificationStep>
+                            <SpecificationStep
+                                stepNumber={inputCategories.length + 1}
+                                header="Create Specification"
+                                enabled={true}
+                                forceOpen={true}
+                                defaultChecked={viewOnly}
+                                arrowEnabled={false}
+                            >
+                                <div className="p-0 flex flex-col items-center">
+                                    <button onClick={async () => {
+                                        await formMethods.trigger();
+                                        if (!formMethods.formState.isValid) {
+                                            setSaveWindowWarning(
+                                                <div className="flex flex-row justify-start items-center">
+                                                    <AlertCircle className="mr-2 w-1/6" />
+                                                    <span>
+                                                        The form is incomplete. Not completing the form might result in an incorrect model and/or drawing. <button type="button" onClick={() => goToError()} className="underline">Go to error</button>
+                                                    </span>
+                                                </div>
+                                            );
+                                        } else setSaveWindowWarning(<></>);
+                                        setSaveWindowOpen(true);
+                                    }} type="submit" className="rounded-none btn w-full btn-primary">Create</button>
+                                </div>
+                            </SpecificationStep>
                         }
                     </form>
                 </FormProvider>

@@ -14,7 +14,8 @@ export default function SpecificationForm(
         type = 'General',
         submitMode,
         validateRules,
-        stepNumber
+        stepNumber,
+        toolType
     }: {
         inputs: ToolInput[],
         upperCenterDropdown: React.ReactNode
@@ -22,7 +23,8 @@ export default function SpecificationForm(
         type?: string,
         submitMode: boolean,
         validateRules: Function,
-        stepNumber: number
+        stepNumber: number,
+        toolType: number
     }
 ) {
     const { register, watch, getValues, formState } = useFormContext();
@@ -69,7 +71,12 @@ export default function SpecificationForm(
             let rules = input.tool_input_rules as ToolInputRule[];
             let disabled = false;
             let additionalClasses = '';
-            if (rules.length > 0) [disabled, additionalClasses] = validateRules(rules, formData);
+
+            // If the tool type is drill and the fluting is helical, the coolant inputs should be disabled
+            if (toolType === 1 && type === 'Coolant' && input.property_name !== 'CoolantHole' && !getValues('straight_flute')) {
+                disabled = true;
+                additionalClasses = 'opacity-20 pointer-events-none';
+            } else if (rules.length > 0) [disabled, additionalClasses] = validateRules(rules, formData);
 
             // if not submitting, don't actually disable inputs so the values can still be retrieved
             // this way, if a rule depends on an initially disabled input, it will still evaluate correctly
@@ -104,7 +111,7 @@ export default function SpecificationForm(
             switch (input.type) {
                 case 'decimal':
                     inputElement = <input
-                        {...register(registerId, {...registerOptions, valueAsNumber: true})}
+                        {...register(registerId, { ...registerOptions, valueAsNumber: true })}
                         type="number"
                         placeholder="Enter value"
                         step="any"
@@ -117,7 +124,7 @@ export default function SpecificationForm(
                     break;
                 case 'int':
                     inputElement = <input
-                        {...register(registerId, {...registerOptions, valueAsNumber: true})}
+                        {...register(registerId, { ...registerOptions, valueAsNumber: true })}
                         type="number"
                         placeholder="Enter value"
                         step="1"
