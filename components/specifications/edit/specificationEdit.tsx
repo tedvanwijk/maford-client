@@ -256,7 +256,10 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                     const input = inputs[i];
                     let rules = input.tool_input_rules as ToolInputRule[];
 
-                    if (rules.length > 0) {
+                    if (formMethods.getValues('ToolType') === 1 && type === 'Coolant' && input.property_name !== 'CoolantHole' && !formData['straight_flute']) {
+                        let registerId = `${type}.${input.property_name}`;
+                        formMethods.setValue(registerId, undefined);
+                    } else if (rules.length > 0) {
                         let registerId = input.property_name;
                         if (type !== 'General') registerId = `${type}.${registerId}`;
                         const [disabled, _] = validateRules(rules, formData);
