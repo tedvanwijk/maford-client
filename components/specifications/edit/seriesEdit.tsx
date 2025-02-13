@@ -45,14 +45,14 @@ export default function SeriesEdit(
                                 onChange: () => checkIfSeriesEdited(selectedSeries),
                                 min: (toolType.name === 'Drill' ? {
                                     value: 2,
-                                    message: 'Only 2-fluted drills supported'
+                                    message: 'Only 2- & 3-fluted drills supported'
                                 } : {
                                     value: 1,
                                     message: 'Value too low'
                                 }),
                                 max: (toolType.name === 'Drill' ? {
-                                    value: 2,
-                                    message: 'Only 2-fluted drills supported'
+                                    value: 3,
+                                    message: 'Only 2- & 3-fluted drills supported'
                                 } : {
                                     value: 'any',
                                     message: 'Value too high'
