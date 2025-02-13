@@ -1,6 +1,8 @@
 import { SeriesInput, ToolInput, ToolType } from '@/app/types';
 import { useFormContext } from 'react-hook-form';
 import EditSeriesInputsTable from './editSeriesInputsTable';
+import { ErrorMessage } from '@hookform/error-message';
+import { useEffect } from 'react';
 
 export default function EditToolForm(
     {
@@ -22,7 +24,8 @@ export default function EditToolForm(
         toolType: ToolType
     }
 ) {
-    const { register, watch } = useFormContext();
+    const { register, watch, formState } = useFormContext();
+    const errors = formState.errors;
     const straightFlute = watch('straight_flute', false);
     const leftHandSpiral = watch('left_hand_spiral', false);
     return (
@@ -54,13 +57,29 @@ export default function EditToolForm(
                         <input
                             {...register('flute_count', {
                                 required: true,
-                                disabled: !enabled
+                                disabled: !enabled,
+                                min: (toolType.name === 'Drill' ? {
+                                    value: 2,
+                                    message: 'Only 2- & 3-fluted drills supported'
+                                } : {
+                                    value: 1,
+                                    message: 'Value too low'
+                                }),
+                                max: (toolType.name === 'Drill' ? {
+                                    value: 3,
+                                    message: 'Only 2- & 3-fluted drills supported'
+                                } : {
+                                    value: 'any',
+                                    message: 'Value too high'
+                                })
                             })}
                             type="number"
                             placeholder="Enter value"
-                            className={`input input-bordered w-full ${toolType.name === 'Drill' && 'opacity-20 pointer-events-none'}`}
-                            tabIndex={toolType.name === 'Drill' ? -1 : 0}
+                            className="input input-bordered w-full"
                         />
+                        <div className='w-full flex flex-row justify-start text-red-800'>
+                            <ErrorMessage errors={errors} name="flute_count" as="p" />
+                        </div>
                     </div>
                 </div>
 
@@ -140,21 +159,21 @@ export default function EditToolForm(
                     </div>
                     {
                         (toolType.name === 'Drill' || toolType.name === 'Reamer') &&
-                            <div className="flex flex-col mb-1">
-                                <label className="form-control transition-opacity">
-                                    <div className="label">
-                                        <span>Straight Flute</span>
-                                    </div>
-                                </label>
-                                <div className='h-12 flex justify-start'>
-                                    <input
-                                        {...register('straight_flute', { disabled: (!enabled || leftHandSpiral) })}
-                                        placeholder="Enter value"
-                                        type="checkbox"
-                                        className="toggle toggle-primary my-auto"
-                                    />
+                        <div className="flex flex-col mb-1">
+                            <label className="form-control transition-opacity">
+                                <div className="label">
+                                    <span>Straight Flute</span>
                                 </div>
+                            </label>
+                            <div className='h-12 flex justify-start'>
+                                <input
+                                    {...register('straight_flute', { disabled: (!enabled || leftHandSpiral) })}
+                                    placeholder="Enter value"
+                                    type="checkbox"
+                                    className="toggle toggle-primary my-auto"
+                                />
                             </div>
+                        </div>
                     }
                 </div>
 
