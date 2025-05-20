@@ -37,7 +37,44 @@ export default async function Home() {
       </div>
       <h1 className='my-2'>Version History</h1>
       <div className='w-full bg-secondary bg-opacity-50 rounded-md p-2 h-full overflow-auto flex flex-col'>
-      <div className='mb-4'>
+        <div className="mb-4">
+          <span className='font-bold'>[0.5.0]</span> <br />
+          <span className="whitespace-pre-wrap">
+            5-20-2025<br />
+            - Added form validation<br />
+            - Added min and max values for form inputs<br />
+            - Added part and drawing file types to form<br />
+            - Added custom drawing type for user-created sheet formats<br />
+            - Added tolerance table on drawing toggle for custom drawing type<br />
+            - Added user admin check when loading settings page<br />
+            - Added loading screens<br />
+            - Added steps for all tool types<br />
+            - Added rule property iteration for dimensioning sheet<br />
+            - Added support for tolerances insertion in dimension and table simultaneously (NOTE: the tolerance sheets for existing series need to be changed)<br />
+            - Added incomplete shank to head radius<br />
+            - Added option of only setting 1 radius for steps<br />
+            - Added step length from point toggle<br />
+            - Added step length to countersink tangency toggle<br />
+            - Added structure for documentation<br />
+            - Added 3-fluted drills<br />
+            - Added coolant for straight fluted drills<br />
+            - Added front, middle and rear margin options for drills<br />
+            - Added front, middle and rear margin options for straight fluted step drills<br />
+            - Removed type selection from step form<br />
+            - Removed settings button from navbar<br />
+            - Fixed solidworks error for coolant with count = 1<br />
+            - Fixed part number not setting in form for copied catalog tools<br />
+            - Fixed spec table wrongly inserting for approval drawings<br />
+            - Fixed series copying not working if old inactive series has identical name<br />
+            - Fixed incorrect shank type in some situations<br />
+            - Fixed flute washout running into shank for blend and neck shank tools with small tool diameters<br />
+            - Fixed drill margins width not updating<br />
+            - Updated NextJS version<br />
+            - Several bug fixes<br />
+            - Several visual improvements
+          </span>
+        </div>
+        <div className='mb-4'>
           <span className='font-bold'>[0.4.1]</span> <br />
           <span className='whitespace-pre-wrap'>
             12-28-2024<br />
