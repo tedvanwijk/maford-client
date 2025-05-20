@@ -21,6 +21,7 @@ export default function StepForm({
 
     function createStepTable() {
         let stepFormItems = [];
+        const margins = watch('straight_flute') && toolType.name === "Drill";
         for (let i = 0; i < stepCount; i++) {
             const midpointDisabled = watch(`Steps.${i}.RTop`, '') === '';
             stepFormItems.push(
@@ -86,12 +87,42 @@ export default function StepForm({
                             {...register(`Steps.${i}.Midpoint`, { disabled: !stepTool && midpointDisabled })}
                         />
                     </td>
+                    {
+                        margins && (
+                            <>
+                                <td className="text-center">
+                                    <input
+                                        className={`${!stepTool && 'opacity-30 pointer-events-none'} toggle toggle-primary my-auto bg-base-300`}
+                                        type="checkbox"
+                                        step="any"
+                                        {...register(`Steps.${i}.FrontMargin`, { disabled: !stepTool })}
+                                    />
+                                </td>
+                                <td className="text-center">
+                                    <input
+                                        className={`${!stepTool && 'opacity-30 pointer-events-none'} toggle toggle-primary my-auto bg-base-300`}
+                                        type="checkbox"
+                                        step="any"
+                                        {...register(`Steps.${i}.MiddleMargin`, { disabled: !stepTool })}
+                                    />
+                                </td>
+                                <td className="text-center">
+                                    <input
+                                        className={`${!stepTool && 'opacity-30 pointer-events-none'} toggle toggle-primary my-auto bg-base-300`}
+                                        type="checkbox"
+                                        step="any"
+                                        {...register(`Steps.${i}.RearMargin`, { disabled: !stepTool })}
+                                    />
+                                </td>
+                            </>
+                        )
+                    }
                 </tr>
             )
         }
 
         return (
-            <table className='w-full border-collapse border-spacing-0 table-auto'>
+            <table className='w-full border-collapse border-spacing-0 table-auto overflow-x-auto'>
                 <thead>
                     <tr>
                         <th>#</th>
@@ -102,6 +133,13 @@ export default function StepForm({
                         <th>R bottom</th>
                         {toolType.name === 'Drill' && <th className="w-32">From point</th>}
                         <th className="w-32">To tangency</th>
+                        {(margins) && (
+                            <>
+                                <th className="w-32">Front margin</th>
+                                <th className="w-32">Middle margin</th>
+                                <th className="w-32">Rear margin</th>
+                            </>
+                        )}
                     </tr>
                 </thead>
                 <tbody>
@@ -132,10 +170,10 @@ export default function StepForm({
                 <div className="flex flex-row justify-start w-full items-center my-4">
                     {
                         !viewOnly &&
-                            <>
-                                <button type="button" disabled={!stepTool} className="btn btn-primary mr-4" onClick={() => changeStepCount(true)}><Plus />Add step</button>
-                                <button type="button" disabled={!stepTool} className="btn bg-base-100 mr-4" onClick={() => changeStepCount(false)}><X />Remove step</button>
-                            </>
+                        <>
+                            <button type="button" disabled={!stepTool} className="btn btn-primary mr-4" onClick={() => changeStepCount(true)}><Plus />Add step</button>
+                            <button type="button" disabled={!stepTool} className="btn bg-base-100 mr-4" onClick={() => changeStepCount(false)}><X />Remove step</button>
+                        </>
                     }
                 </div>
 

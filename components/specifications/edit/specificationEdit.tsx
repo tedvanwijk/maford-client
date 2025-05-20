@@ -295,6 +295,9 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                 formMethods.setValue(`Steps.${i}.Type`, steps[i].Type);
                 formMethods.setValue(`Steps.${i}.RTop`, steps[i].RTop);
                 formMethods.setValue(`Steps.${i}.RBottom`, steps[i].RBottom);
+                formMethods.setValue(`Steps.${i}.FrontMargin`, steps[i].FrontMargin);
+                formMethods.setValue(`Steps.${i}.MiddleMargin`, steps[i].MiddleMargin);
+                formMethods.setValue(`Steps.${i}.RearMargin`, steps[i].RearMargin);
             }
         }
 

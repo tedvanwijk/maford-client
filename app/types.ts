@@ -114,7 +114,10 @@ export interface Step {
     Angle: number,
     Type: string,
     RTop: number,
-    RBottom: number
+    RBottom: number,
+    FrontMargin: boolean,
+    MiddleMargin: boolean,
+    RearMargin: boolean
 }
 
 export interface CatalogTool {
