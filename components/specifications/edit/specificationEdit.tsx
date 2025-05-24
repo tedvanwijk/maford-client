@@ -438,7 +438,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
 
         const stepNumber = parseInt(id.split('|')[0]);
 
-        const categoryCheckbox = document.querySelector(`input[id="${stepNumber}"`) as any;
+        const categoryCheckbox = document.querySelector(`input[id="${stepNumber}"]`) as any;
         if (!categoryCheckbox.checked) categoryCheckbox.click();
 
         const inputElement = document.getElementById(id);
@@ -577,6 +577,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                                             selectedSeries={series.find(e => e.series_id === selectedSeries) as Series}
                                             submitMode={saveWindowOpen}
                                             checkIfSeriesEdited={checkIfSeriesEdited}
+                                            stepNumber={i + 1}
                                         />
                                     </SpecificationStep>
                                 )

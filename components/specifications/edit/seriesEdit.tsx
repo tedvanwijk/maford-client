@@ -8,13 +8,15 @@ export default function SeriesEdit(
         toolType,
         selectedSeries,
         submitMode,
-        checkIfSeriesEdited
+        checkIfSeriesEdited,
+        stepNumber
     }: {
         toolSeriesInput: React.ReactNode,
         toolType: ToolType,
         selectedSeries: Series,
         submitMode: boolean,
-        checkIfSeriesEdited: Function
+        checkIfSeriesEdited: Function,
+        stepNumber: number
     }
 ) {
     const { register, watch, formState } = useFormContext();
@@ -40,6 +42,7 @@ export default function SeriesEdit(
                             </div>
                         </label>
                         <input
+                            id={`${stepNumber}|0`}
                             {...register('flute_count', {
                                 required: 'Required',
                                 onChange: () => checkIfSeriesEdited(selectedSeries),
@@ -73,6 +76,7 @@ export default function SeriesEdit(
                             </div>
                         </label>
                         <input
+                            id={`${stepNumber}|1`}
                             {...register('helix_angle', {
                                 required: !straightFlute && 'Required',
                                 onChange: () => checkIfSeriesEdited(selectedSeries),
@@ -105,6 +109,7 @@ export default function SeriesEdit(
                         </label>
                         <div className='h-12 flex justify-start'>
                             <input
+                                id={`${stepNumber}|2`}
                                 {...register('left_hand_spiral', { onChange: () => checkIfSeriesEdited(selectedSeries) })}
                                 placeholder="Enter value"
                                 type="checkbox"
@@ -115,22 +120,23 @@ export default function SeriesEdit(
                     </div>
                     {
                         (toolType.name === 'Drill' || toolType.name === 'Reamer') &&
-                            <div className="flex flex-col mb-1 w-[200px]">
-                                <label className="form-control transition-opacity">
-                                    <div className="label">
-                                        <span>Straight Flute</span>
-                                    </div>
-                                </label>
-                                <div className='h-12 flex'>
-                                    <input
-                                        {...register('straight_flute', { onChange: () => checkIfSeriesEdited(selectedSeries) })}
-                                        placeholder="Enter value"
-                                        type="checkbox"
-                                        className={`toggle toggle-primary my-auto ${leftHandSpiral && 'opacity-20 pointer-events-none'}`}
-                                        tabIndex={leftHandSpiral ? -1 : 0}
-                                    />
+                        <div className="flex flex-col mb-1 w-[200px]">
+                            <label className="form-control transition-opacity">
+                                <div className="label">
+                                    <span>Straight Flute</span>
                                 </div>
+                            </label>
+                            <div className='h-12 flex'>
+                                <input
+                                    id={`${stepNumber}|3`}
+                                    {...register('straight_flute', { onChange: () => checkIfSeriesEdited(selectedSeries) })}
+                                    placeholder="Enter value"
+                                    type="checkbox"
+                                    className={`toggle toggle-primary my-auto ${leftHandSpiral && 'opacity-20 pointer-events-none'}`}
+                                    tabIndex={leftHandSpiral ? -1 : 0}
+                                />
                             </div>
+                        </div>
                     }
                 </div>
             </div>
