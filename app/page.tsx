@@ -42,7 +42,7 @@ export default async function Home() {
           <span className="whitespace-pre-wrap">
             5-24-2025<br />
             - Fixed incorrect controller version causing spec errors<br />
-            - Fixed 'go to error' not working for fluting section
+            - Fixed &apos;go to error&apos; not working for fluting section
           </span>
         </div>
         <div className="mb-4">
