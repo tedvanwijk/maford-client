@@ -38,6 +38,14 @@ export default async function Home() {
       <h1 className='my-2'>Version History</h1>
       <div className='w-full bg-secondary bg-opacity-50 rounded-md p-2 h-full overflow-auto flex flex-col'>
         <div className="mb-4">
+          <span className='font-bold'>[0.5.1]</span> <br />
+          <span className="whitespace-pre-wrap">
+            5-24-2025<br />
+            - Fixed incorrect controller version causing spec errors<br />
+            - Fixed 'go to error' not working for fluting section
+          </span>
+        </div>
+        <div className="mb-4">
           <span className='font-bold'>[0.5.0]</span> <br />
           <span className="whitespace-pre-wrap">
             5-20-2025<br />
