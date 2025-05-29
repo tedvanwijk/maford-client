@@ -279,7 +279,7 @@ export default function New({ viewOnly = false }: { viewOnly: boolean }) {
                 if (category !== '') id = `${category}.${id}`;
                 // if the value itself is an object, it means it is a separate category, call this function again with that value
                 // and the key name as the category
-                if (typeof value === 'object') enterValues(value, key);
+                if (typeof value === 'object' && value !== null) enterValues(value, key);
                 formMethods.setValue(id, value);
             }
         }
