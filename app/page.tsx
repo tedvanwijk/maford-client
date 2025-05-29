@@ -41,7 +41,8 @@ export default async function Home() {
           <span className='font-bold'>[0.5.2]</span> <br />
           <span className="whitespace-pre-wrap">
             5-29-2025<br />
-            - Fixed input copying causing error when submitting specs with blank enabled inputs
+            - Fixed input copying causing error when submitting specs with blank enabled inputs<br />
+            - Fixed "To tangency" step toggle not disabling correctly
           </span>
         </div>
         <div className="mb-4">
