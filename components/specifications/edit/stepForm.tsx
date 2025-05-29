@@ -23,7 +23,8 @@ export default function StepForm({
         let stepFormItems = [];
         const margins = watch('straight_flute') && toolType.name === "Drill";
         for (let i = 0; i < stepCount; i++) {
-            const midpointDisabled = watch(`Steps.${i}.RTop`, '') === '';
+            const rTop = watch(`Steps.${i}.RTop`, '');
+            const midpointDisabled = rTop === '' || rTop === 0 || rTop === '0' || isNaN(rTop);
             stepFormItems.push(
                 <tr key={i}>
                     <td className='font-bold'>{i + 1}</td>
