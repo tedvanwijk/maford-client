@@ -25,6 +25,7 @@ export default function DoubleInput({
                     step="any"
                     placeholder={`${tolerance ? 'Enter upper limit' : 'Enter value'}`}
                     className="input border-none"
+                    onWheel={(e: any) => e.target.blur()}
                 />
                 <hr className="border-neutral opacity-25" />
                 <div className={`relative w-full p-0 m-0 flex flex-row justify-between items-center`}>
@@ -34,6 +35,7 @@ export default function DoubleInput({
                         step="any"
                         placeholder={tolerance ? 'Enter lower limit' : 'Enable tolerance'}
                         className="input border-none w-0 pr-0 grow rounded-t-none"
+                        onWheel={(e: any) => e.target.blur()}
                     />
                     <input
                         {...register(`${name}_tolerance`, { onChange: () => setValue(`${name}_lower`, undefined) })}

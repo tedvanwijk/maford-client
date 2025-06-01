@@ -76,6 +76,7 @@ export default function EditToolForm(
                             type="number"
                             placeholder="Enter value"
                             className="input input-bordered w-full"
+                            onWheel={(e: any) => e.target.blur()}
                         />
                         <div className='w-full flex flex-row justify-start text-red-800'>
                             <ErrorMessage errors={errors} name="flute_count" as="p" />
@@ -95,6 +96,7 @@ export default function EditToolForm(
                             type="number"
                             placeholder="Enter value"
                             className="input input-bordered w-full"
+                            onWheel={(e: any) => e.target.blur()}
                         />
                     </div>
                     <div className="flex flex-col mb-1">

@@ -119,6 +119,7 @@ export default function SpecificationForm(
                         lang="en-US"
                         tabIndex={tabIndex}
                         id={id}
+                        onWheel={(e: any) => e.target.blur()}
                     />
                     additionalClasses += ' min-h-[88px]';
                     break;
@@ -132,6 +133,7 @@ export default function SpecificationForm(
                         lang="en-US"
                         tabIndex={tabIndex}
                         id={id}
+                        onWheel={(e: any) => e.target.blur()}
                     />
                     additionalClasses += ' min-h-[88px]';
                     break;

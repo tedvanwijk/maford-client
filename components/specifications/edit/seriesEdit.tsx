@@ -64,6 +64,7 @@ export default function SeriesEdit(
                             type="number"
                             placeholder="Enter value"
                             className="input input-bordered w-full"
+                            onWheel={(e: any) => e.target.blur()}
                         />
                         <div className='w-full flex flex-row justify-start text-red-800'>
                             <ErrorMessage errors={errors} name="flute_count" as="p" />
@@ -93,6 +94,7 @@ export default function SeriesEdit(
                             placeholder="Enter value"
                             className={`input input-bordered w-full ${straightFlute && 'opacity-20 pointer-events-none'}`}
                             tabIndex={straightFlute ? -1 : 0}
+                            onWheel={(e: any) => e.target.blur()}
                         />
                         <div className='w-full flex flex-row justify-start text-red-800'>
                             <ErrorMessage errors={errors} name="helix_angle" as="p" />

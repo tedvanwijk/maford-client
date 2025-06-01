@@ -34,6 +34,7 @@ export default function StepForm({
                             type="number"
                             step="any"
                             {...register(`Steps.${i}.Length`, { disabled: !stepTool, valueAsNumber: true })}
+                            onWheel={(e: any) => e.target.blur()}
                         />
                     </td>
                     <td className="border border-slate-400">
@@ -42,6 +43,7 @@ export default function StepForm({
                             type="number"
                             step="any"
                             {...register(`Steps.${i}.Diameter`, { disabled: !stepTool, valueAsNumber: true })}
+                            onWheel={(e: any) => e.target.blur()}
                         />
                     </td>
                     <td className="border border-slate-400">
@@ -50,6 +52,7 @@ export default function StepForm({
                             type="number"
                             step="any"
                             {...register(`Steps.${i}.Angle`, { disabled: !stepTool, valueAsNumber: true })}
+                            onWheel={(e: any) => e.target.blur()}
                         />
                     </td>
                     <td className="border border-slate-400">
@@ -58,6 +61,7 @@ export default function StepForm({
                             type="number"
                             step="any"
                             {...register(`Steps.${i}.RTop`, { disabled: !stepTool, valueAsNumber: true })}
+                            onWheel={(e: any) => e.target.blur()}
                         />
                     </td>
                     <td className="border border-slate-400">
@@ -66,6 +70,7 @@ export default function StepForm({
                             type="number"
                             step="any"
                             {...register(`Steps.${i}.RBottom`, { disabled: !stepTool, valueAsNumber: true })}
+                            onWheel={(e: any) => e.target.blur()}
                         />
                     </td>
                     {
