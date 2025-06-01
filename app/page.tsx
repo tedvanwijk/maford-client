@@ -38,6 +38,14 @@ export default async function Home() {
       <h1 className='my-2'>Version History</h1>
       <div className='w-full bg-secondary bg-opacity-50 rounded-md p-2 h-full overflow-auto flex flex-col'>
         <div className="mb-4">
+          <span className='font-bold'>[0.5.3]</span> <br />
+          <span className="whitespace-pre-wrap">
+            6-1-2025<br />
+            - Fixed inputs changing values if user scrolls page while cursor is on input<br />
+            - Added error description for failed step features
+          </span>
+        </div>
+        <div className="mb-4">
           <span className='font-bold'>[0.5.2]</span> <br />
           <span className="whitespace-pre-wrap">
             5-29-2025<br />
