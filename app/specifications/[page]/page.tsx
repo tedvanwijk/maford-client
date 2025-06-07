@@ -139,8 +139,8 @@ export default async function Specifications(
                     {
                         searchParams.r === 'null' ?
                             '' : (searchParams.u === 'null' || searchParams.u === '-1' || searchParams.u === 'undefined') ?
-                                <Link href={`/specifications/${0}?u=${searchParams.r}&r=${searchParams.r}&s=${searchParams.s}`} className="btn ml-4">View your specifications</Link> :
-                                <Link href={`/specifications/${0}?u=null&r=${searchParams.r}&s=${searchParams.s}`} className="btn ml-4">View all specifications</Link>
+                                <Link href={`/specifications/${0}?u=${searchParams.r}&r=${searchParams.r}&s=${searchParams.s}`} className="btn btn-primary ml-4">Your specifications</Link> :
+                                <Link href={`/specifications/${0}?u=null&r=${searchParams.r}&s=${searchParams.s}`} className="btn btn-primary ml-4">All specifications</Link>
                     }
                 </div>
                 <SearchButton p={params.page} u={searchParams.u} r={searchParams.r} s={searchParams.s} />
