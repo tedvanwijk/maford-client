@@ -38,6 +38,20 @@ export default async function Home() {
       <h1 className='my-2'>Version History</h1>
       <div className='w-full bg-secondary bg-opacity-50 rounded-md p-2 h-full overflow-auto flex flex-col'>
         <div className="mb-4">
+          <span className='font-bold'>[0.5.4]</span> <br />
+          <span className="whitespace-pre-wrap">
+            6-9-2025<br />
+            - Added Moeller Manufacturing drawing format<br />
+            - Update manufacturing and approval drawing formats<br />
+            - Fixed non-step straight flute drills specs failing<br />
+            - Fixed custom drawing types not exporting<br />
+            - Fixed washout running into shank for small diameter tools<br />
+            - Updated Solidworks version to 2024 SP3.1<br />
+            - Automatically go to &apos;All specifications&apos; when searching specifications<br />
+            - Small visual changes
+          </span>
+        </div>
+        <div className="mb-4">
           <span className='font-bold'>[0.5.3]</span> <br />
           <span className="whitespace-pre-wrap">
             6-1-2025<br />
