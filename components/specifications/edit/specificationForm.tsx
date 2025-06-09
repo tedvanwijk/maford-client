@@ -156,7 +156,7 @@ export default function SpecificationForm(
                                     {...register(registerId, { disabled })}
                                     type='radio'
                                     value={e}
-                                    className="radio checked:bg-primary h-full bg-base-100"
+                                    className="radio checked:bg-primary bg-base-100"
                                     defaultChecked={e === input.options[0]}
                                     // id={e}
                                     tabIndex={tabIndex}
