@@ -38,6 +38,15 @@ export default async function Home() {
       <h1 className='my-2'>Version History</h1>
       <div className='w-full bg-secondary bg-opacity-50 rounded-md p-2 h-full overflow-auto flex flex-col'>
         <div className="mb-4">
+          <span className='font-bold'>[0.5.5]</span> <br />
+          <span className="whitespace-pre-wrap">
+            8-31-2025<br />
+            - Fixed incorrect ordering of spec table content<br />
+			- Fixed end mill flute washout profile sketch errors for small tool diameters<br />
+			- Improved handling of empty Excel cells or cells with errors in spec table<br />
+          </span>
+        </div>
+		<div className="mb-4">
           <span className='font-bold'>[0.5.4]</span> <br />
           <span className="whitespace-pre-wrap">
             6-9-2025<br />
